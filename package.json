@@ -1,0 +1,17 @@
+{
+  "name": "pi-es-2025.2",
+  "version": "1.0.0",
+  "description": "...",
+  "main": "dist/main/main.js",
+  "scripts": {
+    "tsc": "tsc",
+    "build": "tsc",
+    "start": "npm run build && electron ."
+  },
+  "devDependencies": {
+    "@types/node": "^24.8.1",
+    "electron": "^38.3.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
