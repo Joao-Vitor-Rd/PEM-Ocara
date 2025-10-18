@@ -39,7 +39,7 @@ console.log();
 // Test 4: Try to create user with empty name
 console.log("4. Tentando criar usuário com nome vazio:");
 const invalidUser = controller.handleCreateUser("");
-console.log(`   ${invalidUser ? '✗ Falhou' : '✓ Validação funcionou'}`);
+console.log(`   ${!invalidUser ? '✓ Validação funcionou' : '✗ Falhou'}`);
 console.log();
 
 // Test 5: Delete a user

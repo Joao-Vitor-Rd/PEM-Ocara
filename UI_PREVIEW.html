@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview - Sistema de Usuários</title>
+</head>
+<body>
+    <!-- This is a visual preview of the UI structure -->
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px;">
+        <h1>Sistema de Usuários 👤</h1>
+        
+        <div style="margin-bottom: 20px; padding: 20px; background-color: #f0f0f0; border-radius: 8px;">
+            <h2>Criar Usuário</h2>
+            <input 
+                type="text" 
+                id="userName" 
+                placeholder="Digite o nome do usuário"
+                style="padding: 10px; width: 70%; margin-right: 10px; border: 1px solid #ccc; border-radius: 4px;"
+            />
+            <button 
+                id="createUserBtn"
+                style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;"
+            >
+                Criar
+            </button>
+        </div>
+
+        <div style="padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
+            <h2>Lista de Usuários</h2>
+            <div id="userList" style="margin-top: 10px;">
+                <!-- Example with users -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; margin: 5px 0; background-color: white; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <span style="font-size: 16px;">
+                        <strong>1.</strong> João Silva
+                    </span>
+                    <button 
+                        style="padding: 5px 15px; background-color: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer;"
+                    >
+                        Deletar
+                    </button>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; margin: 5px 0; background-color: white; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <span style="font-size: 16px;">
+                        <strong>2.</strong> Maria Santos
+                    </span>
+                    <button 
+                        style="padding: 5px 15px; background-color: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer;"
+                    >
+                        Deletar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #e3f2fd; border-radius: 8px; border-left: 4px solid #2196F3;">
+        <h3>ℹ️ Informações</h3>
+        <p><strong>Esta é uma preview estática da interface.</strong></p>
+        <p>A aplicação real conecta:</p>
+        <ul>
+            <li>📦 <strong>Model</strong> (User.ts) - Define a estrutura do usuário</li>
+            <li>🔧 <strong>Service</strong> (UserService.ts) - Gerencia os dados</li>
+            <li>🎮 <strong>Controller</strong> (UserController.ts) - Processa ações</li>
+            <li>🖥️ <strong>View</strong> (renderer.ts) - Interface interativa</li>
+        </ul>
+        <p>Para executar a aplicação completa: <code>npm start</code></p>
+    </div>
+</body>
+</html>
