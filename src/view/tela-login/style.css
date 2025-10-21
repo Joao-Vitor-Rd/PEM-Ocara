@@ -1,0 +1,262 @@
+.login-FINALIZADA {
+  display: flex;
+  height: 1024px;
+  align-items: center;
+  position: relative;
+  background-color: #ffffff;
+  width: 100%;
+  min-width: 1440px;
+}
+
+.login-FINALIZADA .menu {
+  position: relative;
+  width: 775px;
+  height: 1024px;
+  background-color: #63468c;
+  border-radius: 0px 50px 50px 0px;
+}
+
+.login-FINALIZADA .caixa {
+  display: flex;
+  flex-direction: column;
+  width: 775px;
+  height: 1024px;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 200px;
+  padding: 50px;
+  position: relative;
+}
+
+.login-FINALIZADA .div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 100px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.login-FINALIZADA .title {
+  position: relative;
+  width: 378px;
+  height: 120px;
+}
+
+.login-FINALIZADA .text-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 148px;
+  font-family: "Poppins-SemiBold", Helvetica;
+  font-weight: 600;
+  color: #ffffff;
+  font-size: 48px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.login-FINALIZADA .text-wrapper-2 {
+  position: absolute;
+  top: 84px;
+  left: 0;
+  width: 374px;
+  font-family: "Poppins-Medium", Helvetica;
+  font-weight: 500;
+  color: #ffffff;
+  font-size: 24px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.login-FINALIZADA .caixas {
+  display: flex;
+  flex-direction: column;
+  height: 282px;
+  align-items: center;
+  gap: 100px;
+  padding: 0px 0px 100px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+}
+
+.login-FINALIZADA .frame {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 50px;
+  position: relative;
+  flex: 0 0 auto;
+  margin-bottom: -100.00px;
+}
+
+.login-FINALIZADA .caixa-2 {
+  position: relative;
+  width: 668px;
+  height: 116px;
+  margin-right: -4.00px;
+}
+
+.login-FINALIZADA .text-wrapper-3 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: "Poppins-SemiBold", Helvetica;
+  font-weight: 600;
+  color: #ffffff;
+  font-size: 24px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.login-FINALIZADA .rectangle {
+  position: absolute;
+  top: 45px;
+  left: -3px;
+  width: 670px;
+  height: 74px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  border: 3px solid;
+  border-color: #0000001a;
+}
+
+.login-FINALIZADA .text-wrapper-4 {
+  position: absolute;
+  top: 68px;
+  left: 24px;
+  font-family: "Poppins-Regular", Helvetica;
+  font-weight: 400;
+  color: #828282;
+  font-size: 20px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.login-FINALIZADA .vector-wrapper {
+  position: absolute;
+  top: 62px;
+  left: 598px;
+  width: 40px;
+  height: 40px;
+}
+
+.login-FINALIZADA .vector {
+  position: absolute;
+  width: 91.67%;
+  height: 62.50%;
+  top: 16.67%;
+  left: 4.17%;
+}
+
+.login-FINALIZADA .text-wrapper-5 {
+  position: absolute;
+  top: 67px;
+  left: 24px;
+  font-family: "Poppins-Regular", Helvetica;
+  font-weight: 400;
+  color: #828282;
+  font-size: 20px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.login-FINALIZADA .button {
+  all: unset;
+  box-sizing: border-box;
+  position: relative;
+  width: 666px;
+  height: 98px;
+}
+
+.login-FINALIZADA .rectangle-2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 664px;
+  height: 98px;
+  background-color: #f2b872;
+  border-radius: 10px;
+}
+
+.login-FINALIZADA .text-wrapper-6 {
+  position: absolute;
+  top: calc(50.00% - 24px);
+  left: calc(50.00% - 49px);
+  font-family: "Poppins-Medium", Helvetica;
+  font-weight: 500;
+  color: #ffffff;
+  font-size: 32px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.login-FINALIZADA .logo {
+  display: flex;
+  flex-direction: column;
+  width: 665px;
+  height: 1024px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  position: relative;
+}
+
+.login-FINALIZADA .caixa-3 {
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  height: 80px;
+}
+
+.login-FINALIZADA .gemini-generated {
+  position: relative;
+  width: 578px;
+  height: 543px;
+  aspect-ratio: 1.06;
+  object-fit: cover;
+}
+
+.login-FINALIZADA .rodap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 21px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.login-FINALIZADA .logo-ocara {
+  position: relative;
+  width: 98px;
+  height: 70px;
+  margin-left: -2.50px;
+  aspect-ratio: 1.41;
+  object-fit: cover;
+}
+
+.login-FINALIZADA .avenida-coronel-jo-o {
+  position: relative;
+  width: 383px;
+  font-family: "Poppins-Bold", Helvetica;
+  font-weight: 700;
+  color: #63468c;
+  font-size: 13px;
+  text-align: center;
+  letter-spacing: 1.30px;
+  line-height: normal;
+}
+
+.login-FINALIZADA .braso-ocara-CE {
+  position: relative;
+  width: 107px;
+  height: 80px;
+  margin-right: -2.50px;
+  aspect-ratio: 1.33;
+  object-fit: cover;
+}
