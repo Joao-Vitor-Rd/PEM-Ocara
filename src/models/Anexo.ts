@@ -9,6 +9,7 @@ export class Anexo {
     }
 
     //Getters
+    
     public getidAnexo(): number | undefined {
         return this.idAnexo;
     }
@@ -22,6 +23,7 @@ export class Anexo {
     }
 
     //Setters
+
     public setIdAnexo(idAnexo: number): void{
         this.idAnexo = idAnexo;
     }
