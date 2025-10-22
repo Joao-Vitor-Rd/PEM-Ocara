@@ -12,8 +12,8 @@ export class PreenchimentoProfissional {
         assistidaSemCondicoes: boolean,
         assistidaRecusou: boolean,
         terceiroComunicante: boolean,
-        tipoViolencia: string
-    ) {
+        tipoViolencia: string)
+        {
         this.assistidaRespondeuSemAjuda = assistidaRespondeuSemAjuda;
         this.assistidaRespondeuComAuxilio = assistidaRespondeuComAuxilio;
         this.assistidaSemCondicoes = assistidaSemCondicoes;
