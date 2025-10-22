@@ -14,8 +14,7 @@ export class HistoricoViolencia {
         abusoSexual: boolean,
         comportamentosAgressor: string[],
         ocorrenciaPolicialMedidaProtetivaAgressor: boolean,
-        agressoesMaisFrequentesUltimamente: boolean
-    )
+        agressoesMaisFrequentesUltimamente: boolean)
     {
         this.ameacaFamiliar = ameacaFamiliar;
         this.agressaoFisica = agressaoFisica;
