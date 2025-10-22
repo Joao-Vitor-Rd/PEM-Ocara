@@ -53,28 +53,28 @@
             <img src="imgs/Brasão_Ocara_(CE).png" alt="Logo-PEM-Ocara" id="Brasão_Ocara_">
         </footer>
     </div>
-        <script>
-                    // Toggle mostrar/ocultar senha - altera tipo do input e estado do ícone
-                    (function(){
-                        const senhaInput = document.getElementById('senha');
-                        const toggle = document.querySelector('.password-icon');
-                        if (!senhaInput || !toggle) return;
 
-                        toggle.addEventListener('click', function(){
-                            const isPassword = senhaInput.type === 'password';
-                            if (isPassword) {
-                                // mostrar texto
-                                senhaInput.type = 'text';
-                                toggle.textContent = 'visibility';
-                                toggle.classList.add('active');
-                            } else {
-                                // voltar para senha
-                                senhaInput.type = 'password';
-                                toggle.textContent = 'visibility_off';
-                                toggle.classList.remove('active');
-                            }
-                        });
-                    })();
-        </script>
+    <script>
+        (function() {
+            const senhaInput = document.getElementById('senha');
+            const toggle = document.querySelector('.password-icon');
+
+            if (!senhaInput || !toggle) return;
+
+            toggle.addEventListener('click', function() {
+                const isPassword = senhaInput.type === 'password';
+                
+                if (isPassword) {
+                    senhaInput.type = 'text';
+                    toggle.textContent = 'visibility';
+                    toggle.classList.add('active');
+                } else {
+                    senhaInput.type = 'password';
+                    toggle.textContent = 'visibility_off';
+                    toggle.classList.remove('active');
+                }
+            });
+        })();
+    </script>
 </body>
 </html>

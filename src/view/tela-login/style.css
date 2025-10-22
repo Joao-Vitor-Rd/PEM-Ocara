@@ -28,7 +28,7 @@ body {
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  padding: 20px 20px 130px 20px; /* reserva espaço inferior para o footer e centraliza a imagem visualmente */
+  padding: 20px 20px 130px 20px;
   background: transparent;
 }
 
@@ -36,7 +36,7 @@ body {
   width: 578px;
   height: 543px;
   max-width: calc(100% - 40px);
-  max-height: calc(100vh - 260px); /* considera padding-bottom reservado e footer */
+  max-height: calc(100vh - 260px);
   object-fit: contain;
   
   display: block;
@@ -65,9 +65,9 @@ body {
 .caixas {
   display: flex;
   flex-direction: column;
-  gap: 50px; /* agora separa os itens por 50px verticalmente */
-  align-items: flex-start; /* alinhar conteúdo ao início para casar com .title */
-  margin: 40px 50px 0 50px; /* alinhar horizontalmente com .title (50px das laterais) */
+  gap: 50px;
+  align-items: flex-start;
+  margin: 40px 50px 0 50px;
 }
 
 .caixas h4 {
@@ -83,9 +83,9 @@ body {
   background: #FFFFFF;
   display: flex;
   align-items: center;
-  padding-left: 24px; /* input começa no início da caixa */
-  position: relative; /* referência para o h4 absoluto */
-  padding-right: 16px; /* espaço padrão à direita */
+  padding-left: 24px;
+  position: relative;
+  padding-right: 16px;
   border: 3px solid rgba(0,0,0,0.1);
   border-radius: 8px;
 }
@@ -107,7 +107,7 @@ body {
 }
 
 .caixa-senha {
-  padding-right: 64px; /* espaço maior para o ícone 40x40 */
+  padding-right: 64px;
 }
 
 .caixa-email input,
@@ -136,28 +136,30 @@ body {
 
 .password-icon {
   position: absolute;
-  right: 24px; /* 24px do final da caixa */
+  right: 24px;
   top: 50%;
   transform: translateY(-50%);
-  color: rgba(0,0,0,0.6); /* contraste com fundo branco da caixa */
+  color: #838383;
   cursor: pointer;
   width: 40px;
   height: 40px;
-  font-size: 28px; /* aumenta o tamanho do ícone visualmente */
+  font-size: 28px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
-/* estado ativado do ícone (quando a senha está visível) */
+
 .password-icon.active {
-  color: #838383; /* cor primária para indicar ativo */
+  color: #838383;
   filter: drop-shadow(0 1px 0 rgba(0,0,0,0.05));
 }
 
 .button {
-  position: static; /* manter no fluxo para alinhamento consistente */
-  margin: 24px 50px 0 50px; /* mesmo X das caixas (50px das laterais) */
+  position: absolute;
+  bottom: 112px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   justify-content: flex-start;
 }
@@ -186,8 +188,8 @@ body {
   position: absolute;
   bottom: 25px;
   left: 50%;
-  transform: translateX(-50%); /* centraliza horizontalmente */
-  width: calc(100% - 100px); /* mantém 50px de margem lateral */
+  transform: translateX(-50%);
+  width: calc(100% - 100px);
   max-width: 800px;
   height: 80px;
   display: flex;
