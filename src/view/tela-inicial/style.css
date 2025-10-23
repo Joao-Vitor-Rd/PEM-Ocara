@@ -1,14 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700;800&display=swap');
 
 html,
+html,
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
     height: 100%;
     background-color: #FFFFFF;
-    overflow: hidden;
+    overflow-x: hidden;
 }
+
 
 /* --- Layout Principal do App --- */
 .app-container {
@@ -18,7 +20,7 @@ body {
 
 /* --- Barra Lateral / Sidebar ============) --- */
 .sidebar {
-    width: 480px;
+    width: clamp(340px, 28vw, 480px);
     background-color: #63468C;
     color: #FFFFFF;
     flex-shrink: 0;
@@ -107,15 +109,23 @@ body {
 .main-content {
     flex-grow: 1;
     overflow-y: auto;
+    overflow-x: hidden;
+
     display: flex;
-    justify-content: flex-start;
+    flex-direction: column;
+    padding: 50px 80px;
+    box-sizing: border-box;
+
+    max-width: 1920px;
+
+    margin: 0 auto;
+
 }
+
 
 .icone-rede-apoio {
     transform: scale(1.4);
 }
-
-
 
 
 
@@ -125,17 +135,17 @@ body {
     max-width: 960px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     padding: 50px;
     gap: 40px;
     box-sizing: border-box;
 }
 
 .cabecalho {
-    width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: flex-start;
+    width: 100%;
 }
 
 /* TITULO**/
@@ -148,25 +158,23 @@ body {
 .titulo h2 {
     font-weight: 500;
     font-size: 32px;
-    line-height: 48px;
-    letter-spacing: 0.1em;
     color: #CEB3F2;
     margin: 0;
+    letter-spacing: 0.1em;
 }
 
 /* TITULO PEM OCARA*/
 .titulo h1 {
     font-weight: 800;
     font-size: 64px;
-    line-height: 96px;
-    letter-spacing: 0.2em;
     color: #63468C;
     text-shadow: 0px 5px 10px rgba(178, 145, 222, 0.6);
     margin: -25px 0 0 0;
+    letter-spacing: 0.2em;
 }
 
 .linha {
-    width: 155%;
+    width: 100%;
     border: 3px solid #63468C;
     box-shadow: 0px 3px 8px #B291DE;
     margin-top: 1.5px;
@@ -174,77 +182,57 @@ body {
 
 .botoes {
     display: flex;
-    flex-direction: row;
     justify-content: center;
     align-items: center;
+    gap: 70px;
     flex-wrap: wrap;
     width: 100%;
-    margin-top: 25px;
-    /*usei a funcao clamp pra colcoar os botoes no meio (valor minimo, valor dieal , valor maximo)*/
-    margin-left: clamp(230px, 23vw, 480px);
-    gap: clamp(40px, 5vw, 70px);
-
+    margin-top: 50px;
 }
-
-
 
 .btn {
     width: 380px;
     height: 150px;
     background: #F2B872;
     border-radius: 20px;
-    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
     border: none;
     cursor: pointer;
     color: #FFFFFF;
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
     font-size: 24px;
-    line-height: 36px;
-    text-align: center;
     letter-spacing: 0.05em;
-    padding: 15px;
+    text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
+/* Informações */
 .informacoes {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 30px;
-    width: clamp(930px, 82vw, 1280px);
-    /* 👈 deixa o bloco mais largo e flexível */
-    margin-top: 45px;
-    margin-left: clamp(200px, 20vw, 480px);
-    /* 👈 desloca pra direita de forma responsiva */
+    margin-top: 60px;
+    width: 100%;
 }
+
 
 
 
 .informacoes h2 {
     font-weight: 600;
     font-size: 36px;
-    line-height: 54px;
-    letter-spacing: 0.05em;
     color: #63468C;
-    margin: 0;
+    margin-bottom: 30px;
 }
 
 .informacoes ul {
-    font-weight: 300;
+    list-style: disc;
     font-size: 20px;
-    line-height: 36px;
+    font-weight: 300;
     color: #372354;
-    padding-left: 20px;
-    margin: 0;
+    padding-left: 40px;
     text-align: justify;
-
-    /* 🔧 Ajuste de largura para alinhar com a linha roxa */
-    width: calc(100% + 50px);
-    margin-right: -60px;
 }
+
 
 
 .informacoes li {
@@ -253,26 +241,19 @@ body {
 
 .rodape {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
-    max-width: 860px;
-    gap: 21px;
     flex-wrap: wrap;
+    width: 100%;
+    margin-top: 70px;
 }
 
 .rodape p {
     flex-grow: 1;
+    text-align: center;
     font-weight: 700;
     font-size: 16px;
-    line-height: 24px;
-    text-align: center;
-    letter-spacing: 0.1em;
     color: #63468C;
-    margin: 0 15px;
-    position: relative;
-    left: clamp(200px, 12vw, 260px);
 }
 
 .logo-esquerda {
@@ -285,6 +266,4 @@ body {
     width: 133px;
     height: 100px;
     object-fit: contain;
-    position: relative;
-    right: clamp(-500px, -26vw, -1350px);
 }
