@@ -47,7 +47,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  margin: 50px 50px 100px 50px; 
+  /* reduzir margin-left para aproximar o título mais para a esquerda (alinhamento com as caixas) */
+  margin: 50px 50px 100px 30px;
 }
 
 .title h1{
@@ -67,7 +68,9 @@ body {
   flex-direction: column;
   gap: 50px;
   align-items: flex-start;
-  margin: 40px 50px 0 50px;
+  /* reduzir a margem horizontal para 30px; combinado com o padding:20px do .card
+     resulta em 50px entre a borda do card e as caixas */
+  margin: 150px 30px 0 30px;
 }
 
 .caixas h4 {
@@ -76,8 +79,11 @@ body {
 }
 
 .caixa-email,.caixa-senha {
-  width: 664px;
-  max-width: calc(100% - 40px);
+  /* usar largura fluida para preencher o container .caixas
+     assim as caixas ficarão a 50px das bordas do .card (20px padding + 30px margin)
+     mantendo a mesma posição vertical */
+  width: 100%;
+  max-width: none;
   height: 68px;
   box-sizing: border-box;
   background: #FFFFFF;
@@ -104,6 +110,12 @@ body {
     left: 10px;
     top: -48px;
   }
+
+  /* ajustar o título no layout mobile para continuar alinhado com o h4
+     20px (padding do .card) + 30px (margin do .caixas) + 3px (borda) + 10px (left do h4 em mobile) = 63px */
+  .title {
+    margin-left: 40px;
+  }
 }
 
 .caixa-senha {
@@ -120,6 +132,13 @@ body {
   color: #838383;
   font-size: 20px;
   padding-left: 0;
+}
+
+/* garantir box-sizing consistente para inputs e botão */
+.caixa-email input,
+.caixa-senha input,
+.button button {
+  box-sizing: border-box;
 }
 
 .caixa-email h4,
@@ -156,17 +175,21 @@ body {
 }
 
 .button {
+  /* restaurar posição vertical original do botão, mas manter alinhamento
+     horizontal com as caixas usando left/right */
   position: absolute;
   bottom: 112px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 50px; /* garantir 50px das bordas do .card */
+  right: 50px;
+  width: auto;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 .button button {
-  width: 664px;
-  max-width: calc(100% - 40px);
+  width: 100%;
+  display: block;
   height: 98px;
   background-color: #F2B872;
   color: #ffffff;
@@ -175,9 +198,6 @@ body {
   font-size: 32px;
   font-weight: 500;
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .button button:active {
