@@ -1,0 +1,233 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap');
+
+body {
+  font-family: sans-serif;
+}
+
+.card {
+  background-color: #63468C;
+  color: #ffffff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100vh;
+  box-sizing: border-box;
+  padding: 20px;
+  border-radius: 0px 50px 50px 0px;
+}
+
+.card-2 {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 20px 20px 130px 20px;
+  background: transparent;
+}
+
+#logo-pem-ocara {
+  width: 578px;
+  height: 543px;
+  max-width: calc(100% - 40px);
+  max-height: calc(100vh - 260px);
+  object-fit: contain;
+  
+  display: block;
+  margin: 0 auto;
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: 50px 50px 100px 30px;
+}
+
+.title h1{
+  font-size: 48px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.title h2{
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.caixas {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  align-items: flex-start;
+  margin: 150px 30px 0 30px;
+}
+
+.caixas h4 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.caixa-email,.caixa-senha {
+  width: 100%;
+  max-width: none;
+  height: 68px;
+  box-sizing: border-box;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  padding-left: 24px;
+  position: relative;
+  padding-right: 16px;
+  border: 3px solid rgba(0,0,0,0.1);
+  border-radius: 8px;
+}
+
+.caixa-email { margin-bottom: 50px; }
+
+@media (max-width: 900px) {
+  .caixa-email,
+  .caixa-senha {
+    width: calc(100% - 40px);
+    max-width: none;
+  }
+
+  .caixa-email h4,
+  .caixa-senha h4 {
+    left: 10px;
+    top: -48px;
+  }
+
+  .title {
+    margin-left: 40px;
+  }
+}
+
+.caixa-senha {
+  padding-right: 64px;
+}
+
+.caixa-email input,
+.caixa-senha input {
+  flex: 1 1 auto;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #838383;
+  font-size: 20px;
+  padding-left: 0;
+}
+
+.caixa-email input,
+.caixa-senha input,
+.button button {
+  box-sizing: border-box;
+}
+
+.caixa-email h4,
+.caixa-senha h4 {
+  position: absolute;
+  top: -48px;
+  left: 0;
+  margin: 0;
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.password-icon {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #838383;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  font-size: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.password-icon.active {
+  color: #838383;
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,0.05));
+}
+
+.button {
+  position: absolute;
+  bottom: 112px;
+  left: 50px;
+  right: 50px;
+  width: auto;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.button button {
+  width: 100%;
+  display: block;
+  height: 98px;
+  background-color: #F2B872;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 32px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.button button:active {
+  transform: translateY(1px);
+}
+
+.card-2 footer {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 100px);
+  max-width: 800px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.card-2 footer img {
+  display: block;
+  object-fit: contain;
+}
+
+.card-2 footer img:first-of-type {
+  width: 98px;
+  height: 70px;
+}
+
+.card-2 footer img:last-of-type {
+  width: 107px;
+  height: 80px;
+}
+
+.card-2 footer p {
+  flex: 1 1 auto; 
+  margin: 0 12px;
+  font-size: 13px;
+  color: #63468C;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  text-align: center;
+}
