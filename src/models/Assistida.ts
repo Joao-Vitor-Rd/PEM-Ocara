@@ -18,7 +18,6 @@ export class Assistida {
     private casos: Caso[] = [];
 
     constructor(
-        protocolo: number,
         nome: string,
         idade: number,
         identidadeGenero: string,
@@ -33,7 +32,7 @@ export class Assistida {
         numeroCadastroSocial: string,
         temDependentes: boolean)
     {
-        this.protocolo = protocolo;
+        this.protocolo = this.generateId();
         this.nome = nome;
         this.idade = idade;
         this.identidadeGenero = identidadeGenero;
@@ -147,4 +146,28 @@ export class Assistida {
         this.casos.push(caso);
     }
     
+
+    private generateId(): number {
+        return Math.floor(Math.random() * (100 - 1000) + 100);
+    }
+
+    public toJSON() {
+        return {
+            protocolo: this.protocolo,
+            nome: this.nome,
+            idade: this.idade,
+            identidadeGenero: this.identidadeGenero,
+            nomeSocial: this.nomeSocial,
+            endereco: this.endereco,
+            escolaridade: this.escolaridade,
+            religiao: this.religiao,
+            nacionalidade: this.nacionalidade,
+            zonaHabitacao: this.zonaHabitacao,
+            profissao: this.profissao,
+            limitacaoFisica: this.limitacaoFisica,
+            numeroCadastroSocial: this.numeroCadastroSocial,
+            temDependentes: this.temDependentes,
+        };
+    }
+
 }

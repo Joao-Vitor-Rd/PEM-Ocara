@@ -3,9 +3,11 @@ import * as path from 'path';
 import { WindowManager } from './utils/WindowManeger';
 import { Logger } from './utils/Logger';
 import { UserController } from './controllers/UserController';
+import { AssistidaController } from './controllers/AssistidaController';
 
 const windowManager = new WindowManager();
 const userController = new UserController();
+const assistidaController = new AssistidaController();
 
 // ==========================================
 // IPC HANDLERS - Backend Logic
@@ -19,7 +21,6 @@ ipcMain.handle('user:create', async (_event, data: { name: string; email: string
     const result = userController.handleCreateUser(data.name, data.email);
     
     if (result.success && result.user) {
-      // Notificar todas as janelas
       BrowserWindow.getAllWindows().forEach(window => {
         window.webContents.send('user:created', result.user!.toJSON());
       });
@@ -32,6 +33,57 @@ ipcMain.handle('user:create', async (_event, data: { name: string; email: string
       success: false,
       error: error instanceof Error ? error.message : 'Erro desconhecido'
     };
+  }
+});
+
+ipcMain.handle('assistida:criar', async(
+  _event,
+  data: {
+    nome: string,
+        idade: number,
+        identidadeGenero: string,
+        nomeSocial: string,
+        endereco: string,
+        escolaridade: string,
+        religiao: string,
+        nacionalidade: string,
+        zonaHabitacao: string,
+        profissao: string,
+        limitacaoFisica: string,
+        numeroCadastroSocial: string,
+        temDependentes: boolean
+  }
+) => {
+  try {
+    const result = assistidaController.handlerCriarAssistida(
+      data.nome,
+      data.idade,
+      data.identidadeGenero,
+      data.nomeSocial,
+      data.endereco,
+      data.escolaridade,
+      data.religiao,
+      data.nacionalidade,
+      data.zonaHabitacao,
+      data.profissao,
+      data.limitacaoFisica,
+      data.numeroCadastroSocial,
+      data.temDependentes,
+    )
+
+    if (result.success && result.assistida) {
+      BrowserWindow.getAllWindows().forEach(window => {
+        window.webContents.send('user:created', result.assistida!.toJSON());
+      });
+    }
+
+    return result;
+  } catch (error) {
+    Logger.error('Erro ao criar Assistida:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido'
+    }
   }
 });
 
@@ -119,7 +171,7 @@ function createMainWindow() {
   windowManager.createWindow('main', {
     width: 900,
     height: 700,
-    htmlFile: 'index.html',
+    htmlFile: 'formularioTeste.html',
     preloadFile: 'preload.js'
   });
 }

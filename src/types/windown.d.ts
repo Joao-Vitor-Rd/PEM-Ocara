@@ -14,6 +14,27 @@ export interface IElectronAPI {
     user?: any;
     error?: string;
   }>;
+
+  criarAssistida:(
+    nome: string,
+    idade: number,
+    identidadeGenero: string,
+    nomeSocial: string,
+    endereco: string,
+    escolaridade: string,
+    religiao: string,
+    nacionalidade: string,
+    zonaHabitacao: string,
+    profissao: string,
+    limitacaoFisica: string,
+    numeroCadastroSocial: string,
+    temDependentes: boolean
+  ) => Promise<{
+    success: boolean;
+    assistida?: any;
+    error?: string
+  }>
+
   openWindow: (windowName: string) => void;
   closeWindow: () => void;
   onUserCreated: (callback: (user: any) => void) => void;

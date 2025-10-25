@@ -40,10 +40,9 @@ export class WindowManager {
 
     const htmlPath = path.join(__dirname, '..', '..', 'src', 'view', options.htmlFile);
     
-    console.log('📂 WindowManager: Carregando HTML de:', htmlPath);
 
     window.loadFile(htmlPath).catch(err => {
-      console.error('❌ WindowManager: Erro ao carregar HTML:', err);
+      console.error('WindowManager: Erro ao carregar HTML:', err);
     });
 
     this.windows.set(name, window);

@@ -3,10 +3,49 @@ function initRenderer() {
   const form = document.getElementById('userForm') as HTMLFormElement;
   const resultDiv = document.getElementById('result') as HTMLDivElement;
   const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
+  const listarUser = document.getElementById('getAll') as HTMLButtonElement;
 
-  if (!form || !resultDiv || !submitBtn) {
+  if (!form || !resultDiv || !submitBtn || !listarUser) {
     return;
   }
+
+  listarUser.addEventListener('click', async (event) => {
+    event.preventDefault();
+
+    try {
+      const result = await window.api.getUsers()
+
+        if (result.success && Array.isArray(result.users)) {
+            resultDiv.className = 'result success';
+            const allUsersHtml = result.users.map(user => `
+                <div class="user-info-item">
+                    <p><strong>ID:</strong> ${user.id}</p>
+                    <p><strong>Nome:</strong> ${user.name}</p>
+                    <p><strong>E-mail:</strong> ${user.email}</p>
+                    <hr>
+                </div>
+            `).join('');
+
+            resultDiv.innerHTML = `
+                <h2>✅ Lista de Usuários</h2>
+                ${allUsersHtml}
+            `;
+        }
+
+    }  catch (error) {
+
+      resultDiv.className = 'result error';
+      resultDiv.innerHTML = `
+        <h2> Erro de Comunicação</h2>
+        <p>Não foi possível se comunicar com o servidor.</p>
+        <p><small>${error instanceof Error ? error.message : String(error)}</small></p>
+      `;
+    } finally {
+      listarUser.disabled = false;
+      listarUser.textContent = 'Listar user';
+    }
+
+  });
 
   form.addEventListener('submit', async (event) => {
 
@@ -55,7 +94,7 @@ function initRenderer() {
 
       resultDiv.className = 'result error';
       resultDiv.innerHTML = `
-        <h2>❌ Erro de Comunicação</h2>
+        <h2> Erro de Comunicação</h2>
         <p>Não foi possível se comunicar com o servidor.</p>
         <p><small>${error instanceof Error ? error.message : String(error)}</small></p>
       `;

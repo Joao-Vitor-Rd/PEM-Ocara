@@ -15,6 +15,40 @@ contextBridge.exposeInMainWorld('api', {
 
   openWindow: (windowName: string) => 
     ipcRenderer.send('window:open', windowName),
+
+  //IPC ASSISTIDA
+
+  criarAssistida: (
+        nome: string,
+        idade: number,
+        identidadeGenero: string,
+        nomeSocial: string,
+        endereco: string,
+        escolaridade: string,
+        religiao: string,
+        nacionalidade: string,
+        zonaHabitacao: string,
+        profissao: string,
+        limitacaoFisica: string,
+        numeroCadastroSocial: string,
+        temDependentes: boolean
+    ) => ipcRenderer.invoke('assistida:criar',
+      {
+        nome,
+        idade,
+        identidadeGenero,
+        nomeSocial,
+        endereco,
+        escolaridade,
+        religiao,
+        nacionalidade,
+        zonaHabitacao,
+        profissao,
+        limitacaoFisica,
+        numeroCadastroSocial,
+        temDependentes,
+      }
+    ),
   
   closeWindow: () => 
     ipcRenderer.send('window:close'),
