@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "ES2020",           // Módulo de navegador
+    "moduleResolution": "bundler",
+    "lib": ["ES2020", "DOM"],     // Inclua DOM de volta, pois é um Renderer
+    "outDir": "./dist/renderers", // Onde o JS final deve ir
+    "rootDir": "./src/renderers"
+  },
+  "exclude": ["node_modules", "dist"], 
+  
+  // Agora o include deve funcionar
+  "include": [
+    "src/types/**/*.d.ts",
+    "src/renderers/formularioRenderer.ts"
+  ]  // COMPILA APENAS ESTE ARQUIVO
+}

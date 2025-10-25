@@ -4,10 +4,13 @@
   "description": "Aplicação Electron SEGURA com TypeScript e padrão MVC",
   "main": "dist/main.js",
   "scripts": {
-    "build": "tsc",
+    "build:main": "tsc --project tsconfig.json",
+    "build:form": "tsc --project tsconfig.form.json", 
+    "build:users": "tsc --project tsconfig.users.json",
+  
+    "build": "npm run build:main && npm run build:form && npm run build:users",
     "start": "npm run build && electron .",
-    "dev": "tsc && electron .",
-    "clean": "rm -rf dist"
+    "dev": "npm run build && electron ."
   },
   "keywords": ["electron", "typescript", "mvc", "secure"],
   "author": "Joao-Vitor-Rd",

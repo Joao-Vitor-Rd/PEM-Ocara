@@ -1,13 +1,9 @@
-function initRenderer() {
 
   const form = document.getElementById('userForm') as HTMLFormElement;
   const resultDiv = document.getElementById('result') as HTMLDivElement;
   const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
   const listarUser = document.getElementById('getAll') as HTMLButtonElement;
 
-  if (!form || !resultDiv || !submitBtn || !listarUser) {
-    return;
-  }
 
   listarUser.addEventListener('click', async (event) => {
     event.preventDefault();
@@ -105,17 +101,6 @@ function initRenderer() {
   });
 
  
-}
-
-if (document.readyState === 'loading') {
-
-  document.addEventListener('DOMContentLoaded', () => {
-    initRenderer();
-  });
-} else {
-  initRenderer();
-}
-
 function escapeHtml(text: string): string {
   const map: { [key: string]: string } = {
     '&': '&amp;',

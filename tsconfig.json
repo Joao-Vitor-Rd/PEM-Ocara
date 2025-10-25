@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "node16",
-    "lib": ["ES2020", "DOM"],
+    "module": "NodeNext",          // Mude para um módulo Node/ESM para o Main Process
+    "moduleResolution": "NodeNext", // Resolução de módulo para Node
+    "lib": ["ES2020"],              // Remova "DOM" daqui, pois é código Node
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
@@ -10,12 +11,11 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "moduleResolution": "node16",
     "types": ["node"]
   },
   "include": [
-    "src/**/*",
-    "src/types/**/*.d.ts"
+    "src/**/*"
+    // NOTA: 'src/renderers' deve ser tratado separadamente
   ],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist", "src/renderers/**/*"] // EXCLUA OS RENDERERS
 }
