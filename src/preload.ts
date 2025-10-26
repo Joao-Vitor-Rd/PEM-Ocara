@@ -11,6 +11,8 @@ contextBridge.exposeInMainWorld('api', {
   openWindow: (windowName: string) =>
     ipcRenderer.send('window:open', windowName),
 
+  listarAssistidas: () => ipcRenderer.invoke('assistida:listarTodas'),
+  
   criarAssistida: (
     nome: string,
     idade: number,
@@ -41,6 +43,7 @@ contextBridge.exposeInMainWorld('api', {
       numeroCadastroSocial,
       temDependentes,
     }),
+
 
   closeWindow: () => ipcRenderer.send('window:close'),
 

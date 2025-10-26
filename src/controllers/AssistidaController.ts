@@ -9,6 +9,10 @@ export class AssistidaController {
         this.assistidaService = new AssistidaService();
     }
 
+    public handlerListarTodasAssistidas(): Assistida[] {
+        return this.assistidaService.getTodasAssistidas();
+    }
+
     public handlerCriarAssistida(
         nome: string,
         idade: number,

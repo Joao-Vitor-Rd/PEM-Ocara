@@ -3,6 +3,7 @@ export {}
 const form = document.getElementById('atendimentoForm') as HTMLFormElement;
 const resultDiv = document.getElementById('result') as HTMLDivElement;
 const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
+const listarAssistidasBtn = document.getElementById('getAllAssistidas') as HTMLButtonElement;
 
 
 form.addEventListener('submit', async (event) => {
@@ -88,4 +89,8 @@ form.addEventListener('submit', async (event) => {
         submitBtn.textContent = 'Finalizar Cadastro'; 
     }
 });
+
+listarAssistidasBtn.addEventListener('click', async (event) => {
+    const mudarTela = await window.api.openWindow("telaAssistidas");
+})
         

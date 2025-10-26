@@ -32,9 +32,14 @@ export interface IElectronAPI {
   ) => Promise<{
     success: boolean;
     assistida?: any;
-    error?: string
+    error?: string;
   }>
-
+  
+  listarAssistidas: () => Promise<{
+    success: boolean;
+    assistidas?: any[];
+    error?: string;
+  }>;
   openWindow: (windowName: string) => void;
   closeWindow: () => void;
   onUserCreated: (callback: (user: any) => void) => void;

@@ -36,6 +36,23 @@ ipcMain.handle('user:create', async (_event, data: { name: string; email: string
   }
 });
 
+ipcMain.handle('assistida:listarTodas', async () => {
+  Logger.info("requisicao: listar Assistidas")
+  try {
+    const assistidas = assistidaController.handlerListarTodasAssistidas();
+    return {
+      success: true,
+      assistidas: assistidas.map(u => u.toJSON())
+    };
+  } catch (error) {
+    Logger.error('Erro ao buscar assistidas:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido'
+    };
+  }
+});
+
 ipcMain.handle('assistida:criar', async(
   _event,
   data: {
@@ -145,13 +162,8 @@ ipcMain.on('window:open', (_event, windowName: string) => {
         preloadFile: 'preload.js'
       });
       break;
-    case 'usersList':
-      windowManager.createWindow('usersList', {
-        width: 900,
-        height: 600,
-        htmlFile: 'telaAssistidas.html',
-        preloadFile: 'preload.js'
-      });
+    case 'telaAssistidas':
+      windowManager.loadContent('main', 'telaAssistidas.html');
       break;
   }
 });

@@ -11,6 +11,6 @@
   
   "include": [
     "../src/types/**/*.d.ts",
-    "../src/renderers/listarAssistidasRenderer.ts"
+    "../src/renderers/renderer.ts"
   ] 
 }

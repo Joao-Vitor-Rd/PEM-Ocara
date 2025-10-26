@@ -4,6 +4,22 @@ import * as path from 'path';
 export class WindowManager {
   private windows: Map<string, BrowserWindow> = new Map();
 
+  public loadContent(name: string, htmlFile: string): boolean {
+      const window = this.windows.get(name);
+
+      if (window && !window.isDestroyed()) {
+          const htmlPath = path.join(__dirname, '..','..', 'src', 'view', htmlFile);
+          
+          window.loadFile(htmlPath).catch(err => {
+              console.error('WindowManager: Erro ao carregar novo HTML:', err);
+          });
+
+          window.focus();
+          return true;
+      }
+      return false;
+  }
+
   public createWindow(
     name: string,
     options: {
