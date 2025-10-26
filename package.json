@@ -1,12 +1,12 @@
 {
-  "name": "electron-mvc-app",
+  "name": "PEM OCARA",
   "version": "1.0.0",
-  "description": "Aplicação Electron SEGURA com TypeScript e padrão MVC",
+  "description": "PEM OCARA",
   "main": "dist/main.js",
   "scripts": {
-    "build:main": "tsc --project tsconfig.json",
-    "build:form": "tsc --project tsconfig.form.json", 
-    "build:users": "tsc --project tsconfig.users.json",
+    "build:main": "tsc --project configs/tsconfig.json",
+    "build:form": "tsc --project configs/tsconfig.form.json", 
+    "build:users": "tsc --project configs/tsconfig.users.json",
   
     "build": "npm run build:main && npm run build:form && npm run build:users",
     "start": "npm run build && electron .",
