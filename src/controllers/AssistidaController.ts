@@ -1,5 +1,5 @@
 import { AssistidaService } from "../services/AssistidaService";
-import { Assistida } from "../models/Assistida";
+import { Assistida } from "../models/assistida/Assistida";
 
 export class AssistidaController {
 

@@ -1,6 +1,5 @@
 import { Anexo } from "./Anexo";
-import { Formulario } from "./formulario/Formulario";
-
+import { Formulario } from "../formulario/Formulario"
 export class Caso {
     private protocoloCaso?: number;
     private anexos: Anexo[] = [];

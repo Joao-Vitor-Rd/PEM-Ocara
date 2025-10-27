@@ -148,7 +148,7 @@ export class Assistida {
     
 
     private generateId(): number {
-        return Math.floor(Math.random() * (100 - 1000) + 100);
+        return Math.floor(Math.random() * 100) + 1;
     }
 
     public toJSON() {

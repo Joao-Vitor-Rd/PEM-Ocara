@@ -1,4 +1,4 @@
-import { Assistida } from "../Assistida";
+import { Assistida } from "../assistida/Assistida";
 
 export class Formulario {
     private idFormulario?: number;
