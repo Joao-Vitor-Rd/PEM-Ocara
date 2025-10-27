@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap');
+
+body {
+    font-family: sans-serif;
+    background-color: #63468C;
+    color: #ffffff;
+}
+
+.titulo {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 500;
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: 25px;
+    color: #63468C;
+    width: 95%;
+    margin: 0 auto;
+}
+
+.etapas {
+    display: flex;
+    justify-content: center;
+    background-color: #CEB3F2;
+    border-radius: 25px 25px 0px 0px;
+    padding: 20px 0;
+}
+
+.lista-etapas {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    list-style: none;
+    padding: 0 20px;
+    margin: 0;
+    width: 90%;
+}
+
+.etapa,
+.etapa-ativa {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #CEB3F2;
+    background-color: #B291DE;
+}
+
+.etapa-ativa {
+    background-color: #ffffff;
+    color: #F2B872;
+}
+
+.numero {
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.form {
+    padding-top: 20px;
+}
+
+.titulo-sessao {
+    text-align: center;
+}
+
+.titulo-sessao h6 {
+    font-size: 24px;
+    font-weight: 300;
+    color: #B291DE;
+    margin: 0;
+}
+
+.titulo-sessao h4 {
+    font-size: 32px;
+    font-weight: 400;
+    color: #63468C;
+    margin: 0;
+}
+
+footer {
+    position: fixed;
+    bottom: 72px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    width: 95%;
+    margin: 0 auto;
+}
+
+#proximo {
+    background-color: #F2B872;
+    color: #ffffff;
+    border-radius: 10px;
+    height: 57px;
+    width: 295px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: medium;
+}
+
+#voltar {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: medium;
+    background-color: transparent;
+    border: none;
+}
+
