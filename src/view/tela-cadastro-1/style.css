@@ -141,6 +141,89 @@ body {
     font-size: 24px;
 }
 
+.pergunta-conjunta {
+    display: flex;
+    flex-direction: row;
+    gap: 19px;
+    width: 100%;
+}
+
+.pergunta-conjunta .pergunta {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.pergunta-conjunta #pergunta-marcar {
+    flex: 1;
+}
+
+#pergunta-marcar {
+    display: flex;
+    flex-direction: column;
+}
+
+#pergunta-marcar > label {
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 24px;
+}
+
+#pergunta-marcar .opções {
+    display: flex;
+    flex-direction: row;
+    font-size: 24px;
+}
+
+#pergunta-marcar .opções .opção {
+    display: flex;
+    flex-direction: row;
+    gap: 19px;
+    width: 100%;
+}
+
+#pergunta-marcar .opções input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 2px solid #63468C;
+    border-radius: 50%;
+    outline: none;
+    cursor: pointer;
+}
+
+#pergunta-marcar .opções input[type="radio"]:checked {
+    background-color: #63468C;
+    border: 2px solid #63468C;
+    box-shadow: inset 0 0 0 3px white;
+}
+
+.pergunta span {
+    font-size: 24px;
+    color: #a20202;
+    margin-left: 10px;
+    font-weight: 200;
+}
+
+#pergunta-marcar span {
+    font-size: 24px;
+    color: #a20202;
+    margin-left: 10px;
+    font-weight: 200;
+}
+
+.obs {
+    font-size: 18px;
+    color: #838383;
+    text-align: center;
+}
+
+.obs span {
+    color: #a20202;
+    font-weight: 600;
+}
+
 footer {
     position: fixed;
     bottom: 10px;
@@ -164,6 +247,18 @@ footer {
     font-size: 24px;
     font-weight: medium;
     border: none;
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+#proximo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#proximo:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 #voltar {
@@ -172,5 +267,11 @@ footer {
     font-weight: medium;
     background-color: transparent;
     border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: text-decoration 0.2s ease;
 }
 
+#voltar:hover {
+    text-decoration: underline;
+}
