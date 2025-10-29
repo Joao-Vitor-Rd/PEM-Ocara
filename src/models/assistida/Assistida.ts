@@ -30,8 +30,8 @@ export class Assistida {
         profissao: string,
         limitacaoFisica: string,
         numeroCadastroSocial: string,
-        temDependentes: boolean)
-    {
+        temDependentes: boolean
+    ) {
         this.protocolo = this.generateId();
         this.nome = nome;
         this.idade = idade;

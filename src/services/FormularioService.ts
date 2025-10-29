@@ -1,25 +1,10 @@
-import { Assistida } from "../assistida/Assistida";
-import { Agressor } from "./Agressor";
-import { HistoricoViolencia } from "./HistoricoViolencia";
-import { OutrasInformacoesEncaminhamento } from "./OutrasInformacoesEncaminhamento";
-import { OutrasInformacoesImportantes } from "./OutrasInformacoesImportantes";
-import { PreenchimentoProfissional } from "./PreenchimentoProfissional";
-import { SobreAgressor } from "./SobreAgressor";
-import { SobreVoce } from "./SobreVoce";
+import { Formulario } from "../models/formulario/Formulario";
 
-export class Formulario {
-    private idFormulario?: number;
-    private assistida: Assistida;
-    private agressor: Agressor;
-    private sobreAgressor: SobreAgressor;
-    private historicoViolencia: HistoricoViolencia;
-    private outrasInformacoesEncaminhamento: OutrasInformacoesEncaminhamento;
-    private outrasInformacoesImportantes: OutrasInformacoesImportantes;
-    private sobreVoce: SobreVoce;
-    private preenchimentoProfissional: PreenchimentoProfissional;
-    
+export class FormularioService {
+
+    private formulario: Formulario;
+
     constructor(
-         //Assistida
         nomeAssistida: string,
         idadeAssistida: number,
         identidadeGenero: string,
@@ -61,6 +46,11 @@ export class Formulario {
         //Outras Infor
         anotacoesLivres: string, 
 
+        //Outras Infor Importantes
+        moraEmAreaRisco: boolean,
+        dependenteFinanceiroAgressor: boolean,
+        aceitaAbrigamentoTemporario: boolean,
+
         //PreenchimentoProfissional
         assistidaRespondeuSemAjuda: boolean,
         assistidaRespondeuComAuxilio: boolean,
@@ -68,11 +58,6 @@ export class Formulario {
         assistidaRecusou: boolean,
         terceiroComunicante: boolean,
         tipoViolencia: string,
-
-        //Outras Infor Importantes
-        moraEmAreaRisco: boolean,
-        dependenteFinanceiroAgressor: boolean,
-        aceitaAbrigamentoTemporario: boolean,
 
         //Sobre voce
         separacaoRecente: string,
@@ -89,8 +74,7 @@ export class Formulario {
         possuiDeficienciaDoenca: string,
         corRaca: string
     ) {
-        this.idFormulario = 1;
-        this.assistida = new Assistida(
+        this.formulario = new Formulario(
             nomeAssistida,
             idadeAssistida,
             identidadeGenero,
@@ -103,46 +87,49 @@ export class Formulario {
             profissao,
             limitacaoFisica,
             numeroCadastroSocial,
-            temDependentes
-        );
-        this.agressor = new Agressor(
+            temDependentes,
+
+            //Agressor
             nomeAgressor,
             idadeAgresssor,
             vinculoAssistida,
-            dataOcorrida
-        );
+            dataOcorrida,
 
-        this.sobreAgressor = new SobreAgressor(
+            //SobreAgressor
             usoDrogasAlcool,
             doencaMental,
             agressorCumpriuMedidaProtetiva,
             agressorTentativaSuicidio,
             agressorDesempregado,
             agressorPossuiArmaFogo,
-            agressorAmeacouAlguem
-        );
+            agressorAmeacouAlguem,
 
-        this.historicoViolencia = new HistoricoViolencia(
+            //Historico Violencia
             ameacaFamiliar,
             agressaoFisica,
             outrasFormasViolencia,
             abusoSexual,
             comportamentosAgressor,
             ocorrenciaPolicialMedidaProtetivaAgressor,
-            agressoesMaisFrequentesUltimamente
-        );
+            agressoesMaisFrequentesUltimamente,
 
-        this.outrasInformacoesEncaminhamento = new OutrasInformacoesEncaminhamento(
-            anotacoesLivres
-        );
+            //Outras Infor
+            anotacoesLivres,
 
-        this.outrasInformacoesImportantes = new OutrasInformacoesImportantes(
+            //PreenchimentoProfissional
+            assistidaRespondeuSemAjuda,
+            assistidaRespondeuComAuxilio,
+            assistidaSemCondicoes,
+            assistidaRecusou,
+            terceiroComunicante,
+            tipoViolencia,
+
+            //Outras Infor Importantes
             moraEmAreaRisco,
             dependenteFinanceiroAgressor,
-            aceitaAbrigamentoTemporario
-        );
+            aceitaAbrigamentoTemporario,
 
-        this.sobreVoce = new SobreVoce(
+            //Sobre voce
             separacaoRecente,
             temFilhosComAgressor,
             qntFilhosComAgressor,
@@ -157,35 +144,9 @@ export class Formulario {
             possuiDeficienciaDoenca,
             corRaca
         );
-
-        this.preenchimentoProfissional = new PreenchimentoProfissional(
-            assistidaRespondeuSemAjuda,
-            assistidaRespondeuComAuxilio,
-            assistidaSemCondicoes,
-            assistidaRecusou,
-            terceiroComunicante,
-            tipoViolencia
-        );
-
     }
 
-    //Getters
-
-    public getAssistida(): Assistida {
-        return this.assistida;
-    }
-
-    public getIdFormulario(): number | undefined {
-        return this.idFormulario;
-    }
-
-    //Setters
-
-    public setIdFormulario(idFormulario: number) {
-        this.idFormulario = idFormulario;
-    }
-
-    public setAssistida(assistida: Assistida) {
-        this.assistida = assistida;
+    public getFormulario(): Formulario {
+        return this.formulario;
     }
 }

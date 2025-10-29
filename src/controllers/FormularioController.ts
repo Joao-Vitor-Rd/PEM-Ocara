@@ -1,25 +1,10 @@
-import { Assistida } from "../assistida/Assistida";
-import { Agressor } from "./Agressor";
-import { HistoricoViolencia } from "./HistoricoViolencia";
-import { OutrasInformacoesEncaminhamento } from "./OutrasInformacoesEncaminhamento";
-import { OutrasInformacoesImportantes } from "./OutrasInformacoesImportantes";
-import { PreenchimentoProfissional } from "./PreenchimentoProfissional";
-import { SobreAgressor } from "./SobreAgressor";
-import { SobreVoce } from "./SobreVoce";
+import { FormularioService } from "../services/FormularioService";
 
-export class Formulario {
-    private idFormulario?: number;
-    private assistida: Assistida;
-    private agressor: Agressor;
-    private sobreAgressor: SobreAgressor;
-    private historicoViolencia: HistoricoViolencia;
-    private outrasInformacoesEncaminhamento: OutrasInformacoesEncaminhamento;
-    private outrasInformacoesImportantes: OutrasInformacoesImportantes;
-    private sobreVoce: SobreVoce;
-    private preenchimentoProfissional: PreenchimentoProfissional;
-    
+export class FormularioController {
+
+    private formularioService: FormularioService;
+
     constructor(
-         //Assistida
         nomeAssistida: string,
         idadeAssistida: number,
         identidadeGenero: string,
@@ -89,8 +74,7 @@ export class Formulario {
         possuiDeficienciaDoenca: string,
         corRaca: string
     ) {
-        this.idFormulario = 1;
-        this.assistida = new Assistida(
+        this.formularioService = new FormularioService(
             nomeAssistida,
             idadeAssistida,
             identidadeGenero,
@@ -103,46 +87,49 @@ export class Formulario {
             profissao,
             limitacaoFisica,
             numeroCadastroSocial,
-            temDependentes
-        );
-        this.agressor = new Agressor(
+            temDependentes,
+
+            //Agressor
             nomeAgressor,
             idadeAgresssor,
             vinculoAssistida,
-            dataOcorrida
-        );
+            dataOcorrida,
 
-        this.sobreAgressor = new SobreAgressor(
+            //SobreAgressor
             usoDrogasAlcool,
             doencaMental,
             agressorCumpriuMedidaProtetiva,
             agressorTentativaSuicidio,
             agressorDesempregado,
             agressorPossuiArmaFogo,
-            agressorAmeacouAlguem
-        );
+            agressorAmeacouAlguem,
 
-        this.historicoViolencia = new HistoricoViolencia(
+            //Historico Violencia
             ameacaFamiliar,
             agressaoFisica,
             outrasFormasViolencia,
             abusoSexual,
             comportamentosAgressor,
             ocorrenciaPolicialMedidaProtetivaAgressor,
-            agressoesMaisFrequentesUltimamente
-        );
+            agressoesMaisFrequentesUltimamente,
 
-        this.outrasInformacoesEncaminhamento = new OutrasInformacoesEncaminhamento(
-            anotacoesLivres
-        );
+            //Outras Infor
+            anotacoesLivres,
 
-        this.outrasInformacoesImportantes = new OutrasInformacoesImportantes(
+            //Outras Infor Importantes
             moraEmAreaRisco,
             dependenteFinanceiroAgressor,
-            aceitaAbrigamentoTemporario
-        );
+            aceitaAbrigamentoTemporario,
 
-        this.sobreVoce = new SobreVoce(
+            //PreenchimentoProfissional
+            assistidaRespondeuSemAjuda,
+            assistidaRespondeuComAuxilio,
+            assistidaSemCondicoes,
+            assistidaRecusou,
+            terceiroComunicante,
+            tipoViolencia,
+
+            //Sobre voce
             separacaoRecente,
             temFilhosComAgressor,
             qntFilhosComAgressor,
@@ -157,35 +144,5 @@ export class Formulario {
             possuiDeficienciaDoenca,
             corRaca
         );
-
-        this.preenchimentoProfissional = new PreenchimentoProfissional(
-            assistidaRespondeuSemAjuda,
-            assistidaRespondeuComAuxilio,
-            assistidaSemCondicoes,
-            assistidaRecusou,
-            terceiroComunicante,
-            tipoViolencia
-        );
-
-    }
-
-    //Getters
-
-    public getAssistida(): Assistida {
-        return this.assistida;
-    }
-
-    public getIdFormulario(): number | undefined {
-        return this.idFormulario;
-    }
-
-    //Setters
-
-    public setIdFormulario(idFormulario: number) {
-        this.idFormulario = idFormulario;
-    }
-
-    public setAssistida(assistida: Assistida) {
-        this.assistida = assistida;
     }
 }

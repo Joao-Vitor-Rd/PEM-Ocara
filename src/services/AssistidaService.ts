@@ -34,16 +34,16 @@ export class AssistidaService {
             nome, 
             idade, 
             identidadeGenero,
-             nomeSocial,
-             endereco,
-             escolaridade,
-             religiao,
-             nacionalidade,
-             zonaHabitacao,
-             profissao,
-             limitacaoFisica,
-             numeroCadastroSocial,
-             temDependentes
+            nomeSocial,
+            endereco,
+            escolaridade,
+            religiao,
+            nacionalidade,
+            zonaHabitacao,
+            profissao,
+            limitacaoFisica,
+            numeroCadastroSocial,
+            temDependentes
         );
 
         this.assistida.push(novaAssistida);

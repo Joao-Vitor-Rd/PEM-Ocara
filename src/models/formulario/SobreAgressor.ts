@@ -14,7 +14,8 @@ export class SobreAgressor {
         agressorTentativaSuicidio: boolean,
         agressorDesempregado: string,
         agressorPossuiArmaFogo: string,
-        agressorAmeacouAlguem: string)
+        agressorAmeacouAlguem: string
+    )
     {
         this.usoDrogasAlcool = usoDrogasAlcool;
         this.doencaMental = doencaMental;

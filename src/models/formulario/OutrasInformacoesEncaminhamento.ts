@@ -1,4 +1,4 @@
-export class outrasInformacoesEncaminhamento {
+export class OutrasInformacoesEncaminhamento {
     public anotacoesLivres: string;
 
     constructor(

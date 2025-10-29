@@ -26,7 +26,8 @@ export class SobreVoce {
         violenciaDuranteGravidez: boolean,
         novoRelacionamentoAumentouAgressao: boolean,
         possuiDeficienciaDoenca: string,
-        corRaca: string)
+        corRaca: string
+    )
     {
         this.separacaoRecente = separacaoRecente;
         this.temFilhosComAgressor = temFilhosComAgressor;

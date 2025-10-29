@@ -1,4 +1,4 @@
-export class outrasInformacoesImportantes {
+export class OutrasInformacoesImportantes {
     private moraEmAreaRisco: boolean;
     private dependenteFinanceiroAgressor: boolean;
     private aceitaAbrigamentoTemporario: boolean;
@@ -6,7 +6,8 @@ export class outrasInformacoesImportantes {
     constructor(
         moraEmAreaRisco: boolean,
         dependenteFinanceiroAgressor: boolean,
-        aceitaAbrigamentoTemporario: boolean)
+        aceitaAbrigamentoTemporario: boolean
+    )
     {
         this.moraEmAreaRisco = moraEmAreaRisco;
         this.dependenteFinanceiroAgressor = dependenteFinanceiroAgressor;
