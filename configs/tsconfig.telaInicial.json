@@ -11,6 +11,6 @@
   
   "include": [
     "../src/types/**/*.d.ts",
-    "../src/renderers/listarAssistidas.ts"
+    "../src/renderers/TelaInicialRenderer.ts"
   ] 
 }

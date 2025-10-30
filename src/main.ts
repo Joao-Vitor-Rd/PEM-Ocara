@@ -168,6 +168,9 @@ ipcMain.on('window:open', (_event, windowName: string) => {
     case 'telaInicial':
       windowManager.loadContent('main', 'tela-inicial/index.html');
       break;
+    case 'telaCadastroAssistida':
+      windowManager.loadContent('main', 'tela-cadastro-1/index.html');
+      break;
   }
 });
 
