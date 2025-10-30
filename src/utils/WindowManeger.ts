@@ -38,21 +38,24 @@ export class WindowManager {
     }
 
     const window = new BrowserWindow({
-      width: options.width || 800,
-      height: options.height || 700,
+      width: options.width || 1200,
+      height: options.height || 1880,
+      frame: true, 
+      fullscreen: false, 
+      autoHideMenuBar: true,
+      resizable: true,
       webPreferences: {
         nodeIntegration: false,
         contextIsolation: true,
         preload: options.preloadFile
           ? path.join(__dirname, '..', options.preloadFile)
-          : path.join(__dirname, '..', 'preload.js'), // Padrão
-      
+          : path.join(__dirname, '..', 'preload.js'),
         sandbox: false,
       },
-      autoHideMenuBar: true,
-      resizable: true,
-      backgroundColor: '#667eea',
     });
+
+    window.maximize();
+
 
     const htmlPath = path.join(__dirname, '..', '..', 'src', 'view', options.htmlFile);
     

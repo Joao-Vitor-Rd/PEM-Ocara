@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="style.css"/>
+    <title>PEM-Ocara</title>
+</head>
+
+<body>
+    <div class="card">
+        <div class="caixa-maior">
+            <div class="title">
+                <h1>Entrar</h1>
+                <h2>Seja bem vindo novamente!</h2>
+            </div>
+
+            <div class="caixas">
+                <div class="caixa-email">
+                    <h4>E-mail</h4>
+                    <label for="email"></label>
+                    <input type="email" id="email" name="email" placeholder="Digite seu email aqui">
+                </div>
+
+                <div class="caixa-senha">
+                    <h4>Senha</h4>
+                    <label for="senha"></label>
+                    <input type="password" id="senha" name="senha" placeholder="Digite sua senha aqui">
+                    <span class="material-symbols-outlined password-icon">
+                        visibility_off
+                    </span>
+                </div>
+                
+                <div class="button" id="buttonLogin">
+                    <button type="button">Entrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-2">
+        <img src="imgs/IMG_1471.PNG" alt="Logo-PEM-Ocara" id="logo-pem-ocara">
+
+        <footer>
+            <img src="./imgs/logo-ocara.png" alt="Logo-PEM-Ocara id="logo-ocara">
+                <p>Avendida Coronel João Felipe, Centro, CEP:
+                    <br>
+                    62755-000, Ocara - CE
+                    <br>
+                    pemocara@gmail.com
+                </p>
+            <img src="imgs/Brasão_Ocara_(CE).png" alt="Logo-PEM-Ocara" id="Brasão_Ocara_">
+        </footer>
+    </div>
+
+    <script type="module" src="../../../dist/renderers/loginRenderer.js"></script>
+
+    <!-- Início do script 
+     
+    (function() {
+            const senhaInput = document.getElementById('senha');
+            const toggle = document.querySelector('.password-icon');
+
+            if (!senhaInput || !toggle) return;
+
+            toggle.addEventListener('click', function() {
+                const isPassword = senhaInput.type === 'password';
+                
+                if (isPassword) {
+                    senhaInput.type = 'text';
+                    toggle.textContent = 'visibility';
+                    toggle.classList.add('active');
+                } else {
+                    senhaInput.type = 'password';
+                    toggle.textContent = 'visibility_off';
+                    toggle.classList.remove('active');
+                }
+            });
+        })();
+    */
+    Fim do script -->
+</body>
+</html>

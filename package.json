@@ -8,7 +8,9 @@
     "build:form": "tsc --project configs/tsconfig.form.json",
     "build:users": "tsc --project configs/tsconfig.users.json",
     "build:listarAssistida": "tsc --project configs/tsconfig.listarAsistida.json",
-    "build": "npm run build:main && npm run build:form && npm run build:users",
+    "build:login": "tsc --project configs/tsconfig.login.json",
+  
+    "build": "npm run build:main && npm run build:form && npm run build:users && npm run build:login",
     "start": "npm run build && electron .",
     "dev": "npm run build && electron ."
   },

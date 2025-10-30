@@ -165,6 +165,9 @@ ipcMain.on('window:open', (_event, windowName: string) => {
     case 'telaAssistidas':
       windowManager.loadContent('main', 'telaAssistidas.html');
       break;
+    case 'telaInicial':
+      windowManager.loadContent('main', 'tela-inicial/index.html');
+      break;
   }
 });
 
@@ -183,7 +186,7 @@ function createMainWindow() {
   windowManager.createWindow('main', {
     width: 900,
     height: 700,
-    htmlFile: 'formularioTeste.html',
+    htmlFile: 'tela-login/index.html',
     preloadFile: 'preload.js'
   });
 }

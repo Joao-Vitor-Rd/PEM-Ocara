@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>Cadastro da Assistida</title>
+</head>
+<body>
+    <!-- TÍTULO E ÉTAPAS (ESTRUTURA BASE) -->
+    <div class="titulo">
+        <p>FORMULÁRIO DE ATENDIMENTO - CADASTRO DA ASSISTIDA</p>
+    </div>
+
+    <div class="card">
+        <nav class="etapas">
+            <ol class="lista-etapas">
+                <li class="etapa-ativa">
+                    <span class="numero">1</span>
+                </li>
+                <li class="etapa">
+                    <span class="numero">2</span>
+                </li>
+                <li class="etapa">
+                    <span class="numero">3</span>
+                </li>
+                <li class="etapa">
+                    <span class="numero">4</span>
+                </li>
+                <li class="etapa">
+                    <span class="numero">5</span>
+                </li>
+                <li class="etapa">
+                    <span class="numero">6</span>
+                </li>
+            </ol>
+        </nav>
+
+        <div class="form">
+        <!-- CONTEÚDO DENTRO DO CARD (APAGAR E SUBSTITUIR) -->
+            <div class="titulo-sessao">
+                <h6>Passo 1</h6>
+                <h4>Identificação da Assistida</h4>
+            </div>
+
+            <div class="perguntas">
+                <div class="pergunta-conjunta">
+                    <div class="pergunta">
+                        <label for="nome-completo">
+                            Nome
+                            <span>
+                                *
+                            </span>
+                        </label>
+                        <input type="text" id="nome-completo" name="nome-completo" required>
+                    </div>
+
+                    <div class="pergunta">
+                        <label for="idade">
+                            Idade
+                            <span>
+                                *
+                            </span>
+                        </label>
+                        <input type="number" id="idade" name="idade">
+                    </div>
+                </div>
+
+                <div class="pergunta">
+                    <label for="endereco">
+                        Endereço
+                        <span>
+                            *
+                        </span>
+                    </label>
+                    <input type="text" id="endereco" name="endereco">
+                </div>
+
+                <div class="pergunta-conjunta">
+                    <div class="pergunta">
+                        <label for="identidade-genero">Identidade de Gênero</label>
+                        <input type="text" id="identidade-genero" name="identidade-genero">
+                    </div>
+
+                    <div class="pergunta">
+                        <label for="nome-social">Nome Social</label>
+                        <input type="text" id="nome-social" name="nome-social">
+                    </div>
+                </div>
+
+                <div class="pergunta-conjunta">
+                    <div class="pergunta">
+                        <label for="escolaridade">Escolaridade</label>
+                        <input type="text" id="escolaridade" name="escolaridade">
+                    </div>
+
+                    <div class="pergunta">
+                        <label for="religiao">Religião</label>
+                        <input type="text" id="religiao" name="religiao">
+                    </div>
+                </div>
+
+                <div class="pergunta-conjunta">
+                    <div class="pergunta">
+                        <label for="nacionalidade">
+                            Nacionalidade
+                            <span>
+                                *
+                            </span>
+                        </label>
+                        <input type="text" id="nacionalidade" name="nacionalidade">
+                    </div>
+
+                    <div id="pergunta-marcar">
+                        <label for="zona-habitacao">
+                            Zona de Habitação
+                            <span>
+                                *
+                            </span>
+                        </label>
+                        <div class="opções">
+                            <div class="opção">
+                                <input type="radio" id="rural" name="zona_habitacao" value="rural">
+                                <label for="rural">Rural</label>
+                            </div>
+
+                            <div class="opção">
+                                <input type="radio" id="urbana" name="zona_habitacao" value="urbana">
+                                <label for="urbana">Urbana</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pergunta">
+                    <label for="profissao">
+                        Profissão/Ocupação
+                        <span>
+                            *
+                        </span>
+                    </label>
+                    <input type="text" id="profissao" name="profissao">
+                </div>
+
+                <div class="pergunta">
+                    <label for="limitacao">
+                        Possui alguma limitação física, se sim digite qual
+                        <span>
+                            *
+                        </span>
+                    </label>
+                    <input type="text" id="limitacao" name="limitacao">
+                </div>
+
+                <div class="pergunta">
+                    <label for="numero-cadastro">Número de cadastro em Programa Social</label>
+                    <input type="text" id="numero-cadastro" name="numero-cadastro">
+                </div>
+
+                <div class="pergunta">
+                    <label for="dependentes">
+                        Possui dependentes, se sim, digite quantos
+                        <span>
+                            *
+                        </span>
+                    </label>
+                    <input type="text" id="dependentes" name="dependentes">
+                </div>
+
+                <div class="obs">
+                    <p>
+                        Campos com
+                        <span>*</span>
+                        são obrigatórios
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER COM BOTÕES DE NAVEGAÇÃO (ESTRUTURA BASE) -->
+    <footer>
+        <button id="voltar">< Voltar</button>
+        <button id="proximo">Próximo ></button>
+    </footer>
+</body>
+</html>
