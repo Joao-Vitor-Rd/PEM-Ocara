@@ -5,10 +5,9 @@
   "main": "dist/main.js",
   "scripts": {
     "build:main": "tsc --project configs/tsconfig.json",
-    "build:form": "tsc --project configs/tsconfig.form.json", 
+    "build:form": "tsc --project configs/tsconfig.form.json",
     "build:users": "tsc --project configs/tsconfig.users.json",
     "build:listarAssistida": "tsc --project configs/tsconfig.listarAsistida.json",
-  
     "build": "npm run build:main && npm run build:form && npm run build:users",
     "start": "npm run build && electron .",
     "dev": "npm run build && electron ."
@@ -25,5 +24,8 @@
     "@types/node": "^20.19.23",
     "electron": "^28.0.0",
     "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "nodemailer": "^7.0.10"
   }
 }
