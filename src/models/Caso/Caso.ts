@@ -1,6 +1,5 @@
-import { Anexo } from "../Assistida/Anexo"
+import { Anexo } from "../assistida/Anexo"
 import { Assistida } from "../assistida/Assistida";
-import { Formulario } from "../Caso/Formulario"
 import { Agressor } from "./Agressor";
 import { HistoricoViolencia } from "./HistoricoViolencia";
 import { OutrasInformacoesEncaminhamento } from "./OutrasInformacoesEncaminhamento";

@@ -1,4 +1,4 @@
-import {Caso} from "../assistida/Caso";
+import {Caso} from "../Caso/Caso";
 import { OrgaoRedeApoio } from "../Rede-Apoio/OrgaoRedeApoio";
 import { AssistenteSocial } from "../AssistenteSocial";
 
