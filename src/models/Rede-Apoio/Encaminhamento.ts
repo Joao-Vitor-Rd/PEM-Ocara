@@ -2,7 +2,7 @@ import {Caso} from "../assistida/Caso";
 import { OrgaoRedeApoio } from "../Rede-Apoio/OrgaoRedeApoio";
 import { AssistenteSocial } from "../AssistenteSocial";
 
-class Encaminhamento {
+export class Encaminhamento {
     private idEncaminhamento?: number;
     private dataEncaminhamento: Date;
     private motivoEncaminhamento: string;
