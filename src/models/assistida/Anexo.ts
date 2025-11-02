@@ -2,7 +2,7 @@ export class Anexo {
     private idAnexo?: number;
     private tamanho: number;
     private tipo: string;
-
+    
     constructor(tamanho: number, tipo: string) {
         this.tamanho = tamanho;
         this.tipo = tipo;

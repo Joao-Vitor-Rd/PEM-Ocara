@@ -7,9 +7,11 @@ import { OutrasInformacoesImportantes } from "./OutrasInformacoesImportantes";
 import { PreenchimentoProfissional } from "./PreenchimentoProfissional";
 import { SobreAgressor } from "./SobreAgressor";
 import { SobreVoce } from "./SobreVoce";
+import { Historico } from "./Historico";
 
 export class Caso {
     private protocoloCaso?: number;
+    private historico: Historico;
     private anexos: Anexo[] = [];
     private data: Date;
     private profissionalResponsavel: string;
@@ -26,6 +28,7 @@ export class Caso {
 
     constructor(
 
+        historico: Historico,
         nomeAssistida: string,
         idadeAssistida: number,
         identidadeGenero: string,
@@ -101,6 +104,7 @@ export class Caso {
         descricao: string 
     
     ) {
+        this.historico = new Historico();
 
         this.assistida = new Assistida(
             nomeAssistida,
