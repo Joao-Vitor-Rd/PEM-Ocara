@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <script src="./script.js" defer></script>
+    <title>Cadastro da Assistida</title>
+</head>
+<body>
+    <!-- TÍTULO E ÉTAPAS (ESTRUTURA BASE) -->
+    <div class="titulo">
+        <p>FORMULÁRIO DE ATENDIMENTO - CADASTRO DO CASO</p>
+    </div>
+
+    <div class="card">
+        <nav class="etapas">
+            <ol class="lista-etapas">
+                <li class="etapa">
+                    <span class="numero">1</span>
+                </li>
+                <li class="etapa-ativa">
+                    <span class="numero">2</span>
+                </li>
+                <li class="etapa">
+                    <span class="numero">3</span>
+                </li>
+                <li class="etapa">
+                    <span class="numero">4</span>
+                </li>
+                <li class="etapa">
+                    <span class="numero">5</span>
+                </li>
+                <li class="etapa">
+                    <span class="numero">6</span>
+                </li>
+            </ol>
+        </nav>
+
+        <div class="form">
+        <!-- CONTEÚDO DENTRO DO CARD -->
+            <div class="titulo-sessao">
+                <h6>Passo 2</h6>
+                <h4>Identificação do Agressor(a)</h4>
+            </div>
+
+            <div class="perguntas">
+                <div class="pergunta-conjunta">
+                    <div class="pergunta">
+                        <label for="nome-completo-agressor">
+                            Nome do Agressor
+                            <span>
+                                *
+                            </span>
+                        </label>
+                        <input type="text" id="nome-completo-agressor" name="nome-completo-agressor" required>
+                    </div>
+
+                    <div class="pergunta">
+                        <label for="idade">
+                            Idade
+                            <span>
+                                *
+                            </span>
+                        </label>
+                        <input type="number" id="idade" name="idade">
+                    </div>
+                </div>
+
+                <div class="pergunta">
+                    <label for="vinculo">
+                        Vínculo entre a assistida e o agressor
+                        <span>
+                            *
+                        </span>
+                    </label>
+                    <input type="text" id="vinculo" name="vinculo">
+                </div>
+
+                <div class="pergunta">
+                    <label for="data-fato">
+                        Data do fato ocorrido
+                        <span>
+                            *
+                        </span>
+                    </label>
+                    <input type="date" id="data-fato" name="data-fato">
+                </div>
+            </div>
+
+            <div class="titulo-sessao">
+                <h6>Passo 3</h6>
+                <h4>Bloco I - Sobre o Histórico de Violência</h4>
+            </div>
+
+            <div class="perguntas">
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="ameacas">
+                            01 - O (a) agressor(a) já ameaçou você ou algum familiar com a finalidade de atingi-la?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="checkbox" id="q01-ameaca-arma" name="ameaca-arma" value="Sim, utilizando arma de fogo">
+                            <label for="q01-ameaca-arma">Sim, utilizando arma de fogo</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q01-ameaca-faca" name="ameaca-faca" value="Sim, utilizando faca">
+                            <label for="q01-ameaca-faca">Sim, utilizando faca</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q01-ameaca-outra" name="ameaca-outra" value="Sim, de outra forma">
+                            <label for="q01-ameaca-outra">Sim, de outra forma</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q01-ameaca-nao" name="ameaca-nao" value="Não">
+                            <label for="q01-ameaca-nao">Não</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="agressões-fisicas">
+                            02 - O (a) agressor(a) já praticou alguma(s) destas agressões físicas com você?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="checkbox" id="q02-agressao-queimadura" name="agressões-queimadura" value="Sim, utilizando queimadura">
+                            <label for="q02-agressao-queimadura">Queimadura</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q02-agressao-enforcamento" name="agressões-enforcamento" value="Sim, utilizando enforcamento">
+                            <label for="q02-agressao-enforcamento">Enforcamento</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q02-agressao-sufocamento" name="agressões-sufocamento" value="Sim, utilizando sufocamento">
+                            <label for="q02-agressao-sufocamento">Sufocamento</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q02-agressao-tiro" name="agressões-tiro" value="Sim, utilizando tiro">
+                            <label for="q02-agressao-tiro">Tiro</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q02-agressao-afogamento" name="agressões-afogamento" value="Sim, utilizando afogamento">
+                            <label for="q02-agressao-afogamento">Afogamento</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q02-agressao-facada" name="agressões-facada" value="Sim, utilizando facada">
+                            <label for="q02-agressao-facada">Facada</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q02-agressao-paulada" name="agressões-paulada" value="Sim, utilizando paulada">
+                            <label for="q02-agressao-paulada">Paulada</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q02-agressao-nenhuma" name="ameaca-nao" value="Não">
+                            <label for="q02-agressao-nenhuma">Nenhuma das agressões acima</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="agressões-fisicas">
+                            03 - O (a) agressor(a) já praticou alguma(s) destas outras agressões físicas com você?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="checkbox" id="q03-agressao-socos" name="agressões-socos" value="Sim, utilizando socos">
+                            <label for="q03-agressao-socos">Socos</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q03-agressao-chutes" name="agressões-chutes" value="Sim, utilizando chutes">
+                            <label for="q03-agressao-chutes">Chutes</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q03-agressao-tapas" name="agressões-tapas" value="Sim, utilizando tapas">
+                            <label for="q03-agressao-tapas">Tapas</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q03-agressao-empurroes" name="agressões-empurrões" value="Sim, utilizando empurrões">
+                            <label for="q03-agressao-empurroes">Empurrões</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q03-agressao-puxoes-cabelo" name="agressões-puxões" value="Sim, utilizando puxões de cabelo">
+                            <label for="q03-agressao-puxoes-cabelo">Puxões de Cabelo</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q03-agressao-nenhuma" name="agressões-nenhuma" value="Sim, nenhuma das agressões acima">
+                            <label for="q03-agressao-nenhuma">Nenhuma das Agressões acima</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="estupro">
+                            04 - O (a) agressor(a) já obrigou você a fazer sexo ou a praticar atos sexuais contra a sua vontade?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="radio" id="q04-estupro-sim" name="q04-estupro" value="Sim">
+                            <label for="q04-estupro-sim">Sim</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q04-estupro-nao" name="q04-estupro" value="Não">
+                            <label for="q04-estupro-nao">Não</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="comportamentos">
+                            05 - O (a) agressor(a) já teve alguns destes comportamentos?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="checkbox" id="q05-comportamento-frase-possessiva" name="comportamentos-frase" value="Sim, utilizando socos">
+                            <label for="q05-comportamento-frase-possessiva">Disse algo parecido com a frase "Se não for minha, não será de mais ninguém"</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q05-comportamento-perseguicao" name="comportamentos-chutes" value="Sim, utilizando chutes">
+                            <label for="q05-comportamento-perseguicao">Perturbou, perseguiu ou vigiou você nos locais em que frequenta</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q05-comportamento-proibiu-visitas" name="agressões-tapas" value="Sim, utilizando tapas">
+                            <label for="q05-comportamento-proibiu-visitas">Proibiu você de visitar familiares ou amigos</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q05-comportamento-proibiu-trabalhar" name="agressões-empurrões" value="Sim, utilizando empurrões">
+                            <label for="q05-comportamento-proibiu-trabalhar">Proibiu você de trabalhar ou estudar</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q05-comportamento-contato-insistente" name="agressões-puxões" value="Sim, utilizando puxões de cabelo">
+                            <label for="q05-comportamento-contato-insistente">Fez telefonemas, enviou mensagens pelo celular, ou e-mails de forma insistente</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q05-comportamento-impediu-acesso-bens" name="agressões-nenhuma" value="Sim, nenhuma das agressões acima">
+                            <label for="q05-comportamento-impediu-acesso-bens">Impediu você de ter acesso a dinheiro, conta bancária ou outros bens (como documentos pessoais, carro)</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q05-comportamento-ciumes-controle" name="agressões-socos" value="Sim, utilizando socos">
+                            <label for="q05-comportamento-ciumes-controle">Teve comportamentos de ciúme excessivo e de controle sobre você</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q05-comportamento-nenhum" name="agressões-nenhuma" value="Sim, nenhuma das agressões acima">
+                            <label for="q05-comportamento-nenhum">Nenhum dos comportamentos acima citados</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="bo">
+                            06 - Você já registrou ocorrência policial ou formulou pedido de medida protetiva de urgência envolvendo a mesma pessoa?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="radio" id="q06-bo-medida-sim" name="q06-bo-medida" value="Sim">
+                            <label for="q06-bo-medida-sim">Sim</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q06-bo-medida-nao" name="q06-bo-medida" value="Não">
+                            <label for="q06-bo-medida-nao">Não</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="frequencia">
+                            07 - As ameaças ou agressões do(a) agressor(a) contra você, se tornaram mais frequentes ou mais graves nos últimos meses?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="radio" id="q07-frequencia-aumento-sim" name="q07-frequencia-aumento" value="Sim">
+                            <label for="q07-frequencia-aumento-sim">Sim</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q07-frequencia-aumento-nao" name="q07-frequencia-aumento" value="Não">
+                            <label for="q07-frequencia-aumento-nao">Não</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="titulo-sessao">
+                <h6>Passo 4</h6>
+                <h4>Bloco II - Sobre o (a) Agressor(a)</h4>
+            </div>
+
+            <div class="perguntas">
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="frequencia">
+                            08 - O (a) agressor(a) já fez uso abusivo de álcool ou de drogas?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="checkbox" id="q08-uso-abusivo-alcool" name="alcool" value="Sim">
+                            <label for="q08-uso-abusivo-alcool">Sim, de álcool</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q08-uso-abusivo-drogas" name="drogas" value="Sim">
+                            <label for="q08-uso-abusivo-drogas">Sim, de drogas</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q08-uso-abusivo-nao" name="nao" value="Sim">
+                            <label for="q08-uso-abusivo-nao">Não</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q08-uso-abusivo-nao-sei" name="nao-sei" value="Não">
+                            <label for="q08-uso-abusivo-nao-sei">Não sei</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="frequencia">
+                            09 - O (a) agressor(a) tem alguma doença mental comprovada por avaliação médica?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="radio" id="q09-doenca-mental-sim-medicacao" name="q09-doenca-mental" value="Sim-medicação">
+                            <label for="q09-doenca-mental-sim-medicacao">Sim, e faz uso de medicação</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q09-doenca-mental-sim-sem-medicacao" name="q09-doenca-mental" value="Sim-sem-medicação">
+                            <label for="q09-doenca-mental-sim-sem-medicacao">Sim, e não faz uso de medicação</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q09-doenca-mental-nao" name="q09-doenca-mental" value="Não">
+                            <label for="q09-doenca-mental-nao">Não</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q09-doenca-mental-nao-sei" name="q09-doenca-mental" value="Não-sei">
+                            <label for="q09-doenca-mental-nao-sei">Não sei</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="frequencia">
+                            10 - O (a) agressor(a) já descumpriu medida protetiva anteriormente?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="radio" id="q10-descumpriu-medida-sim" name="q10-descumpriu-medida" value="Sim">
+                            <label for="q10-descumpriu-medida-sim">Sim</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q10-descumpriu-medida-nao" name="q10-descumpriu-medida" value="Não">
+                            <label for="q10-descumpriu-medida-nao">Não</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="frequencia">
+                            11 - O (a) agressor(a) já tentou suicídio ou falou em suicidar-se?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="radio" id="q11-tentativa-suicidio-sim" name="q11-tentativa-suicidio" value="Sim">
+                            <label for="q11-tentativa-suicidio-sim">Sim</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q11-tentativa-suicidio-nao" name="q11-tentativa-suicidio" value="Não">
+                            <label for="q11-tentativa-suicidio-nao">Não</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="frequencia">
+                            12 - O (a) agressor(a) está desempregado ou tem dificuldades financeiras?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="radio" id="q12-desempregado-dificuldades-sim" name="q12-desempregado-dificuldades" value="Sim">
+                            <label for="q12-desempregado-dificuldades-sim">Sim</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q12-desempregado-dificuldades-nao" name="q12-desempregado-dificuldades" value="Não">
+                            <label for="q12-desempregado-dificuldades-nao">Não</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q12-desempregado-dificuldades-nao-sei" name="q12-desempregado-dificuldades" value="Não-sei">
+                            <label for="q12-desempregado-dificuldades-nao-sei">Não sei</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="frequencia">
+                            13 - O (a) agressor(a) tem acesso a armas de fogo?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="radio" id="q13-acesso-armas-sim" name="q13-acesso-armas" value="Sim">
+                            <label for="q13-acesso-armas-sim">Sim</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q13-acesso-armas-nao" name="q13-acesso-armas" value="Não">
+                            <label for="q13-acesso-armas-nao">Não</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q13-acesso-armas-nao-sei" name="q13-acesso-armas" value="Não-sei">
+                            <label for="q13-acesso-armas-nao-sei">Não sei</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="frequencia">
+                            14 - O (a) agressor(a) já ameaçou e/ou agrediu seus filhos, outros familiares, amigos, colegas de trabalho, pessoas desconhecidas ou animais de estimação?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="checkbox" id="q14-ameacou-agrediu-filhos" name="Sim" value="Sim">
+                            <label for="q14-ameacou-agrediu-filhos">Sim, filhos</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q14-ameacou-agrediu-familiares" name="nao" value="Sim">
+                            <label for="q14-ameacou-agrediu-familiares">Sim, outros familiares</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q14-ameacou-agrediu-outras-pessoas" name="nao-sei" value="Sim">
+                            <label for="q14-ameacou-agrediu-outras-pessoas">Sim, outras pessoas</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q14-ameacou-agrediu-animais" name="nao-sei" value="Sim">
+                            <label for="q14-ameacou-agrediu-animais">Sim, animais</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q14-ameacou-agrediu-nao" name="nao-sei" value="Sim">
+                            <label for="q14-ameacou-agrediu-nao">Não</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q14-ameacou-agrediu-nao-sei" name="nao-sei" value="Sim">
+                            <label for="q14-ameacou-agrediu-nao-sei">Não sei</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="titulo-sessao">
+                <h6>Passo 5</h6>
+                <h4>Bloco III - Sobre Você</h4>
+            </div>
+
+            <div class="perguntas">
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="frequencia">
+                            15 - Você se separou recentemente do(a) agressor(a), ou tentou se separar?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="radio" id="q15-separacao-sim-separei" name="q15-separacao" value="Sim">
+                            <label for="q15-separacao-sim-separei">Sim, me separei</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q15-separacao-sim-tentei" name="q15-separacao" value="Sim-tentei">
+                            <label for="q15-separacao-sim-tentei">Sim, tentei me separar</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q15-separacao-nao" name="q15-separacao" value="Não">
+                            <label for="q15-separacao-nao">Não</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="frequencia">
+                            16 - Você tem filho(s)?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="checkbox" id="q16-tem-filhos-sim-agressor" name="q16-filhos-agressor" value="Sim">
+                            <label for="q16-tem-filhos-sim-agressor">Sim, com o agressor. Quantos?</label>
+                            <input type="number" id="q16-quantos-agressor" name="q16-quantos-agressor" min="1">
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q16-tem-filhos-sim-outro" name="q16-filhos-outro" value="Sim">
+                            <label for="q16-tem-filhos-sim-outro">Sim, de outro relacionamento. Quantos?</label>
+                            <input type="number" id="q16-quantos-outro" name="q16-quantos-outro" min="1">
+                        </div>
+
+                        <div class="opcao">
+                            <input type="checkbox" id="q16-tem-filhos-nao" name="q16-tem-filhos-nao" value="Não">
+                            <label for="q16-tem-filhos-nao">Não</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="se-tem-filhos">
+                    <div class="pergunta-selecao">
+                        <div class="titulo-pergunta">
+                            <label for="frequencia">
+                                16.1 - Qual a faixa etária de seus filhos? Se tiver mais de um filho, pode marcar mais de uma opção:
+                                <span>
+                                    *
+                                </span>
+                            </label>
+                        </div>
+
+                        <div class="opcoes-pergunta">
+                            <div class="opcao">
+                                <input type="checkbox" id="q16-1-faixa-etaria-0-11" name="Sim" value="Sim">
+                                <label for="q16-1-faixa-etaria-0-11">0 a 11 anos</label>
+                            </div>
+
+                            <div class="opcao">
+                                <input type="checkbox" id="q16-1-faixa-etaria-12-17" name="nao" value="Sim">
+                                <label for="q16-1-faixa-etaria-12-17">12 a 17 anos</label>
+                            </div>
+
+                            <div class="opcao">
+                                <input type="checkbox" id="q16-1-faixa-etaria-18-mais" name="nao" value="Sim">
+                                <label for="q16-1-faixa-etaria-18-mais">A partir de 18 anos</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pergunta-selecao">
+                        <div class="titulo-pergunta">
+                            <label for="frequencia">
+                                16.2 - Algum de seus filhos possui alguma deficiência?
+                                <span>
+                                    *
+                                </span>
+                            </label>
+                        </div>
+
+                        <div class="opcoes-pergunta">
+                            <div class="opcao">
+                                <input type="radio" id="q16-2-deficiencia-sim" name="q16-2-deficiencia" value="Sim">
+                                <label for="q16-2-deficiencia-sim">Sim. Quantos?</label>
+                                <input type="number" id="q16-2-quantos-deficiencia" name="quantos-deficiencia" min="1">
+                            </div>
+
+                            <div class="opcao">
+                                <input type="radio" id="q16-2-deficiencia-nao" name="q16-2-deficiencia" value="Não">
+                                <label for="q16-2-deficiencia-nao">Não</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pergunta-selecao">
+                        <div class="titulo-pergunta">
+                            <label for="frequencia">
+                                16.3 - Você está vivendo algum conflito com o(a) agressor(a) em relação a guarda do(s) filho(s), visitas ou pagamento de pensão?
+                                <span>
+                                    *
+                                </span>
+                            </label>
+                        </div>
+
+
+
+                        <div class="opcoes-pergunta">
+                            <div class="opcao">
+                                <input type="checkbox" id="q16-3-conflito-guarda" name="Sim" value="Sim">
+                                <label for="q16-3-conflito-guarda">Sim, guarda do(s) filho(s)</label>
+                            </div>
+
+                            <div class="opcao">
+                                <input type="checkbox" id="q16-3-conflito-visitas" name="nao" value="Sim">
+                                <label for="q16-3-conflito-visitas">Sim, visitas</label>
+                            </div>
+
+                            <div class="opcao">
+                                <input type="checkbox" id="q16-3-conflito-pensao" name="nao" value="Sim">
+                                <label for="q16-3-conflito-pensao">Sim, pagamento de pensão</label>
+                            </div>
+
+                            <div class="opcao">
+                                <input type="checkbox" id="q16-3-conflito-nao" name="nao" value="Sim">
+                                <label for="q16-3-conflito-nao">Não</label>
+                        </div>
+                    </div>
+                    </div>
+
+                    <div class="pergunta-selecao">
+                        <div class="titulo-pergunta">
+                            <label for="frequencia">
+                                16.4 - Seu(s) filho(s) já presenciaram ato(s) de violência do(a) agressor(a) contra você?
+                                <span>
+                                    *
+                                </span>
+                            </label>
+                        </div>
+
+                        <div class="opcoes-pergunta">
+                            <div class="opcao">
+                                <input type="radio" id="q16-4-presenciaram-violencia-sim" name="q16-4-presenciaram-violencia" value="Sim">
+                                <label for="q16-4-presenciaram-violencia-sim">Sim</label>
+                            </div>
+
+                            <div class="opcao">
+                                <input type="radio" id="q16-4-presenciaram-violencia-nao" name="q16-4-presenciaram-violencia" value="Não">
+                                <label for="q16-4-presenciaram-violencia-nao">Não</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pergunta-selecao">
+                        <div class="titulo-pergunta">
+                            <label for="frequencia">
+                                16.5 - Você sofreu algum tipo de violência durante a gravidez ou nos três meses posteriores ao parto?
+                                <span>
+                                    *
+                                </span>
+                            </label>
+                        </div>
+
+                        <div class="opcoes-pergunta">
+                            <div class="opcao">
+                                <input type="radio" id="q16-5-violencia-gravidez-sim" name="q16-5-violencia-gravidez" value="Sim">
+                                <label for="q16-5-violencia-gravidez-sim">Sim</label>
+                            </div>
+
+                            <div class="opcao">
+                                <input type="radio" id="q16-5-violencia-gravidez-nao" name="q16-5-violencia-gravidez" value="Não">
+                                <label for="q16-5-violencia-gravidez-nao">Não</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="frequencia">
+                            17 - Se você está em um novo relacionamento, percebeu que as ameaças ou agressões físicas aumentaram em razão disso?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="radio" id="q17-novo-relacionamento-sim" name="q17-novo-relacionamento" value="Sim">
+                            <label for="q17-novo-relacionamento-sim">Sim</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q17-novo-relacionamento-nao" name="q17-novo-relacionamento" value="Não">
+                            <label for="q17-novo-relacionamento-nao">Não</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="frequencia">
+                            18 - Você possui alguma deficiência ou doenças degenerativa que acarretam em condições limitantes ou de vulnerabilidade física ou mental?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="radio" id="q18-deficiencia-sim" name="q18-deficiencia" value="Sim">
+                            <label for="q18-deficiencia-sim">Sim. Qual(is)?</label>
+                            <input type="text" id="q18-qual-deficiencia" name="qual-deficiencia">
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q18-deficiencia-nao" name="q18-deficiencia" value="Não">
+                            <label for="q18-deficiencia-nao">Não</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="frequencia">
+                            19 - Com qual cor/raça você se identifica?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="radio" id="q19-cor-raca-branca" name="cor" value="Branca">
+                            <label for="q19-cor-raca-branca">Branca</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q19-cor-raca-preta" name="cor" value="Preta">
+                            <label for="q19-cor-raca-preta">Preta</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q19-cor-raca-parda" name="cor" value="Parda">
+                            <label for="q19-cor-raca-parda">Parda</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q19-cor-raca-amarela" name="cor" value="Amarela/oriental">
+                            <label for="q19-cor-raca-amarela">Amarela/oriental</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q19-cor-raca-indigena" name="cor" value="Indígena">
+                            <label for="q19-cor-raca-indigena">Indígena</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="titulo-sessao">
+                <h6>Passo 6</h6>
+                <h4>Bloco IV - Outras Informações Importantes</h4>
+            </div>
+
+            <div class="perguntas">
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="frequencia">
+                            20 - Você considera que mora em bairro, comunidade, área rural ou local de risco de violência?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="radio" id="q20-local-risco-sim" name="q20-local-risco" value="Sim">
+                            <label for="q20-local-risco-sim">Sim</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q20-local-risco-nao" name="q20-local-risco" value="Não">
+                            <label for="q20-local-risco-nao">Não</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q20-local-risco-nao-sei" name="q20-local-risco" value="Não-sei">
+                            <label for="q20-local-risco-nao-sei">Não sei</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="frequencia">
+                            21 - Você se considera dependente financeira do(a) agressor(a)?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="radio" id="q21-dependente-financeira-sim" name="q21-dependente-financeira" value="Sim">
+                            <label for="q21-dependente-financeira-sim">Sim</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q21-dependente-financeira-nao" name="q21-dependente-financeira" value="Não">
+                            <label for="q21-dependente-financeira-nao">Não</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pergunta-selecao">
+                    <div class="titulo-pergunta">
+                        <label for="frequencia">
+                            22 - Você quer e aceita abrigamento temporário?
+                            <span>
+                                *
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="opcoes-pergunta">
+                        <div class="opcao">
+                            <input type="radio" id="q22-abrigamento-sim" name="q22-abrigamento" value="Sim">
+                            <label for="q22-abrigamento-sim">Sim</label>
+                        </div>
+
+                        <div class="opcao">
+                            <input type="radio" id="q22-abrigamento-nao" name="q22-abrigamento" value="Não">
+                            <label for="q22-abrigamento-nao">Não</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="obs">
+                <p>
+                    Campos com
+                    <span>*</span>
+                    são obrigatórios
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FOOTER COM BOTÕES DE NAVEGAÇÃO (ESTRUTURA BASE) -->
+    <footer>
+        <button id="voltar">< Voltar</button>
+        <button id="proximo">Próximo ></button>
+    </footer>
+</body>
+</html>
