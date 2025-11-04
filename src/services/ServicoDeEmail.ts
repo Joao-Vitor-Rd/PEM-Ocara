@@ -1,6 +1,7 @@
 import { Encaminhamento } from "../models/Rede-Apoio/Encaminhamento";
 import * as nodemailer from 'nodemailer';
 import { Transporter } from "nodemailer";
+import { Buffer } from "buffer";
 
 export class ServicoDeEmail {
     private transporter: Transporter;
@@ -18,7 +19,7 @@ export class ServicoDeEmail {
         });
     }
 
-    public async enviarEmailAutomatico(encaminhamento: Encaminhamento): Promise<any> {
+    public async enviarEmailAutomatico(encaminhamento: Encaminhamento, pdfAnexo: Buffer): Promise<any> {
         const orgaoDestino = encaminhamento.getOrgaoDestino();
         const emailDestinatario = orgaoDestino.getEmail();
         const assunto = `Encaminhamento: ${encaminhamento.getMotivoEncaminhamento()}`;
@@ -30,7 +31,15 @@ export class ServicoDeEmail {
             from: `"nomeRemetente" <${process.env.EMAIL_USER}>`,
             to: emailDestinatario,
             subject: assunto,
-            text: corpoEmail
+            text: corpoEmail,
+
+            attachments: [
+                {
+                    filename: `encaminhamento_${encaminhamento.getCasoRelacionado().getProtocoloCaso()}.pdf`,
+                    content: pdfAnexo,
+                    contentType: 'application/pdf'
+                }
+            ]
         });
             console.log("Email enviado com sucesso para " + info.messageId);
             return info;
