@@ -2,7 +2,7 @@
   "name": "PEMOCARA",
   "version": "1.0.0",
   "description": "PEM OCARA",
-  "main": "dist/main.js",
+  "main": "dist/main/main.js",
   "scripts": {
     "build:main": "tsc --project configs/tsconfig.main.json",
     "build": "npm run build:main && tsc --project configs/tsconfig.renderer.json",

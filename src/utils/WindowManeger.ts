@@ -8,7 +8,7 @@ export class WindowManager {
       const window = this.windows.get(name);
 
       if (window && !window.isDestroyed()) {
-          const htmlPath = path.join(__dirname, '..','..', 'src', 'view', htmlFile);
+          const htmlPath = path.join(__dirname, '..', '..', '..', 'src', 'view', htmlFile);
           
           window.loadFile(htmlPath).catch(err => {
               console.error('WindowManager: Erro ao carregar novo HTML:', err);
@@ -57,7 +57,7 @@ export class WindowManager {
     window.maximize();
 
 
-    const htmlPath = path.join(__dirname, '..', '..', 'src', 'view', options.htmlFile);
+    const htmlPath = path.join(__dirname, '..', '..', '..', 'src', 'view', options.htmlFile);
     
 
     window.loadFile(htmlPath).catch(err => {

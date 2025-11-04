@@ -4,10 +4,12 @@ import { WindowManager } from './utils/WindowManeger';
 import { Logger } from './utils/Logger';
 import { UserController } from './controllers/UserController';
 import { AssistidaController } from './controllers/AssistidaController';
+import { CasoController } from './controllers/CasoController';
 
 const windowManager = new WindowManager();
 const userController = new UserController();
 const assistidaController = new AssistidaController();
+const casoController = new CasoController();
 
 // ==========================================
 // IPC HANDLERS - Backend Logic
@@ -52,6 +54,110 @@ ipcMain.handle('assistida:listarTodas', async () => {
     };
   }
 });
+
+ipcMain.handle('caso:criar', async(
+  _event,
+  data: {
+    nomeAssistida: string,
+    idadeAssistida: number,
+    identidadeGenero: string,
+    nomeSocial: string,
+    endereco: string,
+    escolaridade: string,
+    religiao: string,
+    nacionalidade: string,
+    zonaHabitacao: string,
+    profissao: string,
+    limitacaoFisica: string,
+    numeroCadastroSocial: string,
+    quantidadeDependentes: number,
+    temDependentes: boolean,
+
+        //Agressor
+    nomeAgressor: string,
+    idadeAgresssor: number,
+    vinculoAssistida: string,
+    dataOcorrida: Date,
+
+        //SobreAgressor
+    usoDrogasAlcool: string[],
+    doencaMental: string,
+    agressorCumpriuMedidaProtetiva: boolean,
+    agressorTentativaSuicidio: boolean,
+    agressorDesempregado: string,
+    agressorPossuiArmaFogo: string,
+    agressorAmeacouAlguem: string,
+
+    //Historico Violencia
+    ameacaFamiliar: boolean,
+    agressaoFisica: boolean,
+    outrasFormasViolencia: string,
+    abusoSexual: boolean,
+    comportamentosAgressor: string[],
+    ocorrenciaPolicialMedidaProtetivaAgressor: boolean,
+    agressoesMaisFrequentesUltimamente: boolean,
+
+        //Outras Infor
+    anotacoesLivres: string, 
+
+        //PreenchimentoProfissional
+    assistidaRespondeuSemAjuda: boolean,
+    assistidaRespondeuComAuxilio: boolean,
+    assistidaSemCondicoes: boolean,
+    assistidaRecusou: boolean,
+    terceiroComunicante: boolean,
+    tipoViolencia: string,
+
+    //Outras Infor Importantes
+    moraEmAreaRisco: boolean,
+    dependenteFinanceiroAgressor: boolean,
+    aceitaAbrigamentoTemporario: boolean,
+
+        //Sobre voce
+    separacaoRecente: string,
+    temFilhosComAgressor: boolean,
+    qntFilhosComAgressor: number,
+    temFilhosOutroRelacionamento: boolean,
+    qntFilhosOutroRelacionamento: number,
+    faixaFilhos: string[],
+    filhosComDeficiencia: boolean,
+    conflitoAgressor: string,
+    filhosPresenciaramViolencia: boolean,
+    violenciaDuranteGravidez: boolean,
+    novoRelacionamentoAumentouAgressao: boolean,
+    possuiDeficienciaDoenca: string,
+    corRaca: string,
+
+    data: Date, 
+    profissionalResponsavel: string, 
+    descricao: string 
+
+  }) => {
+  try {
+    casoController.handlerCriarCaso(data);
+
+    const caso = casoController.getCaso();
+
+    if (caso) {
+      BrowserWindow.getAllWindows().forEach(window => {
+        window.webContents.send('caso:criado', caso);
+      });
+      return {
+        success: true,
+        caso: caso
+      };
+    } else {
+      throw new Error('Erro ao criar o caso');
+    }
+  } catch (error) {
+    Logger.error('Erro ao criar caso:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido'
+    };
+  }
+});
+
 
 ipcMain.handle('assistida:criar', async(
   _event,
@@ -173,6 +279,12 @@ ipcMain.on('window:open', (_event, windowName: string) => {
     case 'telaCadastroAssistida':
       windowManager.loadContent('main', 'tela-cadastro-1/index.html');
       break;
+    case 'telaCadastroCaso':
+      console.log('Abrindo tela de cadastro de caso');
+      windowManager.loadContent('main', 'tela-cadastro-2/index.html');
+      break;
+    default:
+      console.log('tela desconhecida:', windowName);
   }
 });
 

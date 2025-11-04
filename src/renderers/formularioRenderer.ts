@@ -11,11 +11,11 @@ voltarBtn.addEventListener('click', async (event) => {
     const mudarTela = await window.api.openWindow("telaInicial");
 })
 
-pxmBtn.addEventListener('click', async (event) => {
 
+
+pxmBtn.addEventListener('click', async (event) => {
     event.preventDefault();
     try {
-
         const nomeInput = document.getElementById('nome-completo') as HTMLInputElement;
         const idadeInput = document.getElementById('idade') as HTMLInputElement;
         const enderecoInput = document.getElementById('endereco') as HTMLInputElement;
@@ -49,6 +49,15 @@ pxmBtn.addEventListener('click', async (event) => {
             throw new Error('Por favor, selecione uma zona de habitação');
         }
 
+        // Validar campos obrigatórios
+        if (!nomeInput.value.trim()) throw new Error('O nome é obrigatório');
+        if (!idadeInput.value.trim()) throw new Error('A idade é obrigatória');
+        if (!enderecoInput.value.trim()) throw new Error('O endereço é obrigatório');
+        if (!nacionalidadeInput.value.trim()) throw new Error('A nacionalidade é obrigatória');
+        if (!profissaoInput.value.trim()) throw new Error('A profissão é obrigatória');
+        if (!limitacaoInput.value.trim()) throw new Error('O campo de limitação física é obrigatório');
+        if (!dependentesInput.value.trim()) throw new Error('O campo de dependentes é obrigatório');
+
         const nome: string = nomeInput.value.trim();
         const idade: number = parseInt(idadeInput.value.trim(), 10); 
         const identidadeGenero: string = generoInput.value.trim(); 
@@ -63,10 +72,10 @@ pxmBtn.addEventListener('click', async (event) => {
         const quantidadeDependentes: number = parseInt(dependentesInput.value.trim(), 10);
         const temDependentes: boolean = quantidadeDependentes > 0;
 
-        
-        const result = await window.api.criarAssistida(
-            nome, 
-            idade, 
+        // Armazenar dados no localStorage para recuperar na próxima tela
+        const dadosAssistida = {
+            nome,
+            idade,
             identidadeGenero,
             nomeSocial,
             endereco,
@@ -79,17 +88,19 @@ pxmBtn.addEventListener('click', async (event) => {
             numeroCadastroSocial,
             quantidadeDependentes,
             temDependentes
-        )
-            
-        if(result.success && result.assistida) {
-            modalMessage.innerHTML = `<p>✅ Assistida cadastrada com sucesso! Protocolo: ${result.assistida.nome}</p>`;
-            errorModal.style.display = 'block';
-        }
+        };
+
+        localStorage.setItem('dadosAssistida', JSON.stringify(dadosAssistida));
+
+        console.log('Abrindo tela de renderer de caso');
+        const mudarTela = await window.api.openWindow("telaCadastroCaso");
+        console.log('Tela de renderer de caso aberta com sucesso');
 
     } catch (error) {
-        modalMessage.innerHTML = `<p>❌ Ocorreu um erro ao processar o cadastro: ${(error as Error).message}</p>`;
-        errorModal.style.display = 'block';
-    } 
+        modalMessage.innerHTML = `<p>❌ ${error instanceof Error ? error.message : 'Erro desconhecido'}</p>`;
+        errorModal.style.display = 'flex';
+        console.error("Erro de validação:", error);
+    }
 });
 
         
