@@ -8,16 +8,15 @@ import { Alteracao } from "../models/Caso/Alteracao";
 
 // Import de serviços:
 import { ServicoDeEmail } from "../services/ServicoDeEmail";
-import {PdfService} from "../services/PDFservice";
 //falta serviço de gerarPDF
 
 export class ControladorEncaminhamento {
     private servicoDeEmail: ServicoDeEmail;
-    private servicoGerarPDF: PdfService;
 
-    constructor(servicoDeEmail: ServicoDeEmail, servicoGerarPDF: PdfService) {
+
+    constructor(servicoDeEmail: ServicoDeEmail) {
         this.servicoDeEmail = servicoDeEmail;
-        this.servicoGerarPDF = servicoGerarPDF;
+
     }
 
     public async registrarEncaminhamento(caso: Caso, orgao: OrgaoRedeApoio, motivo: string, observacoes: string, assistenteSocial: AssistenteSocial) {
