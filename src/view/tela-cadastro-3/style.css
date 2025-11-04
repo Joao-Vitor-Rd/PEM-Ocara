@@ -1,0 +1,319 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap');
+
+/* Estrutura Base da Página */
+body {
+    font-family: sans-serif;
+    background-color: #63468C;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.titulo {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 500;
+    width: 95%;
+    max-width: 1800px;
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: 15px;
+    color: #63468C;
+    width: 95%;
+    max-width: 1800px;
+    margin: 0 auto 25px auto;
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 100px - 97px - 25px);
+    overflow: hidden;
+}
+
+.etapas {
+    display: flex;
+    justify-content: center;
+    background-color: #CEB3F2;
+    border-radius: 15px 15px 0px 0px;
+    padding: 20px 0;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.etapas::before {
+    content: '';
+    position: absolute;
+    border-radius: 50px;
+    left: 34.2%;
+    top: 0;
+    height: 100%;
+    width: calc(5% + 45% * 0.9 / 5 + 30px);
+    background-color: #F2B872;
+    z-index: 0;
+}
+
+.lista-etapas {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    list-style: none;
+    padding: 0 20px;
+    margin: 0;
+    width: 90%;
+    position: relative;
+    z-index: 1;
+}
+
+.etapa,
+.etapa-ativa {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #CEB3F2;
+    background-color: #B291DE;
+    flex-shrink: 0;
+}
+
+.etapa-ativa {
+    background-color: #ffffff;
+    color: #F2B872;
+}
+
+.numero {
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.form {
+    padding-top: 20px;
+    overflow: hidden;
+    flex: 1;
+    border-radius: 0 0 25px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Conteúdo do Card (Apagar e Substituir) */
+.titulo-sessao {
+    text-align: center;
+}
+
+.titulo-sessao h4 {
+    font-size: 32px;
+    font-weight: 400;
+    color: #63468C;
+    margin: 0;
+}
+
+.caixa-texto {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+    flex: 1;
+}
+
+.caixa-texto textarea {
+    min-height: 460px;
+    border-radius: 20px;
+    border: 1px solid #63468C;
+    padding: 15px 20px;
+    width: 100%;
+    resize: none;
+    font-family: sans-serif;
+    font-size: 24px;
+    color: #838383;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    box-sizing: border-box;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.caixa-texto textarea::-webkit-scrollbar {
+    display: none;
+}
+
+.caixa-texto textarea:focus {
+    outline: none;
+    border-color: #838383;
+    color: black;
+    text-align: left;
+}
+
+.caixa-texto textarea:focus::placeholder {
+    color: transparent;
+}
+
+.caixa-texto textarea:not(:placeholder-shown) {
+    text-align: left;
+}
+
+.caixa-texto textarea::placeholder {
+    color: #838383;
+    font-size: 32px;
+    font-weight: 400;
+    position: relative;
+    top: calc(50% - 50px);
+}
+
+/* Estrutura Base do Footer com Botões */
+footer {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    width: 95%;
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+#proximo {
+    background-color: #F2B872;
+    color: #ffffff;
+    border-radius: 10px;
+    height: 57px;
+    width: 295px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: medium;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.3s ease;
+}
+
+#proximo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#proximo:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#voltar {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: medium;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: text-decoration 0.2s ease;
+}
+
+#voltar:hover {
+    text-decoration: underline;
+}
+
+/* Aplicação de Estilos Responsivos */
+@media screen and (max-width: 1366px) {
+    .titulo {
+        font-size: clamp(24px, 2.5vw, 32px);
+    }
+    
+    .titulo-sessao h6 {
+        font-size: clamp(18px, 2vw, 24px);
+    }
+    
+    .titulo-sessao h4 {
+        font-size: clamp(24px, 2.5vw, 32px);
+    }
+    
+    .pergunta label,
+    .titulo-pergunta {
+        font-size: clamp(18px, 2vw, 24px);
+    }
+    
+    .pergunta input {
+        height: clamp(50px, 5vw, 60px);
+        font-size: clamp(18px, 2vw, 24px);
+    }
+    
+    .opcao {
+        font-size: clamp(16px, 1.8vw, 20px);
+    }
+    
+    .opcao input[type="number"],
+    .opcao input[type="text"] {
+        width: clamp(250px, 30vw, 384.54px);
+        height: clamp(20px, 2vw, 24px);
+        font-size: clamp(12px, 1.2vw, 14px);
+    }
+    
+    #proximo,
+    #voltar {
+        font-size: clamp(18px, 2vw, 24px);
+    }
+    
+    #proximo {
+        width: clamp(200px, 20vw, 295px);
+        height: clamp(45px, 5vw, 57px);
+    }
+    
+    .etapa,
+    .etapa-ativa {
+        width: clamp(50px, 5vw, 60px);
+        height: clamp(50px, 5vw, 60px);
+    }
+    
+    .numero {
+        font-size: clamp(24px, 2.5vw, 32px);
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .titulo {
+        font-size: clamp(20px, 2.2vw, 28px);
+    }
+    
+    .card {
+        width: 98%;
+    }
+    
+    footer {
+        width: 98%;
+    }
+    
+    .perguntas {
+        padding: 15px 10px;
+        gap: 15px;
+    }
+    
+    .etapa,
+    .etapa-ativa {
+        width: clamp(45px, 4.5vw, 55px);
+        height: clamp(45px, 4.5vw, 55px);
+    }
+}
+
+@media screen and (min-width: 1920px) {
+    body {
+        zoom: 1.1;
+    }
+}
+
+@media screen and (min-width: 2560px) {
+    body {
+        zoom: 1.3;
+    }
+}
