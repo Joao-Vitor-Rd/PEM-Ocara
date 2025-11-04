@@ -2,158 +2,81 @@ import { CasoService } from "../services/CasoService";
 
 export class CasoController {
 
-    private casoService: CasoService;
+    private casoService: CasoService = new CasoService();
 
-    constructor(
-        nomeAssistida: string,
-        idadeAssistida: number,
-        identidadeGenero: string,
-        nomeSocial: string,
-        endereco: string,
-        escolaridade: string,
-        religiao: string,
-        nacionalidade: string,
-        zonaHabitacao: string,
-        profissao: string,
-        limitacaoFisica: string,
-        numeroCadastroSocial: string,
-        quantidadeDependentes: number,
-        temDependentes: boolean,
+    handlerCriarCaso(dados: {
+        // Assistida
+        nomeAssistida: string;
+        idadeAssistida: number;
+        identidadeGenero: string;
+        nomeSocial: string;
+        endereco: string;
+        escolaridade: string;
+        religiao: string;
+        nacionalidade: string;
+        zonaHabitacao: string;
+        profissao: string;
+        limitacaoFisica: string;
+        numeroCadastroSocial: string;
+        quantidadeDependentes: number;
+        temDependentes: boolean;
+        // Agressor
+        nomeAgressor: string;
+        idadeAgresssor: number;
+        vinculoAssistida: string;
+        dataOcorrida: Date;
+        // SobreAgressor
+        usoDrogasAlcool: string[];
+        doencaMental: string;
+        agressorCumpriuMedidaProtetiva: boolean;
+        agressorTentativaSuicidio: boolean;
+        agressorDesempregado: string;
+        agressorPossuiArmaFogo: string;
+        agressorAmeacouAlguem: string;
+        // Historico Violencia
+        ameacaFamiliar: boolean;
+        agressaoFisica: boolean;
+        outrasFormasViolencia: string;
+        abusoSexual: boolean;
+        comportamentosAgressor: string[];
+        ocorrenciaPolicialMedidaProtetivaAgressor: boolean;
+        agressoesMaisFrequentesUltimamente: boolean;
+        // Outras Infor
+        anotacoesLivres: string;
+        // PreenchimentoProfissional
+        assistidaRespondeuSemAjuda: boolean;
+        assistidaRespondeuComAuxilio: boolean;
+        assistidaSemCondicoes: boolean;
+        assistidaRecusou: boolean;
+        terceiroComunicante: boolean;
+        tipoViolencia: string;
+        // Outras Infor Importantes
+        moraEmAreaRisco: boolean;
+        dependenteFinanceiroAgressor: boolean;
+        aceitaAbrigamentoTemporario: boolean;
+        // Sobre voce
+        separacaoRecente: string;
+        temFilhosComAgressor: boolean;
+        qntFilhosComAgressor: number;
+        temFilhosOutroRelacionamento: boolean;
+        qntFilhosOutroRelacionamento: number;
+        faixaFilhos: string[];
+        filhosComDeficiencia: boolean;
+        conflitoAgressor: string;
+        filhosPresenciaramViolencia: boolean;
+        violenciaDuranteGravidez: boolean;
+        novoRelacionamentoAumentouAgressao: boolean;
+        possuiDeficienciaDoenca: string;
+        corRaca: string;
+        // Caso
+        data: Date;
+        profissionalResponsavel: string;
+        descricao: string;
+    }) {
+        this.casoService.criarCaso(dados);
+    }
 
-        //Agressor
-        nomeAgressor: string,
-        idadeAgresssor: number,
-        vinculoAssistida: string,
-        dataOcorrida: Date,
-
-        //SobreAgressor
-        usoDrogasAlcool: string[],
-        doencaMental: string,
-        agressorCumpriuMedidaProtetiva: boolean,
-        agressorTentativaSuicidio: boolean,
-        agressorDesempregado: string,
-        agressorPossuiArmaFogo: string,
-        agressorAmeacouAlguem: string,
-
-        //Historico Violencia
-        ameacaFamiliar: boolean,
-        agressaoFisica: boolean,
-        outrasFormasViolencia: string,
-        abusoSexual: boolean,
-        comportamentosAgressor: string[],
-        ocorrenciaPolicialMedidaProtetivaAgressor: boolean,
-        agressoesMaisFrequentesUltimamente: boolean,
-
-        //Outras Infor
-        anotacoesLivres: string, 
-
-        //PreenchimentoProfissional
-        assistidaRespondeuSemAjuda: boolean,
-        assistidaRespondeuComAuxilio: boolean,
-        assistidaSemCondicoes: boolean,
-        assistidaRecusou: boolean,
-        terceiroComunicante: boolean,
-        tipoViolencia: string,
-
-        //Outras Infor Importantes
-        moraEmAreaRisco: boolean,
-        dependenteFinanceiroAgressor: boolean,
-        aceitaAbrigamentoTemporario: boolean,
-
-        //Sobre voce
-        separacaoRecente: string,
-        temFilhosComAgressor: boolean,
-        qntFilhosComAgressor: number,
-        temFilhosOutroRelacionamento: boolean,
-        qntFilhosOutroRelacionamento: number,
-        faixaFilhos: string[],
-        filhosComDeficiencia: boolean,
-        conflitoAgressor: string,
-        filhosPresenciaramViolencia: boolean,
-        violenciaDuranteGravidez: boolean,
-        novoRelacionamentoAumentouAgressao: boolean,
-        possuiDeficienciaDoenca: string,
-        corRaca: string,
-
-        data: Date, 
-        profissionalResponsavel: string, 
-        descricao: string 
-    ) {
-        this.casoService = new CasoService(
-            nomeAssistida,
-            idadeAssistida,
-            identidadeGenero,
-            nomeSocial,
-            endereco,
-            escolaridade,
-            religiao,
-            nacionalidade,
-            zonaHabitacao,
-            profissao,
-            limitacaoFisica,
-            numeroCadastroSocial,
-            quantidadeDependentes,
-            temDependentes,
-
-            //Agressor
-            nomeAgressor,
-            idadeAgresssor,
-            vinculoAssistida,
-            dataOcorrida,
-
-            //SobreAgressor
-            usoDrogasAlcool,
-            doencaMental,
-            agressorCumpriuMedidaProtetiva,
-            agressorTentativaSuicidio,
-            agressorDesempregado,
-            agressorPossuiArmaFogo,
-            agressorAmeacouAlguem,
-
-            //Historico Violencia
-            ameacaFamiliar,
-            agressaoFisica,
-            outrasFormasViolencia,
-            abusoSexual,
-            comportamentosAgressor,
-            ocorrenciaPolicialMedidaProtetivaAgressor,
-            agressoesMaisFrequentesUltimamente,
-
-            //Outras Infor
-            anotacoesLivres,
-
-            //Outras Infor Importantes
-            moraEmAreaRisco,
-            dependenteFinanceiroAgressor,
-            aceitaAbrigamentoTemporario,
-
-            //PreenchimentoProfissional
-            assistidaRespondeuSemAjuda,
-            assistidaRespondeuComAuxilio,
-            assistidaSemCondicoes,
-            assistidaRecusou,
-            terceiroComunicante,
-            tipoViolencia,
-
-            //Sobre voce
-            separacaoRecente,
-            temFilhosComAgressor,
-            qntFilhosComAgressor,
-            temFilhosOutroRelacionamento,
-            qntFilhosOutroRelacionamento,
-            faixaFilhos,
-            filhosComDeficiencia,
-            conflitoAgressor,
-            filhosPresenciaramViolencia,
-            violenciaDuranteGravidez,
-            novoRelacionamentoAumentouAgressao,
-            possuiDeficienciaDoenca,
-            corRaca,
-            
-            //Caso
-            data, 
-            profissionalResponsavel, 
-            descricao
-        );
+    getCaso() {
+        return this.casoService.getCaso();
     }
 }

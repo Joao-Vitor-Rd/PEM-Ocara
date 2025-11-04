@@ -15,22 +15,28 @@ export class Caso {
     private historico: Historico;
     private anexos: Anexo[] = [];
     private encaminhamentos: Encaminhamento[] = [];
-    private data: Date;
-    private profissionalResponsavel: string;
-    private descricao: string;
+    private data: Date = new Date();
+    private profissionalResponsavel: string = "";
+    private descricao: string = "";
 
-    private assistida: Assistida;
-    private agressor: Agressor;
-    private sobreAgressor: SobreAgressor;
-    private historicoViolencia: HistoricoViolencia;
-    private outrasInformacoesEncaminhamento: OutrasInformacoesEncaminhamento;
-    private outrasInformacoesImportantes: OutrasInformacoesImportantes;
-    private sobreVoce: SobreVoce;
-    private preenchimentoProfissional: PreenchimentoProfissional;
+    private assistida?: Assistida;
+    private agressor?: Agressor;
+    private sobreAgressor?: SobreAgressor;
+    private historicoViolencia?: HistoricoViolencia;
+    private outrasInformacoesEncaminhamento?: OutrasInformacoesEncaminhamento;
+    private outrasInformacoesImportantes?: OutrasInformacoesImportantes;
+    private sobreVoce?: SobreVoce;
+    private preenchimentoProfissional?: PreenchimentoProfissional;
 
-    constructor(
+    
+    constructor(assistida?: Assistida) {
+        this.historico = new Historico();
+        if (assistida) {
+            this.assistida = assistida;
+        }
+    }
 
-        historico: Historico,
+    criarCaso(
         nomeAssistida: string,
         idadeAssistida: number,
         identidadeGenero: string,
@@ -108,22 +114,25 @@ export class Caso {
     ) {
         this.historico = new Historico();
 
-        this.assistida = new Assistida(
-            nomeAssistida,
-            idadeAssistida,
-            identidadeGenero,
-            nomeSocial,
-            endereco,
-            escolaridade,
-            religiao,
-            nacionalidade,
-            zonaHabitacao,
-            profissao,
-            limitacaoFisica,
-            numeroCadastroSocial,
-            quanidadeDependentes,
-            temDependentes
-        );
+        // Se a assistida já foi criada no construtor, use-a. Caso contrário, crie uma nova
+        if (!this.assistida) {
+            this.assistida = new Assistida(
+                nomeAssistida,
+                idadeAssistida,
+                identidadeGenero,
+                nomeSocial,
+                endereco,
+                escolaridade,
+                religiao,
+                nacionalidade,
+                zonaHabitacao,
+                profissao,
+                limitacaoFisica,
+                numeroCadastroSocial,
+                quanidadeDependentes,
+                temDependentes
+            );
+        }
         this.agressor = new Agressor(
             nomeAgressor,
             idadeAgresssor,
@@ -194,6 +203,10 @@ export class Caso {
     // Getters
     public getProtocoloCaso(): number | undefined {
         return this.protocoloCaso;
+    }
+
+    public getAssistida(): Assistida | undefined {
+        return this.assistida;
     }
 
     public getAnexos(): Anexo[] {
