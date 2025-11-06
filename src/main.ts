@@ -173,6 +173,26 @@ ipcMain.handle('caso:getByProtocolo', async(_event, protocolo: number) => {
   }
 });
 
+ipcMain.handle('caso:obterPorProtocoloAssistida', async(_event, protocoloAssistida: number) => {
+  try {
+    Logger.info('Requisição para buscar casos por protocolo da assistida:', protocoloAssistida);
+    
+    const casos = casoController.getCasosPorProtocoloAssistida(protocoloAssistida);
+    
+    return {
+      success: true,
+      casos: casos.map((caso: any) => caso.toJSON())
+    };
+  } catch (error) {
+    Logger.error('Erro ao buscar casos por protocolo da assistida:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido',
+      casos: []
+    };
+  }
+});
+
 ipcMain.handle('assistida:criar', async(
   _event,
   data: {
@@ -307,6 +327,9 @@ ipcMain.on('window:open', (_event, windowName: string) => {
       break;
     case 'telaCadastro6':
       windowManager.loadContent('main', 'tela-cadastro-6/index.html');
+      break;
+    case 'telaCasosRegistrados':
+      windowManager.loadContent('main', 'tela-casos-registrados/index.html');
       break;
     default:
       console.log('tela desconhecida:', windowName);

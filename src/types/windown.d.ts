@@ -128,6 +128,12 @@ export interface IElectronAPI {
     error?: string;
   }>;
 
+  obterCasosPorProtocoloAssistida: (protocoloAssistida: number) => Promise<{
+    success: boolean;
+    casos?: any[];
+    error?: string;
+  }>;
+
   openWindow: (windowName: string) => void;
   closeWindow: () => void;
   onUserCreated: (callback: (user: any) => void) => void;

@@ -414,6 +414,7 @@ pxmBtn.addEventListener('click', async (event) => {
                 const dadosRaw = JSON.parse(dadosAssistidaJSON);
 
                 assistidaDados = {
+                    protocoloAssistida: dadosRaw.protocolo || undefined,
                     nomeAssistida: dadosRaw.nome || "N/A",
                     idadeAssistida: dadosRaw.idade || 0,
                     identidadeGenero: dadosRaw.identidadeGenero || "N/A",

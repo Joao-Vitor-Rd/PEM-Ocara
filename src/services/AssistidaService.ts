@@ -64,7 +64,9 @@ export class AssistidaService {
 
     public addCasoAAssistida(protocolo: number, caso: Caso): void {
         const assistida = this.getAssistidaPorProtocolo(protocolo);
-        assistida?.addCaso(caso);
+        if (assistida) {
+            assistida.addCaso(caso);
+        }
     }
 
 }

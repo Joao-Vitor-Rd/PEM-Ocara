@@ -85,4 +85,8 @@ export class CasoController {
     getCaso(protocolo: number): Caso | undefined {
         return this.casoService.getCaso(protocolo);
     }
+
+    getCasosPorProtocoloAssistida(protocoloAssistida: number): Caso[] {
+        return this.casoService.getCasosPorProtocoloAssistida(protocoloAssistida);
+    }
 }

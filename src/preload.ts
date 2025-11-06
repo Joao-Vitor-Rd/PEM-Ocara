@@ -19,6 +19,9 @@ contextBridge.exposeInMainWorld('api', {
   casosPorProtocolo: (protocolo: number) =>
     ipcRenderer.invoke('caso:getByProtocolo', protocolo),
 
+  obterCasosPorProtocoloAssistida: (protocoloAssistida: number) =>
+    ipcRenderer.invoke('caso:obterPorProtocoloAssistida', protocoloAssistida),
+
   criarAssistida: (
     nome: string,
     idade: number,
@@ -32,6 +35,7 @@ contextBridge.exposeInMainWorld('api', {
     profissao: string,
     limitacaoFisica: string,
     numeroCadastroSocial: string,
+    quantidadeDependentes: number,
     temDependentes: boolean
   ) =>
     ipcRenderer.invoke('assistida:criar', {
@@ -47,6 +51,7 @@ contextBridge.exposeInMainWorld('api', {
       profissao,
       limitacaoFisica,
       numeroCadastroSocial,
+      quantidadeDependentes,
       temDependentes,
     }),
 

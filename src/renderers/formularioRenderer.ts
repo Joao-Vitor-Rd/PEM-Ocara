@@ -148,6 +148,31 @@ pxmBtn.addEventListener('click', async (event) => {
             temDependentes
         };
 
+        // Criar a assistida AGORA para obter o protocolo
+        const resultadoAssistida = await window.api.criarAssistida(
+            nome,
+            idade,
+            identidadeGenero,
+            nomeSocial,
+            endereco,
+            escolaridade,
+            religiao,
+            nacionalidade,
+            zonaHabitacao,
+            profissao,
+            limitacaoFisica,
+            numeroCadastroSocial,
+            quantidadeDependentes,
+            temDependentes
+        );
+
+        if (resultadoAssistida.success && resultadoAssistida.assistida) {
+            // Adicionar protocolo aos dados
+            (dadosAssistida as any).protocolo = resultadoAssistida.assistida.protocolo;
+        } else {
+            throw new Error('Erro ao criar assistida: ' + (resultadoAssistida.error || 'desconhecido'));
+        }
+
         localStorage.setItem('dadosAssistida', JSON.stringify(dadosAssistida));
 
         const mudarTela = await window.api.openWindow("telaCadastroCaso");

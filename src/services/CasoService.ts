@@ -81,24 +81,34 @@ export class CasoService {
         descricao: string;
     
     }) {
-        const novoCaso = new Caso();
+        // Se foi passado um protocoloAssistida, busca a assistida existente
+        // Senão, cria uma nova
+        let assistida = null;
+        if ((dados as any).protocoloAssistida) {
+            assistida = this.assistidaService.getAssistidaPorProtocolo((dados as any).protocoloAssistida);
+        }
+        
+        if (!assistida) {
+            assistida = this.assistidaService.criarAssistida(
+                dados.nomeAssistida,
+                dados.idadeAssistida,
+                dados.identidadeGenero,
+                dados.nomeSocial,
+                dados.endereco,
+                dados.escolaridade,
+                dados.religiao,
+                dados.nacionalidade,
+                dados.zonaHabitacao,
+                dados.profissao,
+                dados.limitacaoFisica,
+                dados.numeroCadastroSocial,
+                dados.quantidadeDependentes,
+                dados.temDependentes
+            );
+        }
 
-        const assistida = this.assistidaService.criarAssistida(
-            dados.nomeAssistida,
-            dados.idadeAssistida,
-            dados.identidadeGenero,
-            dados.nomeSocial,
-            dados.endereco,
-            dados.escolaridade,
-            dados.religiao,
-            dados.nacionalidade,
-            dados.zonaHabitacao,
-            dados.profissao,
-            dados.limitacaoFisica,
-            dados.numeroCadastroSocial,
-            dados.quantidadeDependentes,
-            dados.temDependentes
-        );
+        // Criar o caso COM a assistida já setada para não criar outra
+        const novoCaso = new Caso(assistida);
 
         novoCaso.criarCaso(
             assistida.getNome(),
@@ -162,10 +172,9 @@ export class CasoService {
         );
         
 
-        this.assistidaService.addCasoAAssistida(
-            novoCaso.getAssistida()?.getProtocolo() || 0,
-            novoCaso
-        );
+        const protocoloAssistida = novoCaso.getAssistida()?.getProtocolo() || 0;
+        
+        this.assistidaService.addCasoAAssistida(protocoloAssistida, novoCaso);
         this.casos.push(novoCaso);
 
         return novoCaso;
@@ -173,5 +182,11 @@ export class CasoService {
 
     public getCaso(protocolo: number): Caso | undefined {
         return this.casos.find(caso => caso.getProtocoloCaso() === protocolo);
+    }
+
+    public getCasosPorProtocoloAssistida(protocoloAssistida: number): Caso[] {
+        const casosFiltrados = this.casos.filter(caso => caso.getAssistida()?.getProtocolo() === protocoloAssistida);
+        
+        return casosFiltrados;
     }
 }

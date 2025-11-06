@@ -59,6 +59,8 @@ function exibirAssistidas(assistidas: any[]) {
             });
             cardElement.addEventListener('click', () => {
                 console.log('Assistida clicada:', assistida.protocolo, assistida);
+                sessionStorage.setItem('protocoloAssistidaSelecionada', String(assistida.protocolo));
+                window.api.openWindow("telaCasosRegistrados");
             });
         }
         
