@@ -36,7 +36,8 @@ body {
     margin: 0 auto 25px auto;
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 100px - 97px - 25px);
+    height: calc(100vh - 100px - 132px);
+    max-height: calc(100vh - 100px - 132px);
     overflow: hidden;
 }
 
@@ -100,11 +101,12 @@ body {
 
 .form {
     padding-top: 20px;
-    overflow: hidden;
+    overflow: auto;
     flex: 1;
     border-radius: 0 0 25px 0;
     display: flex;
     flex-direction: column;
+    min-height: 0;
 }
 
 /* Conteúdo do Card (Apagar e Substituir) */
@@ -124,10 +126,12 @@ body {
     justify-content: center;
     margin: 20px;
     flex: 1;
+    min-height: 0;
+    overflow: hidden;
 }
 
 .caixa-texto textarea {
-    min-height: 460px;
+    height: 100%;
     border-radius: 20px;
     border: 1px solid #63468C;
     padding: 15px 20px;
@@ -226,92 +230,136 @@ footer {
 }
 
 /* Aplicação de Estilos Responsivos */
+
+/* Telas menores (notebooks pequenos - 1024px a 1366px) */
 @media screen and (max-width: 1366px) {
     .titulo {
-        font-size: clamp(24px, 2.5vw, 32px);
+        font-size: clamp(24px, 2.3vw, 32px);
     }
     
-    .titulo-sessao h6 {
-        font-size: clamp(18px, 2vw, 24px);
+    .card {
+        height: calc(100vh - 90px - 122px);
+        max-height: calc(100vh - 90px - 122px);
     }
     
     .titulo-sessao h4 {
-        font-size: clamp(24px, 2.5vw, 32px);
+        font-size: clamp(24px, 2.3vw, 32px);
     }
     
-    .pergunta label,
-    .titulo-pergunta {
-        font-size: clamp(18px, 2vw, 24px);
+    .caixa-texto textarea {
+        font-size: clamp(20px, 1.8vw, 24px);
     }
     
-    .pergunta input {
-        height: clamp(50px, 5vw, 60px);
-        font-size: clamp(18px, 2vw, 24px);
-    }
-    
-    .opcao {
-        font-size: clamp(16px, 1.8vw, 20px);
-    }
-    
-    .opcao input[type="number"],
-    .opcao input[type="text"] {
-        width: clamp(250px, 30vw, 384.54px);
-        height: clamp(20px, 2vw, 24px);
-        font-size: clamp(12px, 1.2vw, 14px);
-    }
-    
-    #proximo,
-    #voltar {
-        font-size: clamp(18px, 2vw, 24px);
+    .caixa-texto textarea::placeholder {
+        font-size: clamp(24px, 2.3vw, 32px);
     }
     
     #proximo {
-        width: clamp(200px, 20vw, 295px);
-        height: clamp(45px, 5vw, 57px);
+        width: clamp(220px, 18vw, 295px);
+        height: clamp(48px, 4.2vw, 57px);
+        font-size: clamp(20px, 1.8vw, 24px);
+    }
+    
+    #voltar {
+        font-size: clamp(20px, 1.8vw, 24px);
     }
     
     .etapa,
     .etapa-ativa {
-        width: clamp(50px, 5vw, 60px);
-        height: clamp(50px, 5vw, 60px);
+        width: clamp(50px, 4.4vw, 60px);
+        height: clamp(50px, 4.4vw, 60px);
     }
     
     .numero {
-        font-size: clamp(24px, 2.5vw, 32px);
+        font-size: clamp(26px, 2.3vw, 32px);
     }
 }
 
+/* Telas muito pequenas (notebooks compactos - até 1024px) */
 @media screen and (max-width: 1024px) {
     .titulo {
-        font-size: clamp(20px, 2.2vw, 28px);
+        font-size: clamp(22px, 2.8vw, 28px);
+    }
+    
+    .titulo-sessao h4 {
+        font-size: clamp(22px, 2.8vw, 28px);
     }
     
     .card {
         width: 98%;
+        height: calc(100vh - 80px - 115px);
+        max-height: calc(100vh - 80px - 115px);
     }
     
     footer {
         width: 98%;
     }
     
-    .perguntas {
-        padding: 15px 10px;
-        gap: 15px;
+    .caixa-texto {
+        margin: 15px;
+    }
+    
+    .caixa-texto textarea {
+        font-size: clamp(18px, 2.2vw, 22px);
+        padding: 12px 15px;
+    }
+    
+    .caixa-texto textarea::placeholder {
+        font-size: clamp(22px, 2.8vw, 28px);
     }
     
     .etapa,
     .etapa-ativa {
-        width: clamp(45px, 4.5vw, 55px);
-        height: clamp(45px, 4.5vw, 55px);
+        width: clamp(45px, 5.5vw, 55px);
+        height: clamp(45px, 5.5vw, 55px);
+    }
+    
+    .numero {
+        font-size: clamp(24px, 3vw, 28px);
+    }
+    
+    .etapas {
+        padding: 15px 0;
+    }
+    
+    #proximo {
+        width: clamp(180px, 22vw, 250px);
+        height: clamp(45px, 5.5vw, 55px);
+        font-size: clamp(18px, 2.2vw, 22px);
+    }
+    
+    #voltar {
+        font-size: clamp(18px, 2.2vw, 22px);
     }
 }
 
+/* Telas médias (1366px a 1600px) */
+@media screen and (min-width: 1367px) and (max-width: 1600px) {
+    .titulo {
+        font-size: clamp(28px, 2vw, 32px);
+    }
+    
+    .titulo-sessao h4 {
+        font-size: clamp(28px, 2vw, 32px);
+    }
+    
+    .caixa-texto textarea {
+        font-size: clamp(22px, 1.5vw, 24px);
+    }
+    
+    .caixa-texto textarea::placeholder {
+        font-size: clamp(28px, 2vw, 32px);
+    }
+}
+
+/* Telas grandes (desktops Full HD - 1920px) */
 @media screen and (min-width: 1920px) {
     body {
         zoom: 1.1;
     }
 }
 
+/* Telas muito grandes (desktops 2K/4K - 2560px+) */
 @media screen and (min-width: 2560px) {
     body {
         zoom: 1.3;
