@@ -450,7 +450,7 @@ pxmBtn.addEventListener('click', async (event) => {
             doencaMental, 
             agressorCumpriuMedidaProtetiva,
             agressorTentativaSuicidio,
-            agressorDesempregado: desempregadoDificuldades, // STRING (do service)
+            agressorDesempregado: desempregadoDificuldades,
             agressorPossuiArmaFogo: acessoArmas,
             agressorAmeacouAlguem,
 
@@ -473,7 +473,6 @@ pxmBtn.addEventListener('click', async (event) => {
             terceiroComunicante: false,
             tipoViolencia: "",
 
-
             separacaoRecente, 
             temFilhosComAgressor: temFilhosComAgressor,
             qntFilhosComAgressor: qntFilhosComAgressorNumber, 
@@ -493,14 +492,8 @@ pxmBtn.addEventListener('click', async (event) => {
             descricao: "",
         };
 
-        const result = await window.api.criarCaso(dadosParaServiceAtualizado);
-        console.log('Resultado da criação do caso:', result);
-        if (result.success && result.caso) {
-            localStorage.removeItem('dadosAssistida');
-            window.api.openWindow("telaListarAssistidas");
-        } else {
-            throw new Error(result.error || 'Erro desconhecido ao criar caso');
-        }
+        sessionStorage.setItem('dadosCaso', JSON.stringify(dadosParaServiceAtualizado));
+        window.api.openWindow("telaCadastro3");
    } catch (error) {
        console.error("Erro ao processar o formulário:", error);
        mostrarErro(error instanceof Error ? error.message : "Erro ao processar o formulário. Por favor, tente novamente.");

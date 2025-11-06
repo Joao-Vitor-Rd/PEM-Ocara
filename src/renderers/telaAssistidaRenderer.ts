@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function carregarAssistidas() {
     try {
         const resultado = await window.api.listarAssistidas();
-        console.log('Assistidas carregadas:', resultado);
         
         if (resultado.success && resultado.assistidas && resultado.assistidas.length > 0) {
             exibirAssistidas(resultado.assistidas);

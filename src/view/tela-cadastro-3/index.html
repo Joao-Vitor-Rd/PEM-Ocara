@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>Outras Informações e Encaminhamentos</title>
+</head>
+<body>
+    <!-- TÍTULO E ÉTAPAS (ESTRUTURA BASE) -->
+    <div class="titulo">
+        <p>FORMULÁRIO DE ATENDIMENTO</p>
+    </div>
+
+    <div class="card">
+        <nav class="etapas">
+            <ol class="lista-etapas">
+                <li class="etapa">
+                    <span class="numero">1</span>
+                </li>
+                <li class="etapa">
+                    <span class="numero">2</span>
+                </li>
+                <li class="etapa-ativa">
+                    <span class="numero">3</span>
+                </li>
+                <li class="etapa">
+                    <span class="numero">4</span>
+                </li>
+                <li class="etapa">
+                    <span class="numero">5</span>
+                </li>
+                <li class="etapa">
+                    <span class="numero">6</span>
+                </li>
+            </ol>
+        </nav>
+
+        <div class="form">
+        <!-- CONTEÚDO DENTRO DO CARD -->
+            <div class="titulo-sessao">
+                <h4>Outras Informações e Encaminhamentos</h4>
+            </div>
+
+            <div class="caixa-texto">
+                <textarea id="outras-informacoes" name="outras-informacoes" placeholder="Digite aqui outras informações e encaminhamentos..."></textarea>
+            </div>
+
+            <br>
+            <br>
+        </div>
+    </div>
+    
+    <!-- FOOTER COM BOTÕES DE NAVEGAÇÃO (ESTRUTURA BASE) -->
+    <footer>
+        <button id="voltar">< Voltar</button>
+        <button id="proximo">Próximo ></button>
+    </footer>
+    <script type="module" src="../../../dist/renderers/telaCadastro3Renderer.js"></script>
+</body>
+</html>

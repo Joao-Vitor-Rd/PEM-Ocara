@@ -134,7 +134,8 @@ ipcMain.handle('caso:criar', async(
 
   }) => {
   try {
-    const result =casoController.handlerCriarCaso(data);
+    const result = casoController.handlerCriarCaso(data);
+    
     return {
       success: true,
       caso: result.toJSON()
@@ -283,8 +284,8 @@ ipcMain.on('window:open', (_event, windowName: string) => {
         preloadFile: 'preload.js'
       });
       break;
-    case 'telaAssistidas':
-      windowManager.loadContent('main', 'telaAssistidas.html');
+    case 'telaListarAssistidas':
+      windowManager.loadContent('main', 'tela-assistidas/index.html');
       break;
     case 'telaInicial':
       windowManager.loadContent('main', 'tela-inicial/index.html');
@@ -293,11 +294,19 @@ ipcMain.on('window:open', (_event, windowName: string) => {
       windowManager.loadContent('main', 'tela-cadastro-1/index.html');
       break;
     case 'telaCadastroCaso':
-      console.log('Abrindo tela de cadastro de caso');
       windowManager.loadContent('main', 'tela-cadastro-2/index.html');
       break;
-    case 'telaListarAssistidas':
-      windowManager.loadContent('main', 'tela-assistidas/index.html');
+    case 'telaCadastro3':
+      windowManager.loadContent('main', 'tela-cadastro-3/index.html');
+      break;
+    case 'telaCadastro4':
+      windowManager.loadContent('main', 'tela-cadastro-4/index.html');
+      break;
+    case 'telaCadastro5':
+      windowManager.loadContent('main', 'tela-cadastro-5/index.html');
+      break;
+    case 'telaCadastro6':
+      windowManager.loadContent('main', 'tela-cadastro-6/index.html');
       break;
     default:
       console.log('tela desconhecida:', windowName);
