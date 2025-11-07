@@ -5,7 +5,7 @@ export class SobreVoce {
     private temFilhosOutroRelacionamento: boolean;
     private qntFilhosOutroRelacionamento: number;
     private faixaFilhos: string[];
-    private filhosComDeficiencia: boolean;
+    private filhosComDeficiencia: number;
     private conflitoAgressor: string;
     private filhosPresenciaramViolencia: boolean;
     private violenciaDuranteGravidez: boolean;
@@ -20,7 +20,7 @@ export class SobreVoce {
         temFilhosOutroRelacionamento: boolean,
         qntFilhosOutroRelacionamento: number,
         faixaFilhos: string[],
-        filhosComDeficiencia: boolean,
+        filhosComDeficiencia: number,
         conflitoAgressor: string,
         filhosPresenciaramViolencia: boolean,
         violenciaDuranteGravidez: boolean,
@@ -64,7 +64,7 @@ export class SobreVoce {
     public getFaixaFilhos(): string[] {
         return this.faixaFilhos;
     }
-    public getFilhosComDeficiencia(): boolean {
+    public getFilhosComDeficiencia(): number {
         return this.filhosComDeficiencia;
     }
     public getConflitoAgressor(): string {
@@ -106,7 +106,7 @@ export class SobreVoce {
     private setFaixaFilhos(value: string[]): void {
         this.faixaFilhos = value;
     }
-    private setFilhosComDeficiencia(value: boolean): void {
+    private setFilhosComDeficiencia(value: number): void {
         this.filhosComDeficiencia = value;
     }
     private setConflitoAgressor(value: string): void {
