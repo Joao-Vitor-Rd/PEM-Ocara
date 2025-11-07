@@ -1,5 +1,3 @@
-/*
-
 import PdfPrinter from 'pdfmake';
 import fs from 'fs';
 import path from 'path';
@@ -170,7 +168,7 @@ export class PdfUtil {
   };
 
   constructor() {
-    const fontsPath = path.resolve(app.getAppPath(), 'assets', 'fonts');
+    const fontsPath = app.isPackaged ? path.join(process.resourcesPath, 'assets', 'fonts') : path.resolve(app.getAppPath(), 'assets', 'fonts');
     const fonts = {
       Roboto: {
         normal: path.join(fontsPath, 'Roboto-Regular.ttf'),
@@ -184,7 +182,7 @@ export class PdfUtil {
 
   private renderCampo(label: string, value: any, options = {}) {
     const BORDAS_LABEL = [true, true, false, true]; // [L, T, R, B]
-    const BORDAS_VALOR = [false, true, true, true]; // [L, T, R, B]
+    const BORDAS_VALOR = [false, true, true, true];
     
     return [
       { text: label, style: 'label', border: BORDAS_LABEL, padding: 4 },
@@ -907,9 +905,9 @@ export class PdfUtil {
     };
 
     const pdfDoc = this.printer.createPdfKitDocument(docDefinition);
-    const tempPath = app.getPath('temp');
-    const filePath = path.join(tempPath, `formulario-assistida-${assistida.getProtocolo()}.pdf`);
-    
+    const desktopPath = app.getPath('desktop');
+    const filePath = path.join(desktopPath, `formulario-assistida-${assistida.getProtocolo()}-${Date.now()}.pdf`);
+
     return new Promise((resolve, reject) => {
       const stream = fs.createWriteStream(filePath);
       pdfDoc.pipe(stream);
@@ -919,10 +917,9 @@ export class PdfUtil {
         resolve(filePath);
       });
       stream.on('error', (err) => {
+        console.error("Erro ao gerar PDF:", err);
         reject(err);
       });
     });
   }
 }
-
-*/

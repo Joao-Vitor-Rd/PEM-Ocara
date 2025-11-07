@@ -1,90 +1,156 @@
+import { CasoService } from "../services/CasoService";
 import { Caso } from "../models/Caso/Caso";
-
-/*
-import { Assistida } from "../models/assistida/Assistida";
-import { Agressor } from "../models/Caso/Agressor";
 import { HistoricoViolencia } from "../models/Caso/HistoricoViolencia";
-import { PdfUtil, IAtendimentoData, IAgressorData, IBlocoIData, IBlocoIIData, IBlocoIIIData, IBlocoIVData, IPreenchimentoProfissional, IFormularioCompleto } from "../utils/PdfUtil";
+import { Assistida } from "../models/assistida/Assistida";
+import { PdfUtil, IFormularioCompleto, IAtendimentoData, IAgressorData, IBlocoIData, IBlocoIIData, IBlocoIIIData, IBlocoIVData, IPreenchimentoProfissional } from "../utils/PdfUtil";
 
 export class PdfService {
   
   private pdfUtil: PdfUtil;
-  private caso: Caso;
+  private casoService: CasoService;
 
-  constructor() {
+  constructor(casoService: CasoService) {
+    this.casoService = casoService;
     this.pdfUtil = new PdfUtil();
-    this.caso = new Caso();
   }
 
-  public async criarPdfDeFormulario(casoId: number): Promise<string> {
-    // buscar o caso do banco(não tem então vou criar)
-
-    const caso = new Caso();
-    caso.criarCaso(
-      //assistida
-      'Maria da Silva', 30, 'Mulher Cis', '', 'Rua...', 'Superior', 'N/A', 'BR', 'URBANA', 'Profissão', '', '12345', 1, true,
-      //agressor
-      'João', 35, 'Ex-companheiro', new Date(),
-      ['ALCOOL'], 'NAO', false, false, 'NAO', 'NAO', 'SIM',
-      true,
-      true,
-      'ARMA_FOGO,SOCOS,CHUTES',
-      false,
-      ['FRASE_NINGUEM', 'PERSEGUIU'],
-      true,
-      true,
-      'Anotaçãoaoao livreeee',
-      true, false, false, false, false, 'FISICA',
-      false, true, false,
-      'NAO', true, 1, false, 0, ['0 A 11 ANOS'], false, 'NENHUM', true, false, false, 'N/A', 'PARDA',
-      new Date(), 'Dr. Responsável (Simulado)', 'Descrição do caso...'
-    );
+  public async criarPdfDeFormulario(protocoloCaso: number): Promise<string> {
     
+    const caso = this.casoService.getCaso(protocoloCaso);
+    if (!caso) {
+      throw new Error(`Caso com protocolo ${protocoloCaso} não encontrado.`);
+    }
+
     const assistida = caso.getAssistida();
     if (!assistida) {
-      throw new Error("Caso não possui uma assistida associada.");
+      throw new Error("Caso não possui uma assistida vinculada.");
     }
+  
+  const dadosFormulario: IFormularioCompleto = this.mapFormularioCompleto(caso, assistida);
+
+  return this.pdfUtil.gerarPdfFormulario(assistida, dadosFormulario);
+}
+
+  private mapFormularioCompleto(caso: Caso, assistida: Assistida): IFormularioCompleto {
     
-    const atendimentoData: IAtendimentoData = this.mapAtendimento(caso);
-    const agressorData: IAgressorData = this.mapAgressor(caso.getAgressor());
-    const blocoIData: IBlocoIData = this.mapBlocoI(caso.getHistoricoViolencia());
+    const agressor = caso.getAgressor();
+    const historicoViolencia = caso.getHistoricoViolencia();
+    const sobreAgressor = caso.getSobreAgressor();
+    const sobreVoce = caso.getSobreVoce();
+    const outrasInformacoes = caso.getOutrasInformacoesImportantes();
+    const outrasInformacoesEncaminhamentos = caso.getOutrasInformacoesEncaminhamento();
+    const preenchimentoProfissional = caso.getPreenchimentoProfissional();
 
-    return this.pdfUtil.gerarPdfFormulario(
-      assistida,
-      atendimentoData,
-      agressorData,
-      blocoIData
-    );
-  }
-
-  private mapAtendimento(caso: Caso): IAtendimentoData {
-
-    return {
+    const atendimento: IAtendimentoData = {
+      codigo: assistida.getProtocolo(),
       data: caso.getData().toLocaleDateString('pt-BR'),
+      nucleo: 'PSICOSSOCIAL',
       responsavel: caso.getProfissionalResponsavel(),
     };
-  }
 
-  private mapAgressor(agressor?: Agressor): IAgressorData {
-    if (!agressor) {
-      return { nome: '', idade: 0, vinculo: '', dataFato: '' };
-    }
+    const agressorData: IAgressorData = {
+      nome: agressor?.getNome() || '',
+      idade: agressor?.getIdade() || 0,
+      vinculo: agressor?.getVinculoAssistida() || '',
+      dataFato: agressor?.getDataOcorrida()?.toLocaleDateString('pt-BR') || '',
+    };
 
-    return {
-      nome: (agressor as any).getNomeAgressor() || '',
-      idade: (agressor as any).getIdadeAgressor() || 0,
-      vinculo: (agressor as any).getVinculoAssistida() || '',
-      dataFato: (agressor as any).getDataOcorrida()?.toLocaleDateString('pt-BR') || '',
+    const formasViolencia = historicoViolencia?.getOutrasFormasViolencia().toUpperCase() || '';
+    const comportamentos = historicoViolencia?.getComportamentosAgressor() || [];
+
+    const blocoI: IBlocoIData = {
+     p_ameaca: !historicoViolencia?.getAmeacaFamiliar()
+        ? 'NAO'
+        : formasViolencia.includes('ARMA_FOGO')
+        ? 'ARMA_FOGO'
+        : formasViolencia.includes('FACA')
+        ? 'FACA'
+        : 'OUTRA',
+     p_agressoes: {
+        queimadura: formasViolencia.includes('QUEIMADURA'),
+        enforcamento: formasViolencia.includes('ENFORCAMENTO'),
+        sufocamento: formasViolencia.includes('SUFOCAMENTO'),
+        tiro: formasViolencia.includes('TIRO'),
+        afogamento: formasViolencia.includes('AFOGAMENTO'),
+        facada: formasViolencia.includes('FACADA'),
+        paulada: formasViolencia.includes('PAULADA'),
+        nenhuma: !historicoViolencia?.getAgressaoFisica()
+     },
+     p2_agressoes: {
+        socos: formasViolencia.includes('SOCOS'),
+        chutes: formasViolencia.includes('CHUTES'),
+        tapas: formasViolencia.includes('TAPAS'),
+        empurroes: formasViolencia.includes('EMPURROES'),
+        puxoesCabelo: formasViolencia.includes('PUXOESCABELO'),
+        nenhuma: !historicoViolencia?.getAgressaoFisica()
+     },
+     p_sexoForcado: historicoViolencia?.getAbusoSexual() || false,
+     p_comportamentos: {
+      frase_ameaca: comportamentos.includes('FRASE_NINGUEM'),
+      perseguiu_vigiou: comportamentos.includes('PERSEGUIU'),
+      proibiu_visitas: comportamentos.includes('PROIBIU_VISITAS'),
+      proibiu_trabalhar: comportamentos.includes('PROIBIU_TRABALHAR'),
+      telefonemas_insistentes: comportamentos.includes('TELEFONEMAS'),
+      impediu_dinheiro: comportamentos.includes('IMPEDIU_DINHEIRO'),
+      ciume_excessivo: comportamentos.includes('CIUME_EXCESSIVO'),
+      nenhum: comportamentos.length === 0,
+     },
+     p_ocorrencia: historicoViolencia?.getOcorrenciaPolicialMedidaProtetivaAgressor() || false,
+     p_agressoes_recentes: historicoViolencia?.getAgressoesMaisFrequentesUltimamente() || false,
     };
   }
+
+  const usoDrogas = sobreAgressor?.getUsoDrogasAlcool() || [];
+  const doencaMental = sobreAgressor?.getDoencaMental().toUpperCase() || [];
+  const desempregado = sobreAgressor?.getDesempregado() || false;
+  const p_tentativa_suicidio = sobreAgressor?.getAgressorTentativaSuicidio() || false;
+
+  const blocoII: IBlocoIIData = {
+     p_uso_drogas: {
+      alcool: this.usoDrogas.includes('ALCOOL'),
+      drogas: this.usoDrogas.includes('DROGAS'),
+      nao: !this.usoDrogas.includes('ALCOOL') && !this.usoDrogas.includes('DROGAS'),
+      nao_sei: this.usoDrogas.includes('NAO_SEI') || false,
+     },
+     p_agressoes: {
+        queimadura: formasViolencia.includes('QUEIMADURA'),
+        enforcamento: formasViolencia.includes('ENFORCAMENTO'),
+        sufocamento: formasViolencia.includes('SUFOCAMENTO'),
+        tiro: formasViolencia.includes('TIRO'),
+        afogamento: formasViolencia.includes('AFOGAMENTO'),
+        facada: formasViolencia.includes('FACADA'),
+        paulada: formasViolencia.includes('PAULADA'),
+        nenhuma: !historicoViolencia?.getAgressaoFisica()
+     },
+     p2_agressoes: {
+        socos: formasViolencia.includes('SOCOS'),
+        chutes: formasViolencia.includes('CHUTES'),
+        tapas: formasViolencia.includes('TAPAS'),
+        empurroes: formasViolencia.includes('EMPURROES'),
+        puxoesCabelo: formasViolencia.includes('PUXOESCABELO'),
+        nenhuma: !historicoViolencia?.getAgressaoFisica()
+     },
+     p_sexoForcado: historicoViolencia?.getAbusoSexual() || false,
+     p_comportamentos: {
+      frase_ameaca: comportamentos.includes('FRASE_NINGUEM'),
+      perseguiu_vigiou: comportamentos.includes('PERSEGUIU'),
+      proibiu_visitas: comportamentos.includes('PROIBIU_VISITAS'),
+      proibiu_trabalhar: comportamentos.includes('PROIBIU_TRABALHAR'),
+      telefonemas_insistentes: comportamentos.includes('TELEFONEMAS'),
+      impediu_dinheiro: comportamentos.includes('IMPEDIU_DINHEIRO'),
+      ciume_excessivo: comportamentos.includes('CIUME_EXCESSIVO'),
+      nenhum: comportamentos.length === 0,
+     },
+     p_ocorrencia: historicoViolencia?.getOcorrenciaPolicialMedidaProtetivaAgressor() || false,
+     p_agressoes_recentes: historicoViolencia?.getAgressoesMaisFrequentesUltimamente() || false,
+    };
+  }
+
 
   private mapBlocoI(historico?: HistoricoViolencia): IBlocoIData {
     if (!historico) {
       throw new Error("Dados do Histórico de Violência não encontrados.");
     }
-    
-    const formasViolencia = (historico as any).getOutrasFormasViolencia()?.toUpperCase() || '';
-    const comportamentos = (historico as any).getComportamentosAgressor() || [];
 
     let p_ameaca = 'NAO';
     if ((historico as any).getAmeacaFamiliar()) {
@@ -125,15 +191,7 @@ export class PdfService {
       nenhum: comportamentos.length === 0,
     };
     
-    return {
-      p_ameaca,
-      p_agressoes,
-      p2_agressoes,
-      p_sexo_forcado,
-      p_comportamentos,
-      };
     }
   }
+    return formularioCompleto;
 }
-
-*/
