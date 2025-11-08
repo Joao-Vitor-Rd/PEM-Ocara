@@ -83,6 +83,10 @@ body {
 
 /* Estilo do Rodapé */
 footer {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     justify-content: space-between;
     align-items: center;
