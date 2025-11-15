@@ -11,7 +11,6 @@ body {
     overflow-x: hidden;
 }
 
-
 /* --- Layout Principal do App --- */
 .app-container {
     display: flex;
@@ -60,7 +59,6 @@ body {
     align-items: center;
     justify-content: center;
 }
-
 
 .sidebar-nav ul {
     list-style: none;
