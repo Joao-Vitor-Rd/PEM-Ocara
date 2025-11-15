@@ -138,3 +138,46 @@ body {
     max-width: 920px;
     margin: 20px 0 20px 0;
 }
+
+/* Seção de Informações */
+.info-section {
+    width: 100%;
+    max-width: 920px;
+    margin-top: 20px;
+}
+
+.info-section h2 {
+    font-weight: 600;
+    font-size: 36px;
+    color: #63468C;
+    margin: 0 0 50px 0;
+    letter-spacing: 0.05em;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 0;
+    border-bottom: 2px solid #63468C;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.info-item:hover {
+    background-color: rgba(99, 70, 140, 0.05);
+}
+
+.info-label {
+    font-weight: 400;
+    font-size: 32px;
+    color: #63468C;
+    letter-spacing: 0.05em;
+}
+
+.info-arrow {
+    width: 12px;
+    height: 20px;
+    color: #63468C;
+    flex-shrink: 0;
+}
