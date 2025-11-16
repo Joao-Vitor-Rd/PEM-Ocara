@@ -107,7 +107,8 @@ function exibirCasos(casos: any[]) {
                 cardElement.style.transform = 'scale(1)';
             });
             cardElement.addEventListener('click', () => {
-                // Ação ao clicar no card
+                console.log(`Caso selecionado: Protocolo ${protocoloCaso}`);
+                console.log(caso);
             });
         }
         

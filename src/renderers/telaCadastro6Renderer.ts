@@ -4,6 +4,77 @@ import { session } from "electron";
 
 export {}
 
+function mostrarErro(mensagem: string) {
+    let modal = document.getElementById('erro-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'erro-modal';
+        modal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        `;
+        document.body.appendChild(modal);
+    }
+
+    const conteudo = document.createElement('div');
+    conteudo.style.cssText = `
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        max-width: 500px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    `;
+
+    const titulo = document.createElement('h3');
+    titulo.textContent = 'Erro ao processar formulário';
+    titulo.style.cssText = `
+        color: #d9534f;
+        margin: 0 0 15px 0;
+    `;
+
+    const texto = document.createElement('p');
+    texto.textContent = mensagem;
+    texto.style.cssText = `
+        margin: 15px 0;
+        color: #333;
+        word-wrap: break-word;
+    `;
+
+    const botao = document.createElement('button');
+    botao.textContent = 'OK';
+    botao.style.cssText = `
+        margin-top: 20px;
+        padding: 10px 30px;
+        background-color: #d9534f;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    `;
+
+    botao.addEventListener('click', () => {
+        modal!.remove();
+    });
+
+    conteudo.appendChild(titulo);
+    conteudo.appendChild(texto);
+    conteudo.appendChild(botao);
+
+    modal.innerHTML = '';
+    modal.appendChild(conteudo);
+    modal.style.display = 'flex';
+}
+
 const pxmBtn = document.getElementById('proximo') as HTMLButtonElement; 
 const voltarBtn = document.getElementById('voltar') as HTMLButtonElement;
 
@@ -13,24 +84,76 @@ voltarBtn.addEventListener('click', async (event) => {
 
 pxmBtn.addEventListener('click', async (event) => {
     try {
+
+        const dadosAssistidaJSON = sessionStorage.getItem('dadosAssistida');
+        if (!dadosAssistidaJSON) {
+            throw new Error('Dados da assistida não encontrados. Por favor, preencha o formulário desde o início.');
+        }
+
         const dadosCasoJSON = sessionStorage.getItem('dadosCaso');
-        
         if (!dadosCasoJSON) {
-            throw new Error('Erro ao recuperar dados anteriores');
+            throw new Error('Dados do caso não encontrados. Por favor, preencha todas as telas anteriores.');
         }
         
+        const dadosAssistida = JSON.parse(dadosAssistidaJSON);
         const dadosCaso = JSON.parse(dadosCasoJSON);
 
-        const result = await window.api.criarCaso(dadosCaso);
+        if (!dadosAssistida.nome || !dadosAssistida.endereco || !dadosAssistida.profissao || !dadosAssistida.nacionalidade) {
+            throw new Error('Dados incompletos da assistida. Verifique o preenchimento do formulário inicial.');
+        }
+
+        const camposObrigatorios = [
+            'nomeAgressor', 'idadeAgresssor', 'vinculoAssistida', 'dataOcorrida',
+            'ameacaFamiliar', 'agressaoFisica', 'abusoSexual', 'comportamentosAgressor',
+            'ocorrenciaPolicialMedidaProtetivaAgressor', 'agressoesMaisFrequentesUltimamente',
+            'usoDrogasAlcool', 'doencaMental', 'separacaoRecente', 'corRaca',
+            '_moraEmAreaRisco'
+        ];
+
+        const camposFaltando = camposObrigatorios.filter(campo => !(campo in dadosCaso));
+        if (camposFaltando.length > 0) {
+            throw new Error(`Campos obrigatórios não preenchidos: ${camposFaltando.join(', ')}. Por favor, revise todas as telas anteriores.`);
+        }
+
+
+        const dadosCompletos = {
+            nomeAssistida: dadosAssistida.nome,
+            idadeAssistida: dadosAssistida.idade,
+            identidadeGenero: dadosAssistida.identidadeGenero || '',
+            nomeSocial: dadosAssistida.nomeSocial || '',
+            endereco: dadosAssistida.endereco,
+            escolaridade: dadosAssistida.escolaridade || '',
+            religiao: dadosAssistida.religiao || '',
+            nacionalidade: dadosAssistida.nacionalidade,
+            zonaHabitacao: dadosAssistida.zonaHabitacao || '',
+            profissao: dadosAssistida.profissao,
+            limitacaoFisica: dadosAssistida.limitacaoFisica || '',
+            numeroCadastroSocial: dadosAssistida.numeroCadastroSocial || '',
+            quantidadeDependentes: dadosAssistida.quantidadeDependentes || 0,
+            temDependentes: dadosAssistida.temDependentes || false,
+            
+            // Dados do Caso (telas 2-6)
+            ...dadosCaso,
+            
+            // Data e responsável (tela 6)
+            data: new Date(),
+            profissionalResponsavel: 'Assistente Social', 
+            descricao: '' 
+        };
+
+        const result = await window.api.criarCaso(dadosCompletos);
 
         if (!result.success) {
-            throw new Error('Erro ao criar caso: ' + result.error);
+            throw new Error(result.error || 'Erro desconhecido ao criar caso');
         }
 
         sessionStorage.removeItem('dadosCaso');
         sessionStorage.removeItem('dadosAssistida');
         window.api.openWindow("telaListarAssistidas");
+
     } catch (error) {
+        const mensagem = error instanceof Error ? error.message : 'Erro desconhecido ao processar o formulário';
+        mostrarErro(mensagem);
         console.error("Erro ao processar tela 6:", error);
     }
 });

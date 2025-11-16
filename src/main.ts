@@ -125,12 +125,12 @@ ipcMain.handle('caso:criar', async(
     agressorTentativaSuicidio: boolean,
     agressorDesempregado: string,
     agressorPossuiArmaFogo: string,
-    agressorAmeacouAlguem: string,
+    agressorAmeacouAlguem: string[],
 
     //Historico Violencia
-    ameacaFamiliar: boolean,
-    agressaoFisica: boolean,
-    outrasFormasViolencia: string,
+    ameacaFamiliar: string[],
+    agressaoFisica: string[],
+    outrasFormasViolencia: string[],
     abusoSexual: boolean,
     comportamentosAgressor: string[],
     ocorrenciaPolicialMedidaProtetivaAgressor: boolean,
@@ -173,17 +173,20 @@ ipcMain.handle('caso:criar', async(
 
   }) => {
   try {
+    Logger.info('Criando novo caso...');
     const result = casoController.handlerCriarCaso(data);
     
+    Logger.info('Caso criado com sucesso:', result.getProtocoloCaso());
     return {
       success: true,
       caso: result.toJSON()
     };
   } catch (error) {
     Logger.error('Erro ao criar Caso:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido ao criar caso';
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Erro desconhecido'
+      error: errorMessage
     };
   }
     
@@ -369,6 +372,9 @@ ipcMain.on('window:open', (_event, windowName: string) => {
       break;
     case 'telaCasosRegistrados':
       windowManager.loadContent('main', 'tela-casos-registrados/index.html');
+      break;
+    case 'testeForm':
+      windowManager.loadContent('main', 'telaAssistidas.html');
       break;
     default:
       console.log('tela desconhecida:', windowName);

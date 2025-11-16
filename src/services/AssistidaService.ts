@@ -22,15 +22,23 @@ export class AssistidaService {
         temDependentes: boolean
     ) {
         if (!nome || nome.trim() === '') {
-            throw new Error('Nome e obrigatorio');
+            throw new Error('Nome da assistida é obrigatório');
         }
 
         if (!endereco || endereco.trim() === '') {
-            throw new Error('Endereco e obrigatorio');
+            throw new Error('Endereço da assistida é obrigatório');
         }
 
-        if (!idade) {
-            throw new Error('Idade e obrigatorio');
+        if (!idade || idade <= 0) {
+            throw new Error('Idade da assistida é obrigatória e deve ser maior que zero');
+        }
+
+        if (!profissao || profissao.trim() === '') {
+            throw new Error('Profissão da assistida é obrigatória');
+        }
+
+        if (!nacionalidade || nacionalidade.trim() === '') {
+            throw new Error('Nacionalidade da assistida é obrigatória');
         }
 
         const novaAssistida = new Assistida(

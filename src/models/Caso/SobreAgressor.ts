@@ -5,7 +5,7 @@ export class SobreAgressor {
     private agressorTentativaSuicidio: boolean;
     private agressorDesempregado: string;
     private agressorPossuiArmaFogo: string;
-    private agressorAmeacouAlguem: string;
+    private agressorAmeacouAlguem: string[];
 
     constructor(
         usoDrogasAlcool: string[],
@@ -14,7 +14,7 @@ export class SobreAgressor {
         agressorTentativaSuicidio: boolean,
         agressorDesempregado: string,
         agressorPossuiArmaFogo: string,
-        agressorAmeacouAlguem: string
+        agressorAmeacouAlguem: string[]
     )
     {
         this.usoDrogasAlcool = usoDrogasAlcool;
@@ -46,7 +46,7 @@ export class SobreAgressor {
     public getAgressorPossuiArmaFogo(): string {
         return this.agressorPossuiArmaFogo;
     }
-    public getAgressorAmeacouAlguem(): string {
+    public getAgressorAmeacouAlguem(): string[] {
         return this.agressorAmeacouAlguem;
     }
 
@@ -70,7 +70,7 @@ export class SobreAgressor {
     private setAgressorPossuiArmaFogo(value: string): void {
         this.agressorPossuiArmaFogo = value;
     }
-    private setAgressorAmeacouAlguem(value: string): void {
+    private setAgressorAmeacouAlguem(value: string[]): void {
         this.agressorAmeacouAlguem = value;
     }
 }

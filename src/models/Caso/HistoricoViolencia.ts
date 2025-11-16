@@ -1,16 +1,16 @@
 export class HistoricoViolencia {
-    public ameacaFamiliar: boolean;
-    public agressaoFisica: boolean;
-    public outrasFormasViolencia: string;
+    public ameacaFamiliar: string[];
+    public agressaoFisica: string[];
+    public outrasFormasViolencia: string[];
     public abusoSexual: boolean;
     public comportamentosAgressor: string[];
     public ocorrenciaPolicialMedidaProtetivaAgressor: boolean;
     public agressoesMaisFrequentesUltimamente: boolean;
 
     constructor(
-        ameacaFamiliar: boolean,
-        agressaoFisica: boolean,
-        outrasFormasViolencia: string,
+        ameacaFamiliar: string[],
+        agressaoFisica: string[],
+        outrasFormasViolencia: string[],
         abusoSexual: boolean,
         comportamentosAgressor: string[],
         ocorrenciaPolicialMedidaProtetivaAgressor: boolean,
@@ -27,13 +27,13 @@ export class HistoricoViolencia {
 
     //Getters
 
-    public getAmeacaFamiliar(): boolean {
+    public getAmeacaFamiliar(): string[] {
         return this.ameacaFamiliar;
     }
-    public getAgressaoFisica(): boolean {
+    public getAgressaoFisica(): string[] {
         return this.agressaoFisica;
     }
-    public getOutrasFormasViolencia(): string {
+    public getOutrasFormasViolencia(): string[] {
         return this.outrasFormasViolencia;
     }
     public getAbusoSexual(): boolean {
@@ -51,13 +51,13 @@ export class HistoricoViolencia {
 
     //Setters
 
-    private setAmeacaFamiliar(value: boolean): void {   
+    private setAmeacaFamiliar(value: string[]): void {   
         this.ameacaFamiliar = value;
     }
-    private setAgressaoFisica(value: boolean): void {
+    private setAgressaoFisica(value: string[]): void {
         this.agressaoFisica = value;
     }
-    private setOutrasFormasViolencia(value: string): void {
+    private setOutrasFormasViolencia(value: string[]): void {
         this.outrasFormasViolencia = value;
     }
     private setAbusoSexual(value: boolean): void {

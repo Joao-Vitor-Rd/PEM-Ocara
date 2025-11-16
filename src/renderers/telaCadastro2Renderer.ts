@@ -137,18 +137,18 @@ window.addEventListener('DOMContentLoaded', () => {
         setCheckboxValues('input[id^="q02-agressao"]', dadosCaso._agressoesGraves || []);
         setCheckboxValues('input[id^="q03-agressao"]', dadosCaso._outrasAgressoes || []);
         setRadioValue('q04-estupro', dadosCaso._estupro);
-        setCheckboxById('input[id^="q05-comportamento"]', dadosCaso._comportamentosIds || []);
+        setCheckboxValues('input[id^="q05-comportamento"]', dadosCaso._comportamentos || []);
         setRadioValue('q06-bo-medida', dadosCaso._boMedida);
         setRadioValue('q07-frequencia-aumento', dadosCaso._frequenciaAumento);
 
         // Bloco II - Sobre o Agressor
-        setCheckboxById('input[id^="q08-uso-abusivo"]', dadosCaso._usoAbusivoIds || []);
+        setCheckboxValues('input[id^="q08-uso-abusivo"]', dadosCaso._usoDrogas || []);
         setRadioValue('q09-doenca-mental', dadosCaso._doencaMental);
         setRadioValue('q10-descumpriu-medida', dadosCaso._descumpriuMedida);
         setRadioValue('q11-tentativa-suicidio', dadosCaso._tentativaSuicidio);
         setRadioValue('q12-desempregado-dificuldades', dadosCaso._desempregadoDificuldades);
         setRadioValue('q13-acesso-armas', dadosCaso._acessoArmas);
-        setCheckboxById('input[id^="q14-ameacou-agrediu"]', dadosCaso._ameacouAgrediuOutrosIds || []);
+        setCheckboxValues('input[id^="q14-ameacou-agrediu"]', dadosCaso._ameacouAgrediu || []);
 
         // Bloco III - Sobre Você
         setRadioValue('q15-separacao', dadosCaso.separacaoRecente);
@@ -198,18 +198,18 @@ btnVoltar.addEventListener('click', async () => {
         dadosCaso._agressoesGraves = getCheckedValues('input[id^="q02-agressao"]');
         dadosCaso._outrasAgressoes = getCheckedValues('input[id^="q03-agressao"]');
         dadosCaso._estupro = getRadioValue('q04-estupro');
-        dadosCaso._comportamentosIds = getCheckedIds('input[id^="q05-comportamento"]');
+        dadosCaso._comportamentos = getCheckedValues('input[id^="q05-comportamento"]');
         dadosCaso._boMedida = getRadioValue('q06-bo-medida');
         dadosCaso._frequenciaAumento = getRadioValue('q07-frequencia-aumento');
 
         // Bloco II - Sobre Agressor
-        dadosCaso._usoAbusivoIds = getCheckedIds('input[id^="q08-uso-abusivo"]');
+        dadosCaso._usoDrogas = getCheckedValues('input[id^="q08-uso-abusivo"]');
         dadosCaso._doencaMental = getRadioValue('q09-doenca-mental');
         dadosCaso._descumpriuMedida = getRadioValue('q10-descumpriu-medida');
         dadosCaso._tentativaSuicidio = getRadioValue('q11-tentativa-suicidio');
         dadosCaso._desempregadoDificuldades = getRadioValue('q12-desempregado-dificuldades');
         dadosCaso._acessoArmas = getRadioValue('q13-acesso-armas');
-        dadosCaso._ameacouAgrediuOutrosIds = getCheckedIds('input[id^="q14-ameacou-agrediu"]');
+        dadosCaso._ameacouAgrediu = getCheckedValues('input[id^="q14-ameacou-agrediu"]');
 
         // Bloco III - Sobre Você
         dadosCaso.separacaoRecente = getRadioValue('q15-separacao');
@@ -261,17 +261,17 @@ btnProximo.addEventListener('click', async () => {
         const agressoesGraves = getCheckedValues('input[id^="q02-agressao"]');
         const outrasAgressoes = getCheckedValues('input[id^="q03-agressao"]');
         const estupro = getRadioValue('q04-estupro');
-        const comportamentosIds = getCheckedIds('input[id^="q05-comportamento"]');
+        const comportamentos = getCheckedValues('input[id^="q05-comportamento"]');
         const boMedida = getRadioValue('q06-bo-medida');
         const frequenciaAumento = getRadioValue('q07-frequencia-aumento');
 
-        const usoAbusivoIds = getCheckedIds('input[id^="q08-uso-abusivo"]');
+        const usoDrogas = getCheckedValues('input[id^="q08-uso-abusivo"]');
         const doencaMental = getRadioValue('q09-doenca-mental');
         const descumpriuMedida = getRadioValue('q10-descumpriu-medida');
         const tentativaSuicidio = getRadioValue('q11-tentativa-suicidio');
         const desempregadoDificuldades = getRadioValue('q12-desempregado-dificuldades');
         const acessoArmas = getRadioValue('q13-acesso-armas');
-        const ameacouAgrediuOutrosIds = getCheckedIds('input[id^="q14-ameacou-agrediu"]');
+        const ameacouAgrediu = getCheckedValues('input[id^="q14-ameacou-agrediu"]');
 
         const separacao = getRadioValue('q15-separacao');
         const novoRelacionamento = getRadioValue('q17-novo-relacionamento');
@@ -326,7 +326,7 @@ btnProximo.addEventListener('click', async () => {
             mostrarErro('Responda sobre abuso sexual');
             return;
         }
-        if (comportamentosIds.length === 0) {
+        if (comportamentos.length === 0) {
             mostrarErro('Selecione ao menos um comportamento');
             return;
         }
@@ -338,7 +338,7 @@ btnProximo.addEventListener('click', async () => {
             mostrarErro('Responda sobre frequência de agressões');
             return;
         }
-        if (usoAbusivoIds.length === 0) {
+        if (usoDrogas.length === 0) {
             mostrarErro('Selecione ao menos uma opção sobre uso de drogas/álcool');
             return;
         }
@@ -362,7 +362,7 @@ btnProximo.addEventListener('click', async () => {
             mostrarErro('Responda sobre acesso a armas');
             return;
         }
-        if (ameacouAgrediuOutrosIds.length === 0) {
+        if (ameacouAgrediu.length === 0) {
             mostrarErro('Selecione ao menos uma opção sobre ameaças/agressões');
             return;
         }
@@ -426,16 +426,16 @@ btnProximo.addEventListener('click', async () => {
         dadosCaso._agressoesGraves = agressoesGraves;
         dadosCaso._outrasAgressoes = outrasAgressoes;
         dadosCaso._estupro = estupro;
-        dadosCaso._comportamentosIds = comportamentosIds;
+        dadosCaso._comportamentos = comportamentos;
         dadosCaso._boMedida = boMedida;
         dadosCaso._frequenciaAumento = frequenciaAumento;
-        dadosCaso._usoAbusivoIds = usoAbusivoIds;
+        dadosCaso._usoDrogas = usoDrogas;
         dadosCaso._doencaMental = doencaMental;
         dadosCaso._descumpriuMedida = descumpriuMedida;
         dadosCaso._tentativaSuicidio = tentativaSuicidio;
         dadosCaso._desempregadoDificuldades = desempregadoDificuldades;
         dadosCaso._acessoArmas = acessoArmas;
-        dadosCaso._ameacouAgrediuOutrosIds = ameacouAgrediuOutrosIds;
+        dadosCaso._ameacouAgrediu = ameacouAgrediu;
 
         // Q16 - Filhos
         dadosCaso._temFilhosIds = temFilhosIds;
@@ -449,19 +449,20 @@ btnProximo.addEventListener('click', async () => {
         dadosCaso._q16ViolenciaGravidez = q16ViolenciaGravidez;
 
         // Valores convertidos para envio ao backend
-        dadosCaso.ameacaFamiliar = ameacas.length > 0 && !ameacas.includes('Não');
-        dadosCaso.agressaoFisica = agressoesGraves.length > 0 || outrasAgressoes.length > 0;
+        dadosCaso.ameacaFamiliar = ameacas;
+        dadosCaso.agressaoFisica = agressoesGraves;
+        dadosCaso.outrasFormasViolencia = outrasAgressoes;
         dadosCaso.abusoSexual = estupro === 'Sim';
-        dadosCaso.comportamentosAgressor = comportamentosIds;
+        dadosCaso.comportamentosAgressor = comportamentos;
         dadosCaso.ocorrenciaPolicialMedidaProtetivaAgressor = boMedida === 'Sim';
         dadosCaso.agressoesMaisFrequentesUltimamente = frequenciaAumento === 'Sim';
-        dadosCaso.usoDrogasAlcool = usoAbusivoIds;
+        dadosCaso.usoDrogasAlcool = usoDrogas;
         dadosCaso.doencaMental = doencaMental;
         dadosCaso.agressorCumpriuMedidaProtetiva = descumpriuMedida === 'Sim';
         dadosCaso.agressorTentativaSuicidio = tentativaSuicidio === 'Sim';
         dadosCaso.agressorDesempregado = desempregadoDificuldades;
         dadosCaso.agressorPossuiArmaFogo = acessoArmas;
-        dadosCaso.agressorAmeacouAlguem = ameacouAgrediuOutrosIds.length > 0 ? 'Sim' : 'Não';
+        dadosCaso.agressorAmeacouAlguem = ameacouAgrediu;
         dadosCaso.separacaoRecente = separacao;
         dadosCaso.novoRelacionamentoAumentouAgressao = novoRelacionamento === 'Sim';
         dadosCaso.possuiDeficienciaDoenca = deficiencia === 'Sim';

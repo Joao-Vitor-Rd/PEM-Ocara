@@ -43,11 +43,11 @@ export interface IElectronAPI {
     agressorTentativaSuicidio: boolean;
     agressorDesempregado: string;
     agressorPossuiArmaFogo: string;
-    agressorAmeacouAlguem: string;
+    agressorAmeacouAlguem: string[];
     // Historico Violencia
-    ameacaFamiliar: boolean;
-    agressaoFisica: boolean;
-    outrasFormasViolencia: string;
+    ameacaFamiliar: string[];
+    agressaoFisica: string[];
+    outrasFormasViolencia: string[];
     abusoSexual: boolean;
     comportamentosAgressor: string[];
     ocorrenciaPolicialMedidaProtetivaAgressor: boolean;
