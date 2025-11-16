@@ -229,6 +229,192 @@ function simularUpload(id) {
 document.addEventListener('DOMContentLoaded', function() {
   renderizarAnexos(dadosDosAnexos, 'lista-anexos');
   renderizarAnexos(dadosDosRelatorios, 'lista-relatorios');
+
+  // Modal de Encaminhamento
+  const botaoEncaminhamento = document.getElementById('encaminhamento');
+  const modalEncaminhamento = document.getElementById('modalEncaminhamento');
+  const botaoFecharModalEncaminhamento = document.getElementById('fecharModalEncaminhamento');
+  const selectEmailPara = document.getElementById('email-para');
+
+  // Simulação de redes que virão do backend
+  const redesCadastradas = [
+    { id: 1, nome: '[Rede Cadastrada]' },
+    { id: 2, nome: 'CAPS' },
+    { id: 3, nome: 'CREAS' },
+    { id: 4, nome: 'Delegacia da Mulher' },
+    { id: 5, nome: 'Defensoria Pública' }
+  ];
+
+  function carregarRedes() {
+    // Limpa as opções existentes (exceto a primeira)
+    selectEmailPara.innerHTML = '<option value="" disabled selected>Para</option>';
+    
+    // Adiciona as redes vindas do backend
+    redesCadastradas.forEach(rede => {
+      const option = document.createElement('option');
+      option.value = rede.id;
+      option.textContent = rede.nome;
+      selectEmailPara.appendChild(option);
+    });
+  }
+
+  function abrirModalEncaminhamento() {
+    carregarRedes();
+    modalEncaminhamento.classList.add('visible');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function fecharModalEncaminhamento() {
+    modalEncaminhamento.classList.remove('visible');
+    document.body.style.overflow = '';
+  }
+
+  if (botaoEncaminhamento) {
+    botaoEncaminhamento.addEventListener('click', abrirModalEncaminhamento);
+  }
+
+  if (botaoFecharModalEncaminhamento) {
+    botaoFecharModalEncaminhamento.addEventListener('click', fecharModalEncaminhamento);
+  }
+
+  // Anexo do modal - selecionar dos anexos já existentes
+  const botaoAnexo = document.getElementById('botaoAnexo');
+  const nomeAnexoModalEl = document.getElementById('nome-anexo-modal');
+  const menuAnexos = document.getElementById('menuAnexos');
+  const fecharMenuAnexos = document.getElementById('fecharMenuAnexos');
+  const listaAnexosModal = document.getElementById('listaAnexosModal');
+  let anexosSelecionados = [];
+
+  if (nomeAnexoModalEl) {
+    nomeAnexoModalEl.textContent = 'Nenhum anexo selecionado';
+  }
+
+  function atualizarListaAnexosModal() {
+    listaAnexosModal.innerHTML = '';
+    
+    // Combina anexos e relatórios
+    const todosAnexos = [
+      ...dadosDosAnexos.filter(a => a.status === 'upado'),
+      ...dadosDosRelatorios.filter(a => a.status === 'upado')
+    ];
+
+    if (todosAnexos.length === 0) {
+      listaAnexosModal.innerHTML = '<p style="text-align: center; color: #838383; padding: 20px;">Nenhum anexo disponível</p>';
+      return;
+    }
+
+    todosAnexos.forEach(anexo => {
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'anexo-item-modal';
+      
+      // Adiciona ícone de documento
+      const iconeDiv = document.createElement('div');
+      iconeDiv.className = 'anexo-icone-modal';
+      iconeDiv.innerHTML = '<span class="material-symbols-outlined">description</span>';
+      
+      const infoDiv = document.createElement('div');
+      infoDiv.className = 'anexo-info-modal';
+      
+      const nomeSpan = document.createElement('div');
+      nomeSpan.className = 'anexo-nome-modal';
+      nomeSpan.textContent = anexo.nome;
+      
+      infoDiv.appendChild(nomeSpan);
+      
+      itemDiv.appendChild(nomeSpan);
+      itemDiv.appendChild(iconeDiv);
+      
+      // Click no item inteiro seleciona
+      itemDiv.addEventListener('click', (e) => {
+        if (!anexosSelecionados.includes(anexo.id)) {
+          anexosSelecionados.push(anexo.id);
+        } else {
+          anexosSelecionados = anexosSelecionados.filter(id => id !== anexo.id);
+        }
+        
+        // Atualiza visual de seleção
+        if (anexosSelecionados.includes(anexo.id)) {
+          itemDiv.style.backgroundColor = '#F0E6F8';
+        } else {
+          itemDiv.style.backgroundColor = '#ffffff';
+        }
+        
+        atualizarTextoAnexosSelecionados();
+      });
+      
+      // Marca visual se já está selecionado
+      if (anexosSelecionados.includes(anexo.id)) {
+        itemDiv.style.backgroundColor = '#F0E6F8';
+      }
+      
+      listaAnexosModal.appendChild(itemDiv);
+    });
+  }
+
+  function atualizarTextoAnexosSelecionados() {
+    if (anexosSelecionados.length === 0) {
+      nomeAnexoModalEl.textContent = 'Nenhum anexo selecionado';
+    } else if (anexosSelecionados.length === 1) {
+      const anexo = [...dadosDosAnexos, ...dadosDosRelatorios].find(a => a.id === anexosSelecionados[0]);
+      nomeAnexoModalEl.textContent = anexo ? anexo.nome : '1 anexo selecionado';
+    } else {
+      nomeAnexoModalEl.textContent = `${anexosSelecionados.length} anexos selecionados`;
+    }
+  }
+
+  if (botaoAnexo) {
+    botaoAnexo.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      if (menuAnexos.style.display === 'none' || menuAnexos.style.display === '') {
+        atualizarListaAnexosModal();
+        menuAnexos.style.display = 'block';
+      } else {
+        menuAnexos.style.display = 'none';
+      }
+    });
+  }
+
+  if (fecharMenuAnexos) {
+    fecharMenuAnexos.addEventListener('click', () => {
+      menuAnexos.style.display = 'none';
+    });
+  }
+
+  // Fecha o menu ao clicar fora
+  document.addEventListener('click', (e) => {
+    if (menuAnexos && !menuAnexos.contains(e.target) && !botaoAnexo.contains(e.target)) {
+      menuAnexos.style.display = 'none';
+    }
+  });
+
+  // Botão enviar encaminhamento
+  const btnEnviarEncaminhamento = document.getElementById('btnEnviarEncaminhamento');
+  if (btnEnviarEncaminhamento) {
+    btnEnviarEncaminhamento.addEventListener('click', function() {
+      const emailPara = document.getElementById('email-para').value;
+      const emailAssunto = document.getElementById('email-assunto').value;
+      const emailCorpo = document.getElementById('email-corpo').value;
+      
+      console.log('Enviando encaminhamento...');
+      console.log('Para:', emailPara);
+      console.log('Assunto:', emailAssunto);
+      console.log('Corpo:', emailCorpo);
+      console.log('Anexos selecionados:', anexosSelecionados);
+      
+      // Aqui você implementará a lógica de envio
+      fecharModalEncaminhamento();
+      
+      // Limpa os campos após enviar
+      document.getElementById('email-para').value = '';
+      document.getElementById('email-assunto').value = '';
+      document.getElementById('email-corpo').value = '';
+      anexosSelecionados = [];
+      atualizarTextoAnexosSelecionados();
+      menuAnexos.style.display = 'none';
+    });
+  }
   
   // Eventos dos botões de anexar
   const botoesAnexar = document.querySelectorAll('#anexar-prova');
