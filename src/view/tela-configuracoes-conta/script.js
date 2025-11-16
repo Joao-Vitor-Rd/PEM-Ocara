@@ -22,6 +22,7 @@ function setupModal(modalId, triggerId) {
 setupModal('modalNome', 'itemNome');
 setupModal('modalCargo', 'itemCargo');
 setupModal('modalEmail', 'itemEmail');
+setupModal('modalSenha', 'itemSenha');
 
 window.addEventListener('click', (evento) => {
     if (evento.target === modalNome) {

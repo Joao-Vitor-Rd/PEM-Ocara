@@ -100,7 +100,7 @@
                         <path d="M1 1L9 9L1 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                     </svg>
                 </div>
-                <div class="info-item">
+                <div class="info-item" id="itemSenha">
                     <span class="info-label">Senha</span>
                     <svg class="info-arrow" viewBox="0 0 10 18" xmlns="http://www.w3.org/2000/svg">
                         <path d="M1 1L9 9L1 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
@@ -167,6 +167,27 @@
             </div>
         </div>
 
+            <!-- Modal Atualizar Senha -->
+            <div id="modalSenha" class="modal-overlay">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Atualizar Senha</h3>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="senhaAtual">Senha Atual</label>
+                            <input type="text" id="senhaAtual" placeholder="Digite sua senha atual">
+                        </div>
+                        <div class="form-group">
+                            <label for="novaSenha">Nova Senha</label>
+                            <input type="text" id="novaSenha" placeholder="Digite a nova senha">
+                        </div>
+                        <button class="btn-atualizar">Atualizar Dados</button>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Modal Atualizar E-mail -->
             <div id="modalEmail" class="modal-overlay">
                 <div class="modal-content">
