@@ -292,25 +292,31 @@ document.addEventListener('DOMContentLoaded', function() {
   function atualizarListaAnexosModal() {
     listaAnexosModal.innerHTML = '';
     
-    // Combina anexos e relatórios
+    // Sempre adiciona o formulário primeiro (vem do backend)
+    const formulario = {
+      id: 'formulario',
+      nome: 'Formulário'
+    };
+    
+    // Combina formulário, anexos e relatórios
     const todosAnexos = [
+      formulario,
       ...dadosDosAnexos.filter(a => a.status === 'upado'),
       ...dadosDosRelatorios.filter(a => a.status === 'upado')
     ];
-
-    if (todosAnexos.length === 0) {
-      listaAnexosModal.innerHTML = '<p style="text-align: center; color: #838383; padding: 20px;">Nenhum anexo disponível</p>';
-      return;
-    }
 
     todosAnexos.forEach(anexo => {
       const itemDiv = document.createElement('div');
       itemDiv.className = 'anexo-item-modal';
       
-      // Adiciona ícone de documento
+      // Adiciona ícone - attach_file para formulário, description para outros
       const iconeDiv = document.createElement('div');
       iconeDiv.className = 'anexo-icone-modal';
-      iconeDiv.innerHTML = '<span class="material-symbols-outlined">description</span>';
+      if (anexo.id === 'formulario') {
+        iconeDiv.innerHTML = '<span class="material-symbols-outlined">attach_file</span>';
+      } else {
+        iconeDiv.innerHTML = '<span class="material-symbols-outlined">description</span>';
+      }
       
       const infoDiv = document.createElement('div');
       infoDiv.className = 'anexo-info-modal';

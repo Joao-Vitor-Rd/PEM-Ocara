@@ -586,13 +586,15 @@ body {
 .modal-content {
     background-color: #63468C;
     border-radius: 0;
-    width: 90%;
-    max-width: 720px;
+    width: 920px;
+    height: 492px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     padding: 0;
     overflow: hidden;
     transform: scale(0.95);
     transition: transform 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
 }
 
 .modal-overlay.visible .modal-content {
@@ -603,8 +605,9 @@ body {
     display: flex;
     justify-content: space-between; 
     align-items: center;
-    padding: 20px 30px;
-    color: #ffffff; 
+    padding: 20px 20px;
+    color: #ffffff;
+    flex-shrink: 0;
 }
 
 .modal-title {
@@ -638,7 +641,10 @@ body {
 
 .modal-body {
     background-color: #ffffff;
-    padding: 0; 
+    padding: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .form-group {
@@ -687,7 +693,7 @@ body {
 
 .form-group textarea {
     width: 100%;
-    min-height: 180px;
+    min-height: 240px;
     resize: none;
     padding: 14px 20px;
     border: none;
@@ -705,6 +711,7 @@ body {
 .form-group textarea:focus {
     outline: none;
     background-color: #f8f8f8;
+    color: #000000;
 }
 
 #email-assunto::placeholder {
@@ -716,8 +723,9 @@ body {
     display: flex;
     justify-content: space-between; 
     align-items: center;
-    padding: 20px 25px; 
-    border-radius: 0; 
+    padding: 20px 25px;
+    border-radius: 0;
+    flex-shrink: 0;
 }
 
 .modal-icon {
