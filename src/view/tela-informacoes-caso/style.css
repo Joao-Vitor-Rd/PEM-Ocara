@@ -1,19 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700;800&display=swap');
 
 html,
-html,
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
     height: 100%;
     background-color: #FFFFFF;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 .app-container {
     display: flex;
     height: 100vh;
+    overflow: hidden;
 }
 
 /* Menu Lateral */
@@ -28,7 +28,11 @@ body {
     box-sizing: border-box;
     border-top-right-radius: 25px;
     border-bottom-right-radius: 25px;
-
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow-y: auto;
 }
 
 .sidebar-header {
@@ -102,43 +106,36 @@ body {
     width: 40px;
     height: 40px;
     flex-shrink: 0;
-}
-
-
-.main-content {
-    flex-grow: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    display: flex;
-    flex-direction: column;
-    padding: 50px 80px;
-    box-sizing: border-box;
-
-    max-width: 1920px;
-
-    margin: 0 auto;
-
+    font-size: 40px;
 }
 
 /* Conteúdo da Página */
 .main-content {
-    flex-grow: 10;
+    flex-grow: 1;
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
     padding: 50px 80px;
     box-sizing: border-box;
-    max-width: 1920px;
-    margin: 0 auto;
+    margin-left: clamp(340px, 28vw, 480px);
+    height: 100vh;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 30px;
 }
 
 .title h1 {
     font-size: 36px;
     font-weight: 600;
     color: #63468C;
-    margin-bottom: 30px;
+    margin: 0;
+    flex-grow: 1;
 }
 
 .title button {
@@ -146,8 +143,15 @@ body {
     color: #63468C;
     border: none;
     cursor: pointer;
-    align-self: flex-start;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: background-color 0.2s ease-in-out;
+}
+
+.title button .material-symbols-outlined {
+    font-size: 36px;
 }
 
 #acessar-form {
@@ -157,9 +161,20 @@ body {
     color: #FFFFFF;
     font-size: 40px;
     font-weight: 700;
+    display: flex;
     align-items: center;
+    justify-content: center;
     height: 169px;
+    min-height: 149px;
+    width: 100%;
     cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+#acessar-form:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .infos {
@@ -176,6 +191,136 @@ body {
     color: #63468C;
     letter-spacing: 2px;
     text-decoration: underline;
+    margin-bottom: 20px;
+}
+
+.provas ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+}
+
+.item-anexo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    background-color: #FFFFFF;
+    border-radius: 0;
+    border: 1px solid #63468C;
+    gap: 15px;
+}
+
+.icone-arquivo {
+    width: 105px;
+    height: 105px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #F5F5F5;
+}
+
+.icone-arquivo img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.info-arquivo {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.nome-arquivo {
+    font-size: 18px;
+    font-weight: 600;
+    color: #63468C;
+}
+
+.tamanho-arquivo {
+    font-size: 14px;
+    font-weight: 400;
+    color: #838383;
+}
+
+.progresso-info {
+    margin-bottom: 8px;
+}
+
+.texto-progresso {
+    font-size: 14px;
+    font-weight: 600;
+    color: #63468C;
+}
+
+.barra-progresso {
+    width: 100%;
+    height: 10px;
+    background-color: #E0E0E0;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.barra-progresso-preenchida {
+    height: 100%;
+    background-color: #B291DE;
+    transition: width 0.3s ease;
+}
+
+.btn-cancelar {
+    background-color: transparent;
+    color: #838383;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.btn-cancelar:hover {
+    opacity: 0.7;
+}
+
+.btn-cancelar:active {
+    transform: scale(0.95);
+}
+
+.btn-cancelar .material-symbols-outlined {
+    font-size: 50px;
+    width: 50px;
+    height: 50px;
+}
+
+.btn-apagar {
+    background-color: transparent;
+    color: #838383;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.btn-apagar:hover {
+    opacity: 0.7;
+}
+
+.btn-apagar:active {
+    transform: scale(0.95);
+}
+
+.btn-apagar .material-symbols-outlined {
+    font-size: 50px;
+    width: 50px;
+    height: 50px;
 }
 
 #anexar-prova {
@@ -187,8 +332,17 @@ body {
     letter-spacing: 2px;
     border-radius: 25px;
     align-items: center;
+    width: 100%;
     height: 109px;
     cursor: pointer;
+    display: block;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+#anexar-prova:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .redes h1 {
@@ -215,7 +369,27 @@ body {
     border-radius: 15px;
     align-items: center;
     height: 73px;
+    width: 100%;
     cursor: pointer;
+    display: block;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+#encaminhamento:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#divisao {
+    width: 100%;
+    height: 5px;
+    background-color: #63468C !important;
+    border-radius: 5px;
+    box-shadow: 0 4px 10px #B291DE;
+    margin: 40px 0;
+    display: block;
+    min-height: 5px;
 }
 
 /* rodape */
@@ -223,6 +397,12 @@ body {
     margin-top: auto;
     padding-top: 40px;
     padding-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding-left: 80px;
+    padding-right: 80px;
 }
 
 .rodape p {
@@ -231,6 +411,7 @@ body {
     font-weight: 700;
     font-size: 16px;
     color: #63468C;
+    margin: 0;
 }
 
 .logo-esquerda {
@@ -243,4 +424,110 @@ body {
     width: 133px;
     height: 100px;
     object-fit: contain;
+}
+
+/* Popup de Upload */
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background-color: #FFFFFF;
+    border-radius: 15px;
+    padding: 40px;
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.btn-fechar-popup {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: transparent;
+    border: none;
+    color: #838383;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease;
+}
+
+.btn-fechar-popup:hover {
+    opacity: 0.7;
+}
+
+.btn-fechar-popup .material-symbols-outlined {
+    font-size: 32px;
+}
+
+.popup-content h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #63468C;
+    margin: 0 0 30px 0;
+    text-align: center;
+}
+
+.drop-zone {
+    border: 3px dashed #B291DE;
+    border-radius: 15px;
+    padding: 60px 40px;
+    text-align: center;
+    background-color: #F9F9F9;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    cursor: pointer;
+}
+
+.drop-zone.drag-over {
+    background-color: #F3E5F5;
+    border-color: #63468C;
+}
+
+.drop-zone p {
+    font-size: 20px;
+    font-weight: 600;
+    color: #63468C;
+    margin: 15px 0;
+}
+
+.ou-texto {
+    font-size: 16px;
+    font-weight: 400;
+    color: #838383;
+    margin: 20px 0;
+}
+
+.btn-selecionar {
+    background-color: #63468C;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 25px;
+    padding: 15px 40px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.btn-selecionar:hover {
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-selecionar:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }

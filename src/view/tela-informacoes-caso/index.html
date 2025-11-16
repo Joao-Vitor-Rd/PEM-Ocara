@@ -8,8 +8,9 @@
     <title>Informações do Caso</title>
 </head>
 <body>
-    <!-- Menu Lateral -->
-    <aside class="sidebar">
+    <div class="app-container">
+        <!-- Menu Lateral -->
+        <aside class="sidebar">
         <header class="sidebar-header">
             <h1>PEM OCARA</h1>
             <hr class="sidebar-divider" />
@@ -51,9 +52,8 @@
         </nav>
     </aside>
 
-    <main class="main-content flex-grow-1 bg-white p-4" style="overflow-y: auto">
-
     <!-- Conteúdo da Página -->
+    <main class="main-content">
     <div class="title">
         <h1>Informações sobre o Caso <span id="Protocolo"></span></h1>
         <button><span class="material-symbols-outlined">close</span></button>
@@ -110,5 +110,29 @@
             class="logo-direita"
         />
     </footer>
+    </main>
+    </div>
+
+    <!-- Popup de Upload -->
+    <div id="popup-upload" class="popup-overlay">
+        <div class="popup-content">
+            <button id="fechar-popup" class="btn-fechar-popup">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            
+            <h2>Adicionar Arquivo</h2>
+            
+            <div id="drop-zone" class="drop-zone">
+                <span class="material-symbols-outlined" style="font-size: 80px; color: #B291DE;">upload_file</span>
+                <p>Arraste o arquivo aqui</p>
+                <p class="ou-texto">ou</p>
+                <button id="btn-selecionar-arquivo" class="btn-selecionar">SELECIONAR ARQUIVO</button>
+            </div>
+            
+            <input type="file" id="file-input" style="display: none;" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
