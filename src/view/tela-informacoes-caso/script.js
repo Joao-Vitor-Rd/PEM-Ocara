@@ -36,6 +36,36 @@ const dadosDosRelatorios = [
   }
 ];
 
+// Função para obter o ícone correto baseado na extensão do arquivo
+function obterIconeArquivo(nomeArquivo) {
+  const extensao = nomeArquivo.split('.').pop().toLowerCase();
+  
+  switch(extensao) {
+    case 'pdf':
+      return 'icons/pdf.png';
+    case 'doc':
+    case 'docx':
+      return 'icons/doc.png';
+    case 'txt':
+      return 'icons/txt.png';
+    case 'jpg':
+    case 'jpeg':
+      return 'icons/jpg.png';
+    case 'png':
+      return 'icons/png.png';
+    case 'mp3':
+      return 'icons/mp3.png';
+    case 'mp4':
+    case 'm4a':
+      return 'icons/mov.png';
+    case 'zip':
+    case 'rar':
+      return 'icons/fecho-eclair.png';
+    default:
+      return 'icons/pdf.png'; // Ícone padrão
+  }
+}
+
 // Função para renderizar anexos
 function renderizarAnexos(dados, containerId) {
   const listaContainer = document.getElementById(containerId);
@@ -55,9 +85,10 @@ function renderizarAnexos(dados, containerId) {
     
     if (estaUpando) {
       // Layout para arquivo em upload
+      const iconeArquivo = obterIconeArquivo(arquivo.nome);
       itemLista.innerHTML = `
         <div class="icone-arquivo">
-          <span class="material-symbols-outlined" style="font-size: 60px; color: #63468C;">description</span>
+          <img src="${iconeArquivo}" alt="Ícone do arquivo">
         </div>
         
         <div class="info-arquivo">
@@ -75,9 +106,10 @@ function renderizarAnexos(dados, containerId) {
       `;
     } else {
       // Layout para arquivo upado
+      const iconeArquivo = obterIconeArquivo(arquivo.nome);
       itemLista.innerHTML = `
         <div class="icone-arquivo">
-          <span class="material-symbols-outlined" style="font-size: 60px; color: #63468C;">description</span>
+          <img src="${iconeArquivo}" alt="Ícone do arquivo">
         </div>
         
         <div class="info-arquivo">
@@ -309,13 +341,14 @@ document.addEventListener('DOMContentLoaded', function() {
       const itemDiv = document.createElement('div');
       itemDiv.className = 'anexo-item-modal';
       
-      // Adiciona ícone - attach_file para formulário, description para outros
+      // Adiciona ícone - attach_file para formulário, ícone do arquivo para outros
       const iconeDiv = document.createElement('div');
       iconeDiv.className = 'anexo-icone-modal';
       if (anexo.id === 'formulario') {
         iconeDiv.innerHTML = '<span class="material-symbols-outlined">attach_file</span>';
       } else {
-        iconeDiv.innerHTML = '<span class="material-symbols-outlined">description</span>';
+        const iconeArquivo = obterIconeArquivo(anexo.nome);
+        iconeDiv.innerHTML = `<img src="${iconeArquivo}" alt="Ícone do arquivo" style="width: 24px; height: 24px;">`;
       }
       
       const infoDiv = document.createElement('div');
