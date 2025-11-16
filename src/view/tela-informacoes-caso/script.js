@@ -36,6 +36,9 @@ const dadosDosRelatorios = [
   }
 ];
 
+// Variável para rastrear se está anexando prova ou relatório
+let tipoAnexoAtual = 'prova'; // 'prova' ou 'relatorio'
+
 // Função para obter o ícone correto baseado na extensão do arquivo
 function obterIconeArquivo(nomeArquivo) {
   const extensao = nomeArquivo.split('.').pop().toLowerCase();
@@ -192,7 +195,8 @@ function cancelarUpload(id, containerId) {
 }
 
 // Função para abrir popup de upload
-function abrirPopupUpload() {
+function abrirPopupUpload(tipo) {
+  tipoAnexoAtual = tipo || 'prova';
   const popup = document.getElementById('popup-upload');
   popup.style.display = 'flex';
 }
@@ -210,6 +214,14 @@ function handleFileSelect(files) {
   if (files.length > 0) {
     const file = files[0];
     console.log('Arquivo selecionado:', file.name);
+    console.log('Tipo de anexo:', tipoAnexoAtual);
+    
+    // Verifica se o arquivo excede 100MB
+    const maxSize = 100 * 1024 * 1024; // 100MB em bytes
+    if (file.size > maxSize) {
+      alert('O arquivo excede o tamanho máximo permitido de 100MB. Por favor, selecione um arquivo menor.');
+      return;
+    }
     
     // Aqui você faria o upload do arquivo
     // Por enquanto, vamos simular adicionando à lista
@@ -221,11 +233,16 @@ function handleFileSelect(files) {
       progresso: 0
     };
     
-    dadosDosAnexos.push(novoAnexo);
-    renderizarAnexos(dadosDosAnexos, 'lista-anexos');
-    
-    // Simula progresso do upload
-    simularUpload(novoAnexo.id);
+    // Adiciona ao array correto baseado no tipo
+    if (tipoAnexoAtual === 'relatorio') {
+      dadosDosRelatorios.push(novoAnexo);
+      renderizarAnexos(dadosDosRelatorios, 'lista-relatorios');
+      simularUpload(novoAnexo.id, 'relatorio');
+    } else {
+      dadosDosAnexos.push(novoAnexo);
+      renderizarAnexos(dadosDosAnexos, 'lista-anexos');
+      simularUpload(novoAnexo.id, 'prova');
+    }
     
     fecharPopupUpload();
   }
@@ -239,18 +256,23 @@ function formatarTamanho(bytes) {
 }
 
 // Função para simular upload (remover quando integrar com backend)
-function simularUpload(id) {
+function simularUpload(id, tipo) {
   let progresso = 0;
   const interval = setInterval(() => {
     progresso += 10;
-    const anexo = dadosDosAnexos.find(a => a.id === id);
+    
+    // Busca no array correto
+    const dados = tipo === 'relatorio' ? dadosDosRelatorios : dadosDosAnexos;
+    const containerId = tipo === 'relatorio' ? 'lista-relatorios' : 'lista-anexos';
+    
+    const anexo = dados.find(a => a.id === id);
     if (anexo) {
       anexo.progresso = progresso;
       if (progresso >= 100) {
         anexo.status = 'upado';
         clearInterval(interval);
       }
-      renderizarAnexos(dadosDosAnexos, 'lista-anexos');
+      renderizarAnexos(dados, containerId);
     } else {
       clearInterval(interval);
     }
@@ -456,10 +478,15 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   // Eventos dos botões de anexar
-  const botoesAnexar = document.querySelectorAll('#anexar-prova');
-  botoesAnexar.forEach(botao => {
-    botao.addEventListener('click', abrirPopupUpload);
-  });
+  const botaoAnexarProva = document.getElementById('anexar-prova');
+  if (botaoAnexarProva) {
+    botaoAnexarProva.addEventListener('click', () => abrirPopupUpload('prova'));
+  }
+  
+  const botaoAnexarRelatorio = document.getElementById('anexar-relatorio');
+  if (botaoAnexarRelatorio) {
+    botaoAnexarRelatorio.addEventListener('click', () => abrirPopupUpload('relatorio'));
+  }
   
   // Evento do botão fechar popup
   const btnFecharPopup = document.getElementById('fechar-popup');

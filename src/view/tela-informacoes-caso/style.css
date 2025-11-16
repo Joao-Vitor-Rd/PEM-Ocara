@@ -204,7 +204,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 15px 20px;
+    padding: 30px 20px;
     margin-bottom: 10px;
     background-color: #FFFFFF;
     border-radius: 0;
@@ -220,6 +220,7 @@ body {
     align-items: center;
     justify-content: center;
     background-color: #FFFFFF;
+    margin-right: 20px;
 }
 
 .icone-arquivo img {
@@ -236,30 +237,31 @@ body {
 }
 
 .nome-arquivo {
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 24px;
+    font-weight: 500;
     color: #63468C;
+    margin-bottom: 15px;
 }
 
 .tamanho-arquivo {
-    font-size: 14px;
-    font-weight: 400;
+    font-size: 24px;
+    font-weight: 500;
     color: #838383;
 }
 
 .progresso-info {
-    margin-bottom: 8px;
+    margin-bottom: 15px;
 }
 
 .texto-progresso {
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 24px;
+    font-weight: 500;
     color: #63468C;
 }
 
 .barra-progresso {
     width: 100%;
-    height: 10px;
+    height: 8px;
     background-color: #E0E0E0;
     border-radius: 5px;
     overflow: hidden;
@@ -267,7 +269,7 @@ body {
 
 .barra-progresso-preenchida {
     height: 100%;
-    background-color: #B291DE;
+    background-color: #63468C;
     transition: width 0.3s ease;
 }
 
@@ -281,6 +283,7 @@ body {
     align-items: center;
     justify-content: center;
     transition: opacity 0.2s ease, transform 0.1s ease;
+    margin-left: 20px;
 }
 
 .btn-cancelar:hover {
@@ -307,6 +310,7 @@ body {
     align-items: center;
     justify-content: center;
     transition: opacity 0.2s ease, transform 0.1s ease;
+    margin-left: 20px;
 }
 
 .btn-apagar:hover {
@@ -323,7 +327,8 @@ body {
     height: 50px;
 }
 
-#anexar-prova {
+#anexar-prova,
+#anexar-relatorio {
     background-color: #63468C;
     border: 1px solid #865D2B;
     color: #FFFFFF;
@@ -340,7 +345,8 @@ body {
     transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
-#anexar-prova:active {
+#anexar-prova:active,
+#anexar-relatorio:active {
     transform: scale(0.98);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
