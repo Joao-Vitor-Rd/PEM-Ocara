@@ -116,9 +116,9 @@ body {
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
-    padding: 50px 80px;
+    padding: 46px 31px;
     box-sizing: border-box;
-    margin-left: clamp(340px, 28vw, 480px);
+    margin-left: calc(clamp(340px, 28vw, 480px) + 31px);
     height: 100vh;
 }
 
@@ -127,7 +127,7 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    margin-bottom: 30px;
+    margin-bottom: 28px;
 }
 
 .title h1 {
@@ -171,6 +171,7 @@ body {
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
     transition: transform 0.1s ease, box-shadow 0.1s ease;
+    margin-bottom: 28px;
 }
 
 #acessar-form:active {
@@ -184,6 +185,7 @@ body {
     font-weight: 500;
     gap: 20px;
     text-decoration: underline;
+    margin-bottom: 28px;
 }
 
 .infos span {
@@ -200,13 +202,13 @@ body {
     color: #63468C;
     letter-spacing: 0.15em;
     text-decoration: underline;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .provas ul {
     list-style: none;
     padding: 0;
-    margin: 0 0 20px 0;
+    margin: 0 0 46px 0;
 }
 
 .item-anexo {
@@ -214,7 +216,7 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 30px 20px;
-    margin-bottom: 10px;
+    margin-bottom: 28px;
     background-color: #FFFFFF;
     border-radius: 0;
     border: 1px solid #63468C;
@@ -336,7 +338,24 @@ body {
     height: 50px;
 }
 
-#anexar-prova,
+#anexar-prova {
+    background-color: #63468C;
+    border: 1px solid #865D2B;
+    color: #FFFFFF;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    border-radius: 25px;
+    align-items: center;
+    width: 100%;
+    height: 109px;
+    cursor: pointer;
+    display: block;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    margin-bottom: 46px;
+}
+
 #anexar-relatorio {
     background-color: #63468C;
     border: 1px solid #865D2B;
@@ -352,6 +371,7 @@ body {
     display: block;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
     transition: transform 0.1s ease, box-shadow 0.1s ease;
+    margin-bottom: 28px;
 }
 
 #anexar-prova:active,
@@ -366,12 +386,22 @@ body {
     color: #63468C;
     letter-spacing: 0.15em;
     text-decoration: underline;
+    margin-bottom: 0;
 }
 
 .redes p {
     font-size: 24px;
     font-weight: 400;
     color: #63468C;
+}
+
+#redes-contatadas {
+    font-size: 24px;
+    font-weight: 400;
+    color: #372354;
+    letter-spacing: 0.15em;
+    margin-top: 5px;
+    margin-bottom: 28px;
 }
 
 #encaminhamento {
@@ -389,6 +419,7 @@ body {
     display: block;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
     transition: transform 0.1s ease, box-shadow 0.1s ease;
+    margin-bottom: 28px;
 }
 
 #encaminhamento:active {
@@ -402,7 +433,7 @@ body {
     background-color: #63468C !important;
     border-radius: 5px;
     box-shadow: 0 4px 10px #B291DE;
-    margin: 40px 0;
+    margin: 46px 0;
     display: block;
     min-height: 5px;
 }
