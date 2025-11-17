@@ -1,464 +1,410 @@
-// Dados que vem do backend
-let dadosDoCaso = {};
-let dadosDosAnexos = [];
-let dadosDosRelatorios = [];
-let tipoAnexoAtual = 'prova';
+// Configuração centralizada de constantes
+const Config = {
+    MAX_FILE_SIZE: 100 * 1024 * 1024, // 100MB
+    IDS: {
+        LISTA_ANEXOS: 'lista-anexos',
+        LISTA_RELATORIOS: 'lista-relatorios',
+        INPUT_FILE: 'file-input',
+        POPUP_UPLOAD: 'popup-upload'
+    },
+    ICONS: {
+        'pdf': 'icons/pdf.png',
+        'doc': 'icons/doc.png', 'docx': 'icons/doc.png',
+        'txt': 'icons/txt.png',
+        'jpg': 'icons/jpg.png', 'jpeg': 'icons/jpg.png',
+        'png': 'icons/png.png',
+        'mp3': 'icons/mp3.png',
+        'mp4': 'icons/mov.png', 'm4a': 'icons/mov.png',
+        'zip': 'icons/fecho-eclair.png', 'rar': 'icons/fecho-eclair.png',
+        'default': 'icons/pdf.png'
+    }
+};
 
-// Pega o icone certo pra cada tipo de arquivo
-function obterIconeArquivo(nomeArquivo) {
-    const extensao = nomeArquivo.split('.').pop().toLowerCase();
-    
-    switch (extensao) {
-        case 'pdf':
-            return 'icons/pdf.png';
-        case 'doc':
-        case 'docx':
-            return 'icons/doc.png';
-        case 'txt':
-            return 'icons/txt.png';
-        case 'jpg':
-        case 'jpeg':
-            return 'icons/jpg.png';
-        case 'png':
-            return 'icons/png.png';
-        case 'mp3':
-            return 'icons/mp3.png';
-        case 'mp4':
-        case 'm4a':
-            return 'icons/mov.png';
-        case 'zip':
-        case 'rar':
-            return 'icons/fecho-eclair.png';
-        default:
-            return 'icons/pdf.png';
-    }
-}
+// Funções utilitárias de formatação
+const Formatters = {
+    obterIcone(nomeArquivo) {
+        if (!nomeArquivo) return Config.ICONS['default'];
+        const extensao = nomeArquivo.split('.').pop().toLowerCase();
+        return Config.ICONS[extensao] || Config.ICONS['default'];
+    },
 
-// Encurta nomes de arquivo muito grandes
-function truncarNomeArquivo(nomeCompleto, maxLength = 40) {
-    if (nomeCompleto.length <= maxLength) {
-        return nomeCompleto;
-    }
-    
-    const ultimoPonto = nomeCompleto.lastIndexOf('.');
-    
-    if (ultimoPonto === -1) {
-        return nomeCompleto.substring(0, maxLength - 3) + '...';
-    }
-    
-    const nome = nomeCompleto.substring(0, ultimoPonto);
-    const extensao = nomeCompleto.substring(ultimoPonto);
-    const espacoParaNome = maxLength - extensao.length - 3;
-    
-    if (espacoParaNome <= 0) {
-        return nomeCompleto.substring(0, maxLength - 3) + '...';
-    }
-    
-    return nome.substring(0, espacoParaNome) + '...' + extensao;
-}
+    tamanhoArquivo(bytes) {
+        if (bytes === 0) return '0 B';
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    },
 
-// Converte bytes em KB, MB, etc
-function formatarTamanho(bytes) {
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-}
-
-// Cria os cards de anexos na tela
-function renderizarAnexos(dados, containerId) {
-    const listaContainer = document.getElementById(containerId);
-    
-    if (!listaContainer) {
-        console.error(`Container ${containerId} não encontrado`);
-        return;
-    }
-    
-    listaContainer.innerHTML = "";
-    
-    dados.forEach(arquivo => {
-        const itemLista = document.createElement("li");
-        itemLista.className = "item-anexo";
-        const estaUpando = arquivo.status === 'upando';
+    truncarNome(nome, maxLength = 40) {
+        if (nome.length <= maxLength) return nome;
+        const ultimoPonto = nome.lastIndexOf('.');
+        if (ultimoPonto === -1) return nome.substring(0, maxLength - 3) + '...';
         
-        if (estaUpando) {
-            // Layout com barra de progresso
-            const iconeArquivo = obterIconeArquivo(arquivo.nome);
-            itemLista.innerHTML = `
-                <div class="icone-arquivo">
-                    <img src="${iconeArquivo}" alt="Ícone do arquivo">
-                </div>
-                
-                <div class="info-arquivo">
-                    <div class="progresso-info">
-                        <span class="texto-progresso">Upando arquivo... ${arquivo.progresso || 0}%</span>
+        const nomeSemExt = nome.substring(0, ultimoPonto);
+        const ext = nome.substring(ultimoPonto);
+        const charsDisponiveis = maxLength - ext.length - 3;
+        if (charsDisponiveis <= 0) return nome.substring(0, maxLength - 3) + '...';
+        
+        return nomeSemExt.substring(0, charsDisponiveis) + '...' + ext;
+    }
+};
+
+// Gerencia os dados dos arquivos
+class FileManager {
+    constructor() {
+        this.state = {
+            prova: [],      // Lista de Provas (Anexos)
+            relatorio: []   // Lista de Relatórios
+        };
+    }
+
+    adicionar(tipo, arquivo) {
+        if (this.state[tipo]) {
+            this.state[tipo].push(arquivo);
+        }
+    }
+
+    remover(id) {
+        this.state.prova = this.state.prova.filter(f => f.id !== id);
+        this.state.relatorio = this.state.relatorio.filter(f => f.id !== id);
+    }
+
+    atualizarProgresso(id, progresso) {
+        const arquivo = this.buscarPorId(id);
+        if (arquivo) {
+            arquivo.progresso = progresso;
+            arquivo.status = progresso >= 100 ? 'upado' : 'upando';
+        }
+        return arquivo;
+    }
+
+    buscarPorId(id) {
+        return [...this.state.prova, ...this.state.relatorio].find(f => f.id === id);
+    }
+
+    obterTodos(tipo) {
+        return this.state[tipo] || [];
+    }
+
+    obterTodosCombinados() {
+        return [...this.state.prova, ...this.state.relatorio];
+    }
+}
+
+// Gerencia a interface e manipulação do DOM
+class UIManager {
+    constructor() {
+        this.containers = {
+            prova: document.getElementById(Config.IDS.LISTA_ANEXOS),
+            relatorio: document.getElementById(Config.IDS.LISTA_RELATORIOS)
+        };
+    }
+
+    renderizarLista(tipo, arquivos, callbacks) {
+        const container = this.containers[tipo];
+        if (!container) return;
+
+        container.innerHTML = "";
+
+        arquivos.forEach(arquivo => {
+            const li = document.createElement("li");
+            li.className = "item-anexo";
+            const icone = Formatters.obterIcone(arquivo.nome);
+
+            if (arquivo.status === 'upando') {
+                li.innerHTML = `
+                    <div class="icone-arquivo"><img src="${icone}" alt="file"></div>
+                    <div class="info-arquivo">
+                        <div class="progresso-info"><span class="texto-progresso">Upando arquivo... ${arquivo.progresso}%</span></div>
+                        <div class="barra-progresso"><div class="barra-progresso-preenchida" style="width: ${arquivo.progresso}%"></div></div>
                     </div>
-                    <div class="barra-progresso">
-                        <div class="barra-progresso-preenchida" style="width: ${arquivo.progresso || 0}%"></div>
+                    <button class="btn-cancelar" type="button"><span class="material-symbols-outlined">cancel</span></button>
+                `;
+                li.querySelector('.btn-cancelar').onclick = () => callbacks.onCancel(arquivo.id);
+            } else {
+                const nomeExibicao = Formatters.truncarNome(arquivo.nome);
+                li.innerHTML = `
+                    <div class="icone-arquivo"><img src="${icone}" alt="file"></div>
+                    <div class="info-arquivo">
+                        <span class="nome-arquivo" title="${arquivo.nome}">${nomeExibicao}</span>
+                        <span class="tamanho-arquivo">${arquivo.tamanho}</span>
                     </div>
-                </div>
-                
-                <button class="btn-cancelar" data-id="${arquivo.id}">
-                    <span class="material-symbols-outlined">cancel</span>
-                </button>
+                    <button class="btn-apagar" type="button"><span class="material-symbols-outlined">delete_forever</span></button>
+                `;
+                li.querySelector('.btn-apagar').onclick = () => callbacks.onDelete(arquivo.id);
+            }
+            container.appendChild(li);
+        });
+    }
+
+    renderizarSelecaoModal(todosArquivos, selecionadosIds, onToggle) {
+        const listaModal = document.getElementById('listaAnexosModal');
+        const labelNome = document.getElementById('nome-anexo-modal');
+        if (!listaModal) return;
+
+        listaModal.innerHTML = '';
+
+        const itens = [{ id: 'formulario', nome: 'Formulário', fixo: true }, ...todosArquivos.filter(a => a.status === 'upado')];
+
+        itens.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'anexo-item-modal';
+            
+            const isSelected = selecionadosIds.includes(item.id);
+            if (isSelected) div.style.backgroundColor = '#F0E6F8';
+
+            const iconeHTML = item.fixo 
+                ? '<span class="material-symbols-outlined">attach_file</span>' 
+                : '<span class="material-symbols-outlined">description</span>';
+
+            div.innerHTML = `
+                <div class="anexo-nome-modal" title="${item.nome}">${Formatters.truncarNome(item.nome, 35)}</div>
+                <div class="anexo-icone-modal">${iconeHTML}</div>
             `;
+
+            div.onclick = (e) => {
+                e.stopPropagation();
+                onToggle(item.id);
+            };
+
+            listaModal.appendChild(div);
+        });
+
+        if (selecionadosIds.length === 0) labelNome.textContent = 'Nenhum anexo selecionado';
+        else if (selecionadosIds.length === 1) {
+            const item = itens.find(i => i.id === selecionadosIds[0]);
+            labelNome.textContent = item ? item.nome : '1 anexo selecionado';
         } else {
-            // Layout normal do arquivo
-            const iconeArquivo = obterIconeArquivo(arquivo.nome);
-            const nomeExibicao = truncarNomeArquivo(arquivo.nome);
-            itemLista.innerHTML = `
-                <div class="icone-arquivo">
-                    <img src="${iconeArquivo}" alt="Ícone do arquivo">
-                </div>
-                
-                <div class="info-arquivo">
-                    <span class="nome-arquivo" title="${arquivo.nome}">${nomeExibicao}</span>
-                    <span class="tamanho-arquivo">${arquivo.tamanho}</span>
-                </div>
-                
-                <button class="btn-apagar" data-id="${arquivo.id}">
-                    <span class="material-symbols-outlined">delete_forever</span>
-                </button>
-            `;
+            labelNome.textContent = `${selecionadosIds.length} anexos selecionados`;
+        }
+    }
+
+    togglePopupUpload(mostrar) {
+        const popup = document.getElementById(Config.IDS.POPUP_UPLOAD);
+        if (popup) {
+            popup.style.display = mostrar ? 'flex' : 'none';
+            if (!mostrar) document.getElementById(Config.IDS.INPUT_FILE).value = '';
+        }
+    }
+
+    toggleModalEncaminhamento(mostrar) {
+        const modal = document.getElementById('modalEncaminhamento');
+        if (modal) {
+            if (mostrar) {
+                modal.classList.add('visible');
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.classList.remove('visible');
+                document.body.style.overflow = '';
+            }
+        }
+    }
+
+    preencherDadosCaso(dados) {
+        const mapaCampos = {
+            'Protocolo': 'protocolo',
+            'Assistida': 'assistida',
+            'Agressor': 'agressor',
+            'DataCadastro': 'dataCadastro',
+            'StatusAssistencia': 'statusAssistencia',
+            'StatusJuridico': 'statusJuridico',
+            'TipoViolencia': 'tipoViolencia',
+            'redes-contatadas': 'redesContatadas'
+        };
+
+        for (const [id, prop] of Object.entries(mapaCampos)) {
+            const el = document.getElementById(id);
+            if (el && dados[prop]) {
+                el.textContent = dados[prop];
+            }
         }
         
-        listaContainer.appendChild(itemLista);
-    });
-    
-    // Botões de apagar
-    const botoesApagar = listaContainer.querySelectorAll('.btn-apagar');
-    botoesApagar.forEach(botao => {
-        botao.addEventListener('click', function() {
-            const id = this.getAttribute('data-id');
-            apagarAnexo(id, containerId);
-        });
-    });
-    
-    // Botões de cancelar
-    const botoesCancelar = listaContainer.querySelectorAll('.btn-cancelar');
-    botoesCancelar.forEach(botao => {
-        botao.addEventListener('click', function() {
-            const id = this.getAttribute('data-id');
-            cancelarUpload(id, containerId);
-        });
-    });
-}
-
-// Apaga um arquivo da lista
-function apagarAnexo(id, containerId) {
-    if (confirm('Tem certeza que deseja apagar este arquivo?')) {
-        console.log(`Apagando arquivo com ID: ${id}`);
-        
-        if (containerId === 'lista-anexos') {
-            const index = dadosDosAnexos.findIndex(a => a.id === id);
-            if (index > -1) {
-                dadosDosAnexos.splice(index, 1);
-                renderizarAnexos(dadosDosAnexos, 'lista-anexos');
-            }
-        } else if (containerId === 'lista-relatorios') {
-            const index = dadosDosRelatorios.findIndex(a => a.id === id);
-            if (index > -1) {
-                dadosDosRelatorios.splice(index, 1);
-                renderizarAnexos(dadosDosRelatorios, 'lista-relatorios');
-            }
+        const redesEl = document.getElementById('redes-contatadas');
+        if (redesEl && !dados.redesContatadas) {
+            redesEl.textContent = 'Nenhuma rede de apoio foi contatada até o momento';
         }
     }
 }
 
-// Cancela upload em andamento
-function cancelarUpload(id, containerId) {
-    if (confirm('Tem certeza que deseja cancelar o upload?')) {
-        console.log(`Cancelando upload do arquivo com ID: ${id}`);
-        
-        if (containerId === 'lista-anexos') {
-            const index = dadosDosAnexos.findIndex(a => a.id === id);
-            if (index > -1) {
-                dadosDosAnexos.splice(index, 1);
-                renderizarAnexos(dadosDosAnexos, 'lista-anexos');
+// Inicializa quando a página carregar
+document.addEventListener('DOMContentLoaded', async () => {
+    const fileManager = new FileManager();
+    const uiManager = new UIManager();
+    
+    let estadoUpload = { tipoAtual: 'prova' };
+    let estadoEncaminhamento = { anexosSelecionadosIds: [] };
+    
+    let redesCadastradas = []; // Array de redes que vem do backend
+    let dadosDoCaso = {}; // Dados do caso que vem do backend
+
+    const atualizarTela = ()=> {
+        const acoesArquivo = {
+            onDelete: (id) => {
+                if (confirm('Tem certeza que deseja apagar este arquivo?')) {
+                    fileManager.remover(id);
+                    atualizarTela();
+                }
+            },
+            onCancel: (id) => {
+                if (confirm('Cancelar o upload?')) {
+                    fileManager.remover(id);
+                    atualizarTela();
+                }
             }
-        } else if (containerId === 'lista-relatorios') {
-            const index = dadosDosRelatorios.findIndex(a => a.id === id);
-            if (index > -1) {
-                dadosDosRelatorios.splice(index, 1);
-                renderizarAnexos(dadosDosRelatorios, 'lista-relatorios');
-            }
-        }
-    }
-}
+        };
 
-// Abre popup de upload
-function abrirPopupUpload(tipo) {
-    tipoAnexoAtual = tipo || 'prova';
-    const popup = document.getElementById('popup-upload');
-    popup.style.display = 'flex';
-}
+        uiManager.renderizarLista('prova', fileManager.obterTodos('prova'), acoesArquivo);
+        uiManager.renderizarLista('relatorio', fileManager.obterTodos('relatorio'), acoesArquivo);
+    };
 
-// Fecha popup de upload
-function fecharPopupUpload() {
-    const popup = document.getElementById('popup-upload');
-    popup.style.display = 'none';
-    document.getElementById('file-input').value = '';
-}
-
-// Processa arquivo selecionado
-function handleFileSelect(files) {
-    if (files.length > 0) {
+    const iniciarUpload = (files) => {
+        if (!files || files.length === 0) return;
         const file = files[0];
-        console.log('Arquivo selecionado:', file.name);
-        console.log('Tipo de anexo:', tipoAnexoAtual);
         
-        // Valida tamanho maximo de 100MB
-        const maxSize = 100 * 1024 * 1024;
-        if (file.size > maxSize) {
+        console.log('Arquivo selecionado:', file.name);
+        console.log('Tipo de anexo:', estadoUpload.tipoAtual);
+
+        if (file.size > Config.MAX_FILE_SIZE) {
             alert('O arquivo excede o tamanho máximo permitido de 100MB. Por favor, selecione um arquivo menor.');
             return;
         }
-        
-        const novoAnexo = {
+
+        const novoArquivo = {
             id: 'uuid-' + Date.now(),
             nome: file.name,
-            tamanho: formatarTamanho(file.size),
+            tamanho: Formatters.tamanhoArquivo(file.size),
             status: 'upando',
-            progresso: 0
+            progresso: 0,
+            rawFile: file
         };
-        
-        // Adiciona na lista certa
-        if (tipoAnexoAtual === 'relatorio') {
-            dadosDosRelatorios.push(novoAnexo);
-            renderizarAnexos(dadosDosRelatorios, 'lista-relatorios');
-            simularUpload(novoAnexo.id, 'relatorio');
-        } else {
-            dadosDosAnexos.push(novoAnexo);
-            renderizarAnexos(dadosDosAnexos, 'lista-anexos');
-            simularUpload(novoAnexo.id, 'prova');
-        }
-        
-        fecharPopupUpload();
-    }
-}
 
-// Simula progresso de upload (remover quando integrar backend)
-function simularUpload(id, tipo) {
-    let progresso = 0;
-    const interval = setInterval(() => {
-        progresso += 10;
-        
-        const dados = tipo === 'relatorio' ? dadosDosRelatorios : dadosDosAnexos;
-        const containerId = tipo === 'relatorio' ? 'lista-relatorios' : 'lista-anexos';
-        
-        const anexo = dados.find(a => a.id === id);
-        if (anexo) {
-            anexo.progresso = progresso;
-            if (progresso >= 100) {
-                anexo.status = 'upado';
-                clearInterval(interval);
+        fileManager.adicionar(estadoUpload.tipoAtual, novoArquivo);
+        uiManager.togglePopupUpload(false);
+        atualizarTela();
+        simularBackendUpload(novoArquivo.id, estadoUpload.tipoAtual);
+    };
+
+    const simularBackendUpload = (id, tipo) => {
+        let progresso = 0;
+        const intervalo = setInterval(() => {
+            progresso += 10;
+            const arquivo = fileManager.atualizarProgresso(id, progresso);
+            
+            if (!arquivo) {
+                clearInterval(intervalo);
+                return;
             }
-            renderizarAnexos(dados, containerId);
-        } else {
-            clearInterval(interval);
-        }
-    }, 500);
-}
 
-// Preenche informacoes do caso na tela
-function preencherInformacoesCaso(dados) {
-    if (!dados) return;
-    
-    if (dados.protocolo) {
-        document.getElementById('Protocolo').textContent = dados.protocolo;
-    }
-    if (dados.assistida) {
-        document.getElementById('Assistida').textContent = dados.assistida;
-    }
-    if (dados.agressor) {
-        document.getElementById('Agressor').textContent = dados.agressor;
-    }
-    if (dados.dataCadastro) {
-        document.getElementById('DataCadastro').textContent = dados.dataCadastro;
-    }
-    if (dados.statusAssistencia) {
-        document.getElementById('StatusAssistencia').textContent = dados.statusAssistencia;
-    }
-    if (dados.statusJuridico) {
-        document.getElementById('StatusJuridico').textContent = dados.statusJuridico;
-    }
-    if (dados.tipoViolencia) {
-        document.getElementById('TipoViolencia').textContent = dados.tipoViolencia;
-    }
-    
-    const redesContatadas = document.getElementById('redes-contatadas');
-    if (dados.redesContatadas && dados.redesContatadas.trim() !== '') {
-        redesContatadas.textContent = dados.redesContatadas;
-    } else {
-        redesContatadas.textContent = 'Nenhuma rede de apoio foi contatada até o momento';
-    }
-}
+            if (progresso >= 100) {
+                clearInterval(intervalo);
+            }
+            
+            atualizarTela(); 
+        }, 500);
+    };
 
-// Inicializa tudo quando a pagina carregar
-document.addEventListener('DOMContentLoaded', function() {
-    // Mensagem padrao se nao tiver redes contatadas
-    const redesContatadas = document.getElementById('redes-contatadas');
-    if (redesContatadas && !redesContatadas.textContent.trim()) {
-        redesContatadas.textContent = 'Nenhuma rede de apoio foi contatada até o momento';
+    // Botões de anexar
+    const btnAnexarProva = document.getElementById('anexar-prova');
+    if (btnAnexarProva) {
+        btnAnexarProva.onclick = () => {
+            estadoUpload.tipoAtual = 'prova';
+            uiManager.togglePopupUpload(true);
+        };
     }
-    
-    renderizarAnexos(dadosDosAnexos, 'lista-anexos');
-    renderizarAnexos(dadosDosRelatorios, 'lista-relatorios');
+
+    const btnAnexarRelatorio = document.getElementById('anexar-relatorio');
+    if (btnAnexarRelatorio) {
+        btnAnexarRelatorio.onclick = () => {
+            estadoUpload.tipoAtual = 'relatorio';
+            uiManager.togglePopupUpload(true);
+        };
+    }
+
+    // Popup de upload
+    const btnFecharPopup = document.getElementById('fechar-popup');
+    if (btnFecharPopup) btnFecharPopup.onclick = () => uiManager.togglePopupUpload(false);
+
+    const fileInput = document.getElementById(Config.IDS.INPUT_FILE);
+    if (fileInput) fileInput.onchange = (e) => iniciarUpload(e.target.files);
+
+    const btnSelecionarArquivo = document.getElementById('btn-selecionar-arquivo');
+    if (btnSelecionarArquivo && fileInput) {
+        btnSelecionarArquivo.onclick = () => fileInput.click();
+    }
+
+    // Drag and drop
+    const dropZone = document.getElementById('drop-zone');
+    if (dropZone) {
+        dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); };
+        dropZone.ondragleave = (e) => { e.preventDefault(); dropZone.classList.remove('drag-over'); };
+        dropZone.ondrop = (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            iniciarUpload(e.dataTransfer.files);
+        };
+    }
 
     // Modal de encaminhamento
-    const botaoEncaminhamento = document.getElementById('encaminhamento');
-    const modalEncaminhamento = document.getElementById('modalEncaminhamento');
-    const botaoFecharModalEncaminhamento = document.getElementById('fecharModalEncaminhamento');
+    const btnAbrirEncaminhamento = document.getElementById('encaminhamento');
     const selectEmailPara = document.getElementById('email-para');
 
-    let redesCadastradas = []; // Array de redes que vem do backend
-
-    function carregarRedes() {
-        selectEmailPara.innerHTML = '<option value="" disabled selected>Para</option>';
-        
-        redesCadastradas.forEach(rede => {
-            const option = document.createElement('option');
-            option.value = rede.id;
-            option.textContent = rede.nome;
-            selectEmailPara.appendChild(option);
-        });
+    if (btnAbrirEncaminhamento) {
+        btnAbrirEncaminhamento.onclick = () => {
+            if (selectEmailPara) {
+                selectEmailPara.innerHTML = '<option value="" disabled selected>Para</option>';
+                redesCadastradas.forEach(rede => {
+                    const opt = document.createElement('option');
+                    opt.value = rede.id;
+                    opt.textContent = rede.nome;
+                    selectEmailPara.appendChild(opt);
+                });
+            }
+            uiManager.toggleModalEncaminhamento(true);
+        };
     }
 
-    function abrirModalEncaminhamento() {
-        carregarRedes();
-        modalEncaminhamento.classList.add('visible');
-        document.body.style.overflow = 'hidden';
-    }
+    const btnFecharEncaminhamento = document.getElementById('fecharModalEncaminhamento');
+    if (btnFecharEncaminhamento) btnFecharEncaminhamento.onclick = () => uiManager.toggleModalEncaminhamento(false);
 
-    function fecharModalEncaminhamento() {
-        modalEncaminhamento.classList.remove('visible');
-        document.body.style.overflow = '';
-    }
-
-    if (botaoEncaminhamento) {
-        botaoEncaminhamento.addEventListener('click', abrirModalEncaminhamento);
-    }
-
-    if (botaoFecharModalEncaminhamento) {
-        botaoFecharModalEncaminhamento.addEventListener('click', fecharModalEncaminhamento);
-    }
-
-    // Selecao de anexos no modal
-    const botaoAnexo = document.getElementById('botaoAnexo');
-    const nomeAnexoModalEl = document.getElementById('nome-anexo-modal');
+    // Dropdown de anexos no modal
+    const botaoDropdownAnexo = document.getElementById('botaoAnexo');
     const menuAnexos = document.getElementById('menuAnexos');
     const fecharMenuAnexos = document.getElementById('fecharMenuAnexos');
-    const listaAnexosModal = document.getElementById('listaAnexosModal');
-    
-    let anexosSelecionados = [];
 
-    if (nomeAnexoModalEl) {
-        nomeAnexoModalEl.textContent = 'Nenhum anexo selecionado';
-    }
-
-    // Monta lista de anexos disponiveis
-    function atualizarListaAnexosModal() {
-        listaAnexosModal.innerHTML = '';
-        
-        const formulario = {
-            id: 'formulario',
-            nome: 'Formulário'
-        };
-        
-        const todosAnexos = [
-            formulario,
-            ...dadosDosAnexos.filter(a => a.status === 'upado'),
-            ...dadosDosRelatorios.filter(a => a.status === 'upado')
-        ];
-
-        todosAnexos.forEach(anexo => {
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'anexo-item-modal';
+    const atualizarDropdownModal = () => {
+        const todosArquivos = fileManager.obterTodosCombinados();
+        uiManager.renderizarSelecaoModal(todosArquivos, estadoEncaminhamento.anexosSelecionadosIds, (idClicado) => {
+            const index = estadoEncaminhamento.anexosSelecionadosIds.indexOf(idClicado);
+            if (index === -1) estadoEncaminhamento.anexosSelecionadosIds.push(idClicado);
+            else estadoEncaminhamento.anexosSelecionadosIds.splice(index, 1);
             
-            const iconeDiv = document.createElement('div');
-            iconeDiv.className = 'anexo-icone-modal';
-            if (anexo.id === 'formulario') {
-                iconeDiv.innerHTML = '<span class="material-symbols-outlined">attach_file</span>';
-            } else {
-                iconeDiv.innerHTML = '<span class="material-symbols-outlined">description</span>';
-            }
-            
-            const nomeSpan = document.createElement('div');
-            nomeSpan.className = 'anexo-nome-modal';
-            const nomeExibicao = truncarNomeArquivo(anexo.nome, 35);
-            nomeSpan.textContent = nomeExibicao;
-            nomeSpan.title = anexo.nome;
-            
-            itemDiv.appendChild(nomeSpan);
-            itemDiv.appendChild(iconeDiv);
-            
-            // Clique seleciona/desseleciona
-            itemDiv.addEventListener('click', (e) => {
-                if (!anexosSelecionados.includes(anexo.id)) {
-                    anexosSelecionados.push(anexo.id);
-                } else {
-                    anexosSelecionados = anexosSelecionados.filter(id => id !== anexo.id);
-                }
-                
-                if (anexosSelecionados.includes(anexo.id)) {
-                    itemDiv.style.backgroundColor = '#F0E6F8';
-                } else {
-                    itemDiv.style.backgroundColor = '#ffffff';
-                }
-                
-                atualizarTextoAnexosSelecionados();
-            });
-            
-            if (anexosSelecionados.includes(anexo.id)) {
-                itemDiv.style.backgroundColor = '#F0E6F8';
-            }
-            
-            listaAnexosModal.appendChild(itemDiv);
+            atualizarDropdownModal();
         });
-    }
+    };
 
-    // Atualiza texto de quantos anexos foram selecionados
-    function atualizarTextoAnexosSelecionados() {
-        if (anexosSelecionados.length === 0) {
-            nomeAnexoModalEl.textContent = 'Nenhum anexo selecionado';
-        } else if (anexosSelecionados.length === 1) {
-            const anexo = [...dadosDosAnexos, ...dadosDosRelatorios].find(a => a.id === anexosSelecionados[0]);
-            nomeAnexoModalEl.textContent = anexo ? anexo.nome : '1 anexo selecionado';
-        } else {
-            nomeAnexoModalEl.textContent = `${anexosSelecionados.length} anexos selecionados`;
-        }
-    }
-
-    if (botaoAnexo) {
-        botaoAnexo.addEventListener('click', (e) => {
-            e.preventDefault();
+    if (botaoDropdownAnexo && menuAnexos) {
+        botaoDropdownAnexo.onclick = (e) => {
             e.stopPropagation();
-            
-            if (menuAnexos.style.display === 'none' || menuAnexos.style.display === '') {
-                atualizarListaAnexosModal();
-                menuAnexos.style.display = 'block';
-            } else {
-                menuAnexos.style.display = 'none';
-            }
-        });
+            const estaVisivel = menuAnexos.style.display === 'block';
+            menuAnexos.style.display = estaVisivel ? 'none' : 'block';
+            if (!estaVisivel) atualizarDropdownModal();
+        };
     }
 
-    if (fecharMenuAnexos) {
-        fecharMenuAnexos.addEventListener('click', () => {
-            menuAnexos.style.display = 'none';
-        });
-    }
+    if (fecharMenuAnexos) fecharMenuAnexos.onclick = () => menuAnexos.style.display = 'none';
 
-    // Fecha dropdown se clicar fora
+    // Fecha dropdown ao clicar fora
     document.addEventListener('click', (e) => {
-        if (menuAnexos && !menuAnexos.contains(e.target) && !botaoAnexo.contains(e.target)) {
+        if (menuAnexos && menuAnexos.style.display === 'block' && 
+            !menuAnexos.contains(e.target) && !botaoDropdownAnexo.contains(e.target)) {
             menuAnexos.style.display = 'none';
         }
     });
 
-    // Botao enviar encaminhamento
-    const btnEnviarEncaminhamento = document.getElementById('btnEnviarEncaminhamento');
-    if (btnEnviarEncaminhamento) {
-        btnEnviarEncaminhamento.addEventListener('click', function() {
+    // Botão enviar encaminhamento
+    const btnEnviar = document.getElementById('btnEnviarEncaminhamento');
+    if (btnEnviar) {
+        btnEnviar.onclick = () => {
             const emailPara = document.getElementById('email-para').value;
             const emailAssunto = document.getElementById('email-assunto').value;
             const emailCorpo = document.getElementById('email-corpo').value;
@@ -467,68 +413,54 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Para:', emailPara);
             console.log('Assunto:', emailAssunto);
             console.log('Corpo:', emailCorpo);
-            console.log('Anexos selecionados:', anexosSelecionados);
+            console.log('Anexos selecionados:', estadoEncaminhamento.anexosSelecionadosIds);
             
-            fecharModalEncaminhamento();
+            uiManager.toggleModalEncaminhamento(false);
             
             // Limpa campos
             document.getElementById('email-para').value = '';
             document.getElementById('email-assunto').value = '';
             document.getElementById('email-corpo').value = '';
-            anexosSelecionados = [];
-            atualizarTextoAnexosSelecionados();
+            estadoEncaminhamento.anexosSelecionadosIds = [];
             menuAnexos.style.display = 'none';
-        });
+        };
     }
+
+    // Carrega dados do caso do backend
+    async function carregarDadosDoCaso() {
+        try {
+            // Busca o protocolo do sessionStorage ou URL
+            const casoJSON = sessionStorage.getItem('dadosCaso');
+            if (casoJSON) {
+                dadosDoCaso = JSON.parse(casoJSON);
+                
+                // Preenche os dados na tela
+                uiManager.preencherDadosCaso({
+                    protocolo: dadosDoCaso.protocolo || '',
+                    assistida: dadosDoCaso.nomeAssistida || '',
+                    agressor: dadosDoCaso.nomeAgressor || '',
+                    dataCadastro: dadosDoCaso.data ? new Date(dadosDoCaso.data).toLocaleDateString('pt-BR') : '',
+                    statusAssistencia: dadosDoCaso.statusAssistencia || '',
+                    statusJuridico: dadosDoCaso.statusJuridico || '',
+                    tipoViolencia: dadosDoCaso.tipoViolencia || '',
+                    redesContatadas: dadosDoCaso.redesContatadas || ''
+                });
+                
+                console.log('Dados do caso carregados:', dadosDoCaso);
+            }
+        } catch (error) {
+            console.error('Erro ao carregar dados do caso:', error);
+        }
+    }
+
+    // Inicializa mensagem padrão de redes contatadas
+    const redesContatadas = document.getElementById('redes-contatadas');
+    if (redesContatadas && !redesContatadas.textContent.trim()) {
+        redesContatadas.textContent = 'Nenhuma rede de apoio foi contatada até o momento';
+    }
+
+    // Carrega dados do backend
+    await carregarDadosDoCaso();
     
-    // Botoes de anexar
-    const botaoAnexarProva = document.getElementById('anexar-prova');
-    if (botaoAnexarProva) {
-        botaoAnexarProva.addEventListener('click', () => abrirPopupUpload('prova'));
-    }
-    
-    const botaoAnexarRelatorio = document.getElementById('anexar-relatorio');
-    if (botaoAnexarRelatorio) {
-        botaoAnexarRelatorio.addEventListener('click', () => abrirPopupUpload('relatorio'));
-    }
-    
-    // Popup de upload
-    const btnFecharPopup = document.getElementById('fechar-popup');
-    if (btnFecharPopup) {
-        btnFecharPopup.addEventListener('click', fecharPopupUpload);
-    }
-    
-    const fileInput = document.getElementById('file-input');
-    if (fileInput) {
-        fileInput.addEventListener('change', function(e) {
-            handleFileSelect(e.target.files);
-        });
-    }
-    
-    const btnSelecionarArquivo = document.getElementById('btn-selecionar-arquivo');
-    if (btnSelecionarArquivo) {
-        btnSelecionarArquivo.addEventListener('click', function() {
-            fileInput.click();
-        });
-    }
-    
-    // Drag and drop
-    const dropZone = document.getElementById('drop-zone');
-    if (dropZone) {
-        dropZone.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            dropZone.classList.add('drag-over');
-        });
-        
-        dropZone.addEventListener('dragleave', function(e) {
-            e.preventDefault();
-            dropZone.classList.remove('drag-over');
-        });
-        
-        dropZone.addEventListener('drop', function(e) {
-            e.preventDefault();
-            dropZone.classList.remove('drag-over');
-            handleFileSelect(e.dataTransfer.files);
-        });
-    }
+    atualizarTela();
 });
