@@ -1,11 +1,14 @@
-// Configuração centralizada de constantes
+// Configurações gerais
 const Config = {
     MAX_FILE_SIZE: 100 * 1024 * 1024, // 100MB
     IDS: {
         LISTA_ANEXOS: 'lista-anexos',
         LISTA_RELATORIOS: 'lista-relatorios',
         INPUT_FILE: 'file-input',
-        POPUP_UPLOAD: 'popup-upload'
+        POPUP_UPLOAD: 'popup-upload',
+        POPUP_CONFIRMACAO: 'popupConfirmacao',
+        MSG_CONFIRMACAO: 'popupMensagem',
+        BTN_OK_CONFIRMACAO: 'popupBtnOk'
     },
     ICONS: {
         'pdf': 'icons/pdf.png',
@@ -20,7 +23,7 @@ const Config = {
     }
 };
 
-// Funções utilitárias de formatação
+// Funções auxiliares de formatação
 const Formatters = {
     obterIcone(nomeArquivo) {
         if (!nomeArquivo) return Config.ICONS['default'];
@@ -49,12 +52,12 @@ const Formatters = {
     }
 };
 
-// Gerencia os dados dos arquivos
+// Gerenciador de arquivos
 class FileManager {
     constructor() {
         this.state = {
-            prova: [],      // Lista de Provas (Anexos)
-            relatorio: []   // Lista de Relatórios
+            prova: [],
+            relatorio: []
         };
     }
 
@@ -91,13 +94,30 @@ class FileManager {
     }
 }
 
-// Gerencia a interface e manipulação do DOM
+// Gerenciador de interface
 class UIManager {
     constructor() {
         this.containers = {
             prova: document.getElementById(Config.IDS.LISTA_ANEXOS),
             relatorio: document.getElementById(Config.IDS.LISTA_RELATORIOS)
         };
+    }
+
+    mostrarPopup(mensagem) {
+        const popup = document.getElementById(Config.IDS.POPUP_CONFIRMACAO);
+        const popupMensagem = document.getElementById(Config.IDS.MSG_CONFIRMACAO);
+        const btnOk = document.getElementById(Config.IDS.BTN_OK_CONFIRMACAO);
+        
+        if (popup && popupMensagem) {
+            popupMensagem.textContent = mensagem;
+            popup.classList.add('visible');
+            
+            if (btnOk) {
+                btnOk.onclick = () => popup.classList.remove('visible');
+            }
+        } else {
+            alert(mensagem);
+        }
     }
 
     renderizarLista(tipo, arquivos, callbacks) {
@@ -226,30 +246,21 @@ class UIManager {
     }
 }
 
-// Inicializa quando a página carregar
+// Inicialização da página
 document.addEventListener('DOMContentLoaded', async () => {
     const fileManager = new FileManager();
     const uiManager = new UIManager();
     
     let estadoUpload = { tipoAtual: 'prova' };
     let estadoEncaminhamento = { anexosSelecionadosIds: [] };
-    
-    let redesCadastradas = []; // Array de redes que vem do backend
-    let dadosDoCaso = {}; // Dados do caso que vem do backend
+    let dadosDoCaso = {};
 
-    // Função para mostrar popup customizado
-    const mostrarPopup = (mensagem) => {
-        const popup = document.getElementById('popupConfirmacao');
-        const popupMensagem = document.getElementById('popupMensagem');
-        const btnOk = document.getElementById('popupBtnOk');
-        
-        popupMensagem.textContent = mensagem;
-        popup.classList.add('visible');
-        
-        btnOk.onclick = () => {
-            popup.classList.remove('visible');
-        };
-    };
+    const redesCadastradas = [
+        { id: 1, nome: 'CRAS - Centro de Referência' },
+        { id: 2, nome: 'Delegacia da Mulher' },
+        { id: 3, nome: 'Ministério Público' },
+        { id: 4, nome: 'CREAS' }
+    ];
 
     const atualizarTela = ()=> {
         const acoesArquivo = {
@@ -281,7 +292,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log('Tipo de anexo:', estadoUpload.tipoAtual);
 
         if (file.size > Config.MAX_FILE_SIZE) {
-            mostrarPopup('O arquivo excede o tamanho máximo permitido de 100MB. Por favor, selecione um arquivo menor.');
+            uiManager.mostrarPopup('O arquivo excede o tamanho máximo permitido de 100MB.');
             return;
         }
 
@@ -433,8 +444,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             uiManager.toggleModalEncaminhamento(false);
             
-            // Exibe popup de sucesso
-            mostrarPopup('Email enviado com sucesso!');
+            uiManager.mostrarPopup('Email enviado com sucesso!');
             
             // Limpa campos
             document.getElementById('email-para').value = '';
@@ -448,12 +458,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Carrega dados do caso do backend
     async function carregarDadosDoCaso() {
         try {
-            // Busca o protocolo do sessionStorage ou URL
             const casoJSON = sessionStorage.getItem('dadosCaso');
             if (casoJSON) {
                 dadosDoCaso = JSON.parse(casoJSON);
                 
-                // Preenche os dados na tela
                 uiManager.preencherDadosCaso({
                     protocolo: dadosDoCaso.protocolo || '',
                     assistida: dadosDoCaso.nomeAssistida || '',
@@ -482,12 +490,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             try {
                 dadosDoCaso.statusAssistencia = novoStatus;
                 sessionStorage.setItem('dadosCaso', JSON.stringify(dadosDoCaso));
-                
-                mostrarPopup('Status atualizado com sucesso!');
-                console.log('Status salvo no sessionStorage');
+                uiManager.mostrarPopup('Status atualizado com sucesso!');
             } catch (error) {
                 console.error('Erro ao atualizar status:', error);
-                mostrarPopup('Erro ao atualizar o status. Tente novamente.');
+                uiManager.mostrarPopup('Erro ao atualizar o status.');
             }
         });
     }
