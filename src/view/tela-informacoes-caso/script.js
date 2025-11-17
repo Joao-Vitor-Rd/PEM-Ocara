@@ -255,12 +255,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let estadoEncaminhamento = { anexosSelecionadosIds: [] };
     let dadosDoCaso = {};
 
-    const redesCadastradas = [
-        { id: 1, nome: 'CRAS - Centro de Referência' },
-        { id: 2, nome: 'Delegacia da Mulher' },
-        { id: 3, nome: 'Ministério Público' },
-        { id: 4, nome: 'CREAS' }
-    ];
+    const redesCadastradas = [];
 
     const atualizarTela = ()=> {
         const acoesArquivo = {
