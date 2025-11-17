@@ -1,52 +1,10 @@
-// --- Simulação dos dados vindos do seu Backend ---
-// Dados do caso
-const dadosDoCaso = {
-  protocolo: "2024-0001234",
-  assistida: "Maria da Silva Santos",
-  agressor: "João da Silva Santos",
-  dataCadastro: "15/11/2024",
-  statusAssistencia: "Em Acompanhamento",
-  statusJuridico: "Processo em Andamento",
-  tipoViolencia: "Violência Física e Psicológica",
-  redesContatadas: "CRAS Centro, Delegacia da Mulher, CAPS"
-};
+// --- Dados que virão do Backend ---
+// Dados do caso (a serem preenchidos pelo backend)
+let dadosDoCaso = {};
 
-const dadosDosAnexos = [
-  {
-    id: "uuid-12345",
-    nome: "boletim_ocorrencia.pdf",
-    tamanho: "2.5 MB",
-    status: "upado"
-  },
-  {
-    id: "uuid-67890",
-    nome: "comprovante_residencia.jpg",
-    tamanho: "1.2 MB",
-    status: "upando",
-    progresso: 65
-  },
-  {
-    id: "uuid-abcde",
-    nome: "documento_identidade.pdf",
-    tamanho: "850 KB",
-    status: "upado"
-  }
-];
-
-const dadosDosRelatorios = [
-  {
-    id: "uuid-11111",
-    nome: "relatorio_psicologico.pdf",
-    tamanho: "3.1 MB",
-    status: "upado"
-  },
-  {
-    id: "uuid-22222",
-    nome: "relatorio_social.pdf",
-    tamanho: "1.8 MB",
-    status: "upado"
-  }
-];
+// Arrays de anexos e relatórios (a serem preenchidos pelo backend)
+let dadosDosAnexos = [];
+let dadosDosRelatorios = [];
 
 // Variável para rastrear se está anexando prova ou relatório
 let tipoAnexoAtual = 'prova'; // 'prova' ou 'relatorio'
@@ -79,6 +37,33 @@ function obterIconeArquivo(nomeArquivo) {
     default:
       return 'icons/pdf.png'; // Ícone padrão
   }
+}
+
+// Função para truncar nomes de arquivos longos
+function truncarNomeArquivo(nomeCompleto, maxLength = 40) {
+  if (nomeCompleto.length <= maxLength) {
+    return nomeCompleto;
+  }
+  
+  // Separa nome e extensão
+  const ultimoPonto = nomeCompleto.lastIndexOf('.');
+  if (ultimoPonto === -1) {
+    // Sem extensão, trunca normalmente
+    return nomeCompleto.substring(0, maxLength - 3) + '...';
+  }
+  
+  const nome = nomeCompleto.substring(0, ultimoPonto);
+  const extensao = nomeCompleto.substring(ultimoPonto);
+  
+  // Calcula quanto do nome pode ser mostrado
+  const espacoParaNome = maxLength - extensao.length - 3; // 3 para "..."
+  
+  if (espacoParaNome <= 0) {
+    // Extensão muito longa, trunca tudo
+    return nomeCompleto.substring(0, maxLength - 3) + '...';
+  }
+  
+  return nome.substring(0, espacoParaNome) + '...' + extensao;
 }
 
 // Função para renderizar anexos
@@ -122,13 +107,14 @@ function renderizarAnexos(dados, containerId) {
     } else {
       // Layout para arquivo upado
       const iconeArquivo = obterIconeArquivo(arquivo.nome);
+      const nomeExibicao = truncarNomeArquivo(arquivo.nome);
       itemLista.innerHTML = `
         <div class="icone-arquivo">
           <img src="${iconeArquivo}" alt="Ícone do arquivo">
         </div>
         
         <div class="info-arquivo">
-          <span class="nome-arquivo">${arquivo.nome}</span>
+          <span class="nome-arquivo" title="${arquivo.nome}">${nomeExibicao}</span>
           <span class="tamanho-arquivo">${arquivo.tamanho}</span>
         </div>
         
@@ -291,28 +277,44 @@ function simularUpload(id, tipo) {
   }, 500);
 }
 
-// Função para preencher as informações do caso
-function preencherInformacoesCaso() {
+// Função para preencher as informações do caso (chamar quando receber dados do backend)
+function preencherInformacoesCaso(dados) {
+  if (!dados) return;
+  
   // Preenche o protocolo no título
-  document.getElementById('Protocolo').textContent = dadosDoCaso.protocolo;
+  if (dados.protocolo) {
+    document.getElementById('Protocolo').textContent = dados.protocolo;
+  }
   
   // Preenche as informações do caso
-  document.getElementById('Assistida').textContent = dadosDoCaso.assistida;
-  document.getElementById('Agressor').textContent = dadosDoCaso.agressor;
-  document.getElementById('DataCadastro').textContent = dadosDoCaso.dataCadastro;
-  document.getElementById('StatusAssistencia').textContent = dadosDoCaso.statusAssistencia;
-  document.getElementById('StatusJuridico').textContent = dadosDoCaso.statusJuridico;
-  document.getElementById('TipoViolencia').textContent = dadosDoCaso.tipoViolencia;
+  if (dados.assistida) {
+    document.getElementById('Assistida').textContent = dados.assistida;
+  }
+  if (dados.agressor) {
+    document.getElementById('Agressor').textContent = dados.agressor;
+  }
+  if (dados.dataCadastro) {
+    document.getElementById('DataCadastro').textContent = dados.dataCadastro;
+  }
+  if (dados.statusAssistencia) {
+    document.getElementById('StatusAssistencia').textContent = dados.statusAssistencia;
+  }
+  if (dados.statusJuridico) {
+    document.getElementById('StatusJuridico').textContent = dados.statusJuridico;
+  }
+  if (dados.tipoViolencia) {
+    document.getElementById('TipoViolencia').textContent = dados.tipoViolencia;
+  }
   
   // Preenche as redes contatadas
-  document.getElementById('redes-contatadas').textContent = dadosDoCaso.redesContatadas;
+  if (dados.redesContatadas) {
+    document.getElementById('redes-contatadas').textContent = dados.redesContatadas;
+  }
 }
 
 // Renderiza as listas quando a página carregar
 document.addEventListener('DOMContentLoaded', function() {
-  // Preenche as informações do caso
-  preencherInformacoesCaso();
-  
+  // Renderiza as listas de anexos e relatórios
   renderizarAnexos(dadosDosAnexos, 'lista-anexos');
   renderizarAnexos(dadosDosRelatorios, 'lista-relatorios');
 
@@ -322,14 +324,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const botaoFecharModalEncaminhamento = document.getElementById('fecharModalEncaminhamento');
   const selectEmailPara = document.getElementById('email-para');
 
-  // Simulação de redes que virão do backend
-  const redesCadastradas = [
-    { id: 1, nome: '[Rede Cadastrada]' },
-    { id: 2, nome: 'CAPS' },
-    { id: 3, nome: 'CREAS' },
-    { id: 4, nome: 'Delegacia da Mulher' },
-    { id: 5, nome: 'Defensoria Pública' }
-  ];
+  // Array de redes (a ser preenchido pelo backend)
+  let redesCadastradas = [];
 
   function carregarRedes() {
     // Limpa as opções existentes (exceto a primeira)
@@ -409,7 +405,9 @@ document.addEventListener('DOMContentLoaded', function() {
       
       const nomeSpan = document.createElement('div');
       nomeSpan.className = 'anexo-nome-modal';
-      nomeSpan.textContent = anexo.nome;
+      const nomeExibicao = truncarNomeArquivo(anexo.nome, 35);
+      nomeSpan.textContent = nomeExibicao;
+      nomeSpan.title = anexo.nome; // Tooltip com nome completo
       
       infoDiv.appendChild(nomeSpan);
       
