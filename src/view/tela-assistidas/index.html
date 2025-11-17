@@ -79,7 +79,7 @@
 
             <!-- inicial -->
 
-            <li>
+            <li id="telaInicial">
               <a href="#">
                 <svg
                   viewBox="0 0 34 38"
@@ -168,7 +168,7 @@
 
           <div class="row linha-botao-full">
             <div class="col-12 text-start mb-3">
-              <button class="btn-assistida fw-bold">
+              <button id="telaCadastroAssistida" class="btn-assistida fw-bold">
                 CADASTRAR NOVA ASSISTIDA
               </button>
             </div>
@@ -176,12 +176,7 @@
 
           <!--Card-->
           <div class="row gy-4 gx-5">
-            <div class="col-md-6">
-              <div class="text-center card-paciente">
-                <h3 class="mb-2">ID Assistida</h3>
-                <p id="">Nome Assistida</p>
-              </div>
-            </div>
+              
           </div>
         </section>
 
@@ -207,5 +202,8 @@
         </footer>
       </main>
     </div>
+
+    <script type="module" src="../../../dist/renderers/telaAssistidaRenderer.js"></script>
+
   </body>
 </html>

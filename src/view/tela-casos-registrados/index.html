@@ -38,7 +38,7 @@
           <ul>
             <!-- assistidas -->
 
-            <li>
+            <li id="listarAssistidas">
               <a href="#" class="active">
                 <svg
                   viewBox="0 0 34 34"
@@ -79,7 +79,7 @@
 
             <!-- inicial -->
 
-            <li>
+            <li id="telaInicial">
               <a href="#">
                 <svg
                   viewBox="0 0 34 38"
@@ -168,9 +168,12 @@
           >
             Casos Registrados a [Assistida ID]
 
-            <span class="material-symbols-outlined icone-titulo-close">
-              close
-            </span>
+            <div id="sairBtn">
+              <span class="material-symbols-outlined icone-titulo-close">
+                close
+              </span>
+            </div>
+            
           </h2>
           <div class="row">
             <div class="col-12 text-start mb-3">
@@ -215,5 +218,6 @@
         </footer>
       </main>
     </div>
+    <script type="module" src="../../../dist/renderers/telaCasosRegistradosRenderer.js"></script>
   </body>
 </html>

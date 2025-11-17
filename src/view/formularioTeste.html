@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Atendimento - Cadastro da Assistida</title>
+    <style>
+        /* Estilos Globais */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px; /* Aumenta a largura para tela única */
+            width: 100%;
+        }
+
+        h1 {
+            color: #4a148c;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        /* Títulos de Seção */
+        .step-content h2 {
+            color: #6a1b9a;
+            font-size: 24px;
+            text-align: center;
+            margin: 20px 0 30px 0;
+            font-weight: 600;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .step-content h3 {
+            color: #6a1b9a;
+            font-size: 18px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 5px;
+        }
+        
+        /* --- Estilos de Input e Formulário --- */
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="text"], input[type="email"], input[type="number"], input[type="date"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #6a1b9a;
+            box-shadow: 0 0 0 3px rgba(106, 27, 154, 0.1);
+        }
+
+        /* --- Estilos para Checkbox/Radio --- */
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-weight: normal;
+        }
+
+        .checkbox-group input[type="checkbox"],
+        .checkbox-group input[type="radio"] {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        /* Container para os Botões */
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .button-container button {
+            padding: 14px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        /* Estilos do Botão Primário (Finalizar Cadastro) */
+        #submitBtn {
+            background: #6a1b9a;
+            color: white;
+            flex-grow: 1; /* Ocupa mais espaço */
+        }
+        
+        #submitBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(106, 27, 154, 0.3);
+        }
+        
+        /* Estilo para o novo botão de listar (Secundário) */
+        #getAllAssistidas {
+            background: #ffb300; /* Laranja/Amarelo */
+            color: #333;
+            flex-grow: 0; /* Não cresce muito */
+            white-space: nowrap;
+        }
+        
+        #getAllAssistidas:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 143, 0, 0.3);
+        }
+
+        /* Resultado da Listagem/Submissão */
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            text-align: left;
+        }
+
+        .result.success, .result.list-active {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            color: #155724;
+            display: block;
+        }
+        
+        .result h2 {
+            margin-bottom: 15px;
+            color: #155724;
+        }
+        
+        .list-item {
+            border-bottom: 1px solid #c3e6cb;
+            padding: 10px 0;
+            font-size: 15px;
+        }
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>FORMULÁRIO DE ATENDIMENTO - CADASTRO DA ASSISTIDA</h1>
+        
+        <form id="atendimentoForm">
+            
+            <div class="step-content">
+                <h2>1. Identificação da Assistida</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="assistida-nome">Nome</label>
+                        <input type="text" id="assistida-nome" name="assistida-nome" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="assistida-idade">Idade</label>
+                        <input type="number" id="assistida-idade" name="assistida-idade" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="assistida-endereco">Endereço</label>
+                    <input type="text" id="assistida-endereco" name="assistida-endereco">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="assistida-genero">Identidade de Gênero</label>
+                        <input type="text" id="assistida-genero" name="assistida-genero">
+                    </div>
+                    <div class="form-group">
+                        <label for="assistida-nome-social">Nome Social</label>
+                        <input type="text" id="assistida-nome-social" name="assistida-nome-social">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="assistida-escolaridade">Escolaridade</label>
+                        <input type="text" id="assistida-escolaridade" name="assistida-escolaridade">
+                    </div>
+                    <div class="form-group">
+                        <label for="assistida-religiao">Religião</label>
+                        <input type="text" id="assistida-religiao" name="assistida-religiao">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="assistida-profissao">Profissão/Ocupação</label>
+                    <input type="text" id="assistida-profissao" name="assistida-profissao">
+                </div>
+                
+                <div class="form-group">
+                    <label for="assistida-limitacao">Possui alguma limitação física</label>
+                    <input type="text" id="assistida-limitacao" name="assistida-limitacao">
+                </div>
+                
+                <div class="form-group">
+                    <label for="assistida-nacionalidade">nacionalidade</label>
+                    <input type="text" id="nacionalidade" name="assistida-nacionalidade">
+                </div>
+
+                <div class="form-group">
+                    <label for="assistida-habitacao">habitacao</label>
+                    <input type="text" id="habitacao" name="habitacao">
+                </div>
+
+                <div class="form-group">
+                    <label for="assistida-programa-social">Número de cadastro em Programa Social</label>
+                    <input type="text" id="assistida-programa-social" name="assistida-programa-social">
+                </div>
+
+            </div>
+            
+
+            <div class="button-container">
+                <button type="submit" id="submitBtn">Finalizar Cadastro</button>
+                <button type="button" id="getAllAssistidas">Listar Assistidas</button>
+            </div>
+        </form>
+        
+        <div id="result" class="result"></div>
+    </div>
+    <script type="module" src="../../dist/renderers/formularioRenderer.js"></script>
+</body>
+</html>

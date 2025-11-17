@@ -31,11 +31,4 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    btnProximo.addEventListener('click', function() {
-        console.log('Avançando para o próximo passo...');
-    });
-
-    document.getElementById('voltar').addEventListener('click', function() {
-        console.log('Voltando...');
-    });
 });
