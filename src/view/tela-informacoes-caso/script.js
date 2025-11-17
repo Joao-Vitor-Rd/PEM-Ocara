@@ -1,4 +1,16 @@
 // --- Simulação dos dados vindos do seu Backend ---
+// Dados do caso
+const dadosDoCaso = {
+  protocolo: "2024-0001234",
+  assistida: "Maria da Silva Santos",
+  agressor: "João da Silva Santos",
+  dataCadastro: "15/11/2024",
+  statusAssistencia: "Em Acompanhamento",
+  statusJuridico: "Processo em Andamento",
+  tipoViolencia: "Violência Física e Psicológica",
+  redesContatadas: "CRAS Centro, Delegacia da Mulher, CAPS"
+};
+
 const dadosDosAnexos = [
   {
     id: "uuid-12345",
@@ -279,8 +291,28 @@ function simularUpload(id, tipo) {
   }, 500);
 }
 
+// Função para preencher as informações do caso
+function preencherInformacoesCaso() {
+  // Preenche o protocolo no título
+  document.getElementById('Protocolo').textContent = dadosDoCaso.protocolo;
+  
+  // Preenche as informações do caso
+  document.getElementById('Assistida').textContent = dadosDoCaso.assistida;
+  document.getElementById('Agressor').textContent = dadosDoCaso.agressor;
+  document.getElementById('DataCadastro').textContent = dadosDoCaso.dataCadastro;
+  document.getElementById('StatusAssistencia').textContent = dadosDoCaso.statusAssistencia;
+  document.getElementById('StatusJuridico').textContent = dadosDoCaso.statusJuridico;
+  document.getElementById('TipoViolencia').textContent = dadosDoCaso.tipoViolencia;
+  
+  // Preenche as redes contatadas
+  document.getElementById('redes-contatadas').textContent = dadosDoCaso.redesContatadas;
+}
+
 // Renderiza as listas quando a página carregar
 document.addEventListener('DOMContentLoaded', function() {
+  // Preenche as informações do caso
+  preencherInformacoesCaso();
+  
   renderizarAnexos(dadosDosAnexos, 'lista-anexos');
   renderizarAnexos(dadosDosRelatorios, 'lista-relatorios');
 
