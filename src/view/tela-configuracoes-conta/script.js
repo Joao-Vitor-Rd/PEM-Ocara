@@ -35,58 +35,66 @@ function togglePassword(iconElement) {
     }
 }
 
-function setupModal(modalId, triggerId) {
-    const modal = document.getElementById(modalId);
-    const trigger = document.getElementById(triggerId);
+class ModalManager {
+    constructor(modalId, triggerId) {
+        this.modal = document.getElementById(modalId);
+        this.trigger = document.getElementById(triggerId);
+        
+        if (!this.modal || !this.trigger) {
+            console.warn(`Modal ou Gatilho não encontrado: ${modalId}, ${triggerId}`);
+            return;
+        }
 
-    if (!modal || !trigger) {
-        console.warn(`Modal ou Gatilho não encontrado: ${modalId}, ${triggerId}`);
-        return;
+        this.closeBtn = this.modal.querySelector('.modal-close');
+        this.inputs = this.modal.querySelectorAll('input');
+        this.errorDisplay = this.modal.querySelector('#senhaError');
+
+        if (!this.closeBtn) {
+            console.warn(`Botão de fechar não encontrado no modal: ${modalId}`);
+            return;
+        }
+        
+        this.setupListeners();
     }
 
-    const closeBtn = modal.querySelector('.modal-close');
-
-    if (!closeBtn) {
-        console.warn(`Botão de fechar não encontrado no modal: ${modalId}`);
-        return;
+    setupListeners() {
+        this.trigger.addEventListener('click', () => this.open());
+        this.closeBtn.addEventListener('click', () => this.close());
+        window.addEventListener('click', (evento) => {
+            if (evento.target === this.modal) {
+                this.close();
+            }
+        });
     }
-    const closeModal = () => {
-        modal.classList.remove('visible');
 
-        const inputs = modal.querySelectorAll('input');
-        inputs.forEach(input => {
+    open() {
+        this.modal.classList.add('visible');
+    }
+
+    close() {
+        this.modal.classList.remove('visible');
+
+        this.inputs.forEach(input => {
             if (input.type === 'text' || input.type === 'password') {
                 input.value = '';
             }
         });
 
-        const senhaError = modal.querySelector('#senhaError');
-        if (senhaError) {
-            senhaError.textContent = '';
-            senhaError.style.display = 'none';
-        }        
-    };
-
-    trigger.addEventListener('click', () => {
-        modal.classList.add('visible');
-    });
-
-    closeBtn.addEventListener('click', closeModal);
-
-    window.addEventListener('click', (evento) => {
-        if (evento.target === modal) {
-            closeModal();
+        if (this.errorDisplay) {
+            this.errorDisplay.textContent = '';
+            this.errorDisplay.style.display = 'none';
         }
-    });
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     const passwordValidator = new PasswordValidator();
 
-    setupModal('modalNome', 'itemNome');
-    setupModal('modalCargo', 'itemCargo');
-    setupModal('modalEmail', 'itemEmail');
-    setupModal('modalSenha', 'itemSenha');
+    new ModalManager('modalNome', 'itemNome');
+    new ModalManager('modalCargo', 'itemCargo');
+    new ModalManager('modalEmail', 'itemEmail');
+
+    const passwordModalManager = new ModalManager('modalSenha', 'itemSenha');
 
     const icons = document.querySelectorAll('.password-toggle-icon');
     icons.forEach(icon => {
@@ -121,8 +129,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             novaSenhaInput.value = '';
             confirmarSenhaInput.value = '';
-            
-            modalSenha.classList.remove('visible');
+
+            passwordModalManager.close();
         });
     }
 
