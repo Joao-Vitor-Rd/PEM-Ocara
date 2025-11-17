@@ -87,13 +87,63 @@ class ModalManager {
     }
 }
 
+class PasswordController {
+    constructor(passwordValidator, passwordModalManager) {
+        this.validator = passwordValidator;
+        this.modalManager = passwordModalManager;
+
+        this.btnAtualizar = document.querySelector('#modalSenha .btn-atualizar');
+        this.senhaAtualInput = document.getElementById('senhaAtual');
+        this.novaSenhaInput = document.getElementById('novaSenha');
+        this.confirmarSenhaInput = document.getElementById('confirmarSenha');
+        this.errorDisplay = document.getElementById('senhaError');
+
+        this.setupListener();
+    }
+
+    setupListener() {
+        if (!this.btnAtualizar) {
+            console.warn('Botão de atualizar senha não encontrado.');
+            return;
+        }
+        this.btnAtualizar.addEventListener('click', () => this.handleUpdatePassword());
+    }
+
+    handleUpdatePassword() {
+        const senhaAtual = this.senhaAtualInput.value;
+        const novaSenha = this.novaSenhaInput.value;
+        const confirmarSenha = this.confirmarSenhaInput.value;
+        
+        this.errorDisplay.textContent = '';
+        this.errorDisplay.style.display = 'none';
+
+        const errorMessage = this.validator.validate(senhaAtual, novaSenha, confirmarSenha);
+
+        if (errorMessage) {
+            this.showError(errorMessage);
+        } else {
+            this.showSuccess();
+        }
+    }
+
+    showError(message) {
+        this.errorDisplay.textContent = message;
+        this.errorDisplay.style.display = 'block';
+    }
+
+    showSuccess() {
+        alert('Senha atualizada com sucesso! (Isso é uma simulação)');
+        
+        this.modalManager.close();
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const passwordValidator = new PasswordValidator();
 
     new ModalManager('modalNome', 'itemNome');
     new ModalManager('modalCargo', 'itemCargo');
     new ModalManager('modalEmail', 'itemEmail');
-
     const passwordModalManager = new ModalManager('modalSenha', 'itemSenha');
 
     const icons = document.querySelectorAll('.password-toggle-icon');
@@ -102,36 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
         icon.classList.add('material-symbols-outlined');
     });
 
-    const modalSenha = document.getElementById('modalSenha');
-
-    if (modalSenha) {
-        const btnAtualizarSenha = modalSenha.querySelector('.btn-atualizar');
-        const senhaAtualInput = document.getElementById('senhaAtual');
-        const novaSenhaInput = document.getElementById('novaSenha');
-        const confirmarSenhaInput = document.getElementById('confirmarSenha');
-        const senhaError = document.getElementById('senhaError');
-
-        btnAtualizarSenha.addEventListener('click', () => {
-
-            const senhaAtual = senhaAtualInput.value;
-            const novaSenha = novaSenhaInput.value;
-            const confirmarSenha = confirmarSenhaInput.value;
-            senhaError.textContent = '';
-            senhaError.style.display = 'none';
-            const errorMessage = passwordValidator.validate(senhaAtual, novaSenha, confirmarSenha);
-
-            if (errorMessage) {
-                senhaError.textContent = errorMessage;
-                senhaError.style.display = 'block';
-                return;
-            }
-            alert('Senha atualizada com sucesso! (Isso é uma simulação)');
-
-            novaSenhaInput.value = '';
-            confirmarSenhaInput.value = '';
-
-            passwordModalManager.close();
-        });
-    }
+    new PasswordController(passwordValidator, passwordModalManager);
 
 });
