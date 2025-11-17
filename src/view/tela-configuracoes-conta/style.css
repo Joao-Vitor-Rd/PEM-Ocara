@@ -253,10 +253,11 @@ body {
 }
 
 #modalSenha .modal-content {
-    width: 70.2vw;
-    max-width: 70.2vw;
-    height: auto;
-    max-height: 90vh;
+width: 70.2vw;
+max-width: 70.2vw;
+height: auto;
+max-height: 90vh;
+overflow-y: auto;
 }
 
 .modal-overlay.visible .modal-content {
