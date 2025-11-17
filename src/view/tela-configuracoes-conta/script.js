@@ -22,6 +22,18 @@ class PasswordValidator {
     }
 }
 
+class NameValidator {
+    validate(novoNome) {
+        if (novoNome.trim() === '') {
+            return 'Por favor, preencha o campo de nome.';
+        }
+        if (novoNome.trim().length < 3) {
+            return 'O nome deve ter pelo menos 3 caracteres.';
+        }
+        return null;
+    }
+}
+
 class EmailValidator {
     validate(novoEmail) {
         if (novoEmail === '') {
@@ -156,6 +168,51 @@ class PasswordController {
     }
 }
 
+class NameController {
+    constructor(nameValidator, nameModalManager) {
+        this.validator = nameValidator;
+        this.modalManager = nameModalManager;
+        this.btnAtualizar = document.querySelector('#modalNome .btn-atualizar');
+        this.novoNomeInput = document.getElementById('novoNome');
+        this.errorDisplay = document.getElementById('nomeError'); 
+
+        if (!this.btnAtualizar || !this.novoNomeInput || !this.errorDisplay) {
+            console.warn('Elementos do modal de nome não encontrados.');
+            return;
+        }
+        this.setupListener();
+    }
+
+    setupListener() {
+        this.btnAtualizar.addEventListener('click', () => this.handleUpdateName());
+    }
+
+    handleUpdateName() {
+        const novoNome = this.novoNomeInput.value;
+
+        this.errorDisplay.textContent = '';
+        this.errorDisplay.style.display = 'none';
+
+        const errorMessage = this.validator.validate(novoNome);
+
+        if (errorMessage) {
+            this.showError(errorMessage);
+        } else {
+            this.showSuccess();
+        }
+    }
+
+    showError(message) {
+        this.errorDisplay.textContent = message;
+        this.errorDisplay.style.display = 'block';
+    }
+
+    showSuccess() {
+        alert('Nome atualizado com sucesso! (Isso é uma simulação)');
+        this.modalManager.close();
+    }
+}
+
 class EmailController {
     constructor(emailValidator, emailModalManager) {
         this.validator = emailValidator;
@@ -205,8 +262,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const passwordValidator = new PasswordValidator();
     const emailValidator = new EmailValidator();
+    const nameValidator = new NameValidator();
 
-    new ModalManager('modalNome', 'itemNome');
+    const nameModalManager = new ModalManager('modalNome', 'itemNome');
     new ModalManager('modalCargo', 'itemCargo');
     
     const emailModalManager = new ModalManager('modalEmail', 'itemEmail');
@@ -216,5 +274,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     new PasswordController(passwordValidator, passwordModalManager);
     new EmailController(emailValidator, emailModalManager);
+    new NameController(nameValidator, nameModalManager);
 
 });
