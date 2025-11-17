@@ -27,17 +27,33 @@ function setupModal(modalId, triggerId) {
         return;
     }
 
+    const closeModal = () => {
+        modal.classList.remove('visible');
+
+        if (modalId === 'modalSenha') {
+            const novaSenhaInput = modal.querySelector('#novaSenha');
+            const confirmarSenhaInput = modal.querySelector('#confirmarSenha');
+            const senhaError = modal.querySelector('#senhaError');
+
+            if (novaSenhaInput) novaSenhaInput.value = '';
+            if (confirmarSenhaInput) confirmarSenhaInput.value = '';
+            
+            if (senhaError) {
+                senhaError.textContent = '';
+                senhaError.style.display = 'none';
+            }
+        }
+    };
+
     trigger.addEventListener('click', () => {
         modal.classList.add('visible');
     });
 
-    closeBtn.addEventListener('click', () => {
-        modal.classList.remove('visible');
-    });
+    closeBtn.addEventListener('click', closeModal);
 
     window.addEventListener('click', (evento) => {
         if (evento.target === modal) {
-            modal.classList.remove('visible');
+            closeModal();
         }
     });
 }
@@ -69,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const senhaAtual = senhaAtualInput.value;
             const novaSenha = novaSenhaInput.value;
             const confirmarSenha = confirmarSenhaInput.value;
-
             senhaError.textContent = '';
             senhaError.style.display = 'none';
 
@@ -84,6 +99,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 senhaError.style.display = 'block';
                 return;
             }
+            
+            if (!/[A-Z]/.test(novaSenha)) {
+                senhaError.textContent = 'A nova senha deve conter pelo menos uma letra maiúscula.';
+                senhaError.style.display = 'block';
+                return;
+            }
+            
+            if (!/[a-z]/.test(novaSenha)) {
+                senhaError.textContent = 'A nova senha deve conter pelo menos uma letra minúscula.';
+                senhaError.style.display = 'block';
+                return;
+            }
+
+            if (!/[^A-Za-z0-9]/.test(novaSenha)) {
+                senhaError.textContent = 'A nova senha deve conter pelo menos um caractere especial (ex: !@#$%).';
+                senhaError.style.display = 'block';
+                return;
+            }
 
             if (novaSenha !== confirmarSenha) {
                 senhaError.textContent = 'As senhas não coincidem. Tente novamente.';
@@ -93,9 +126,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             alert('Senha atualizada com sucesso! (Isso é uma simulação)');
 
-            senhaAtualInput.value = '';
             novaSenhaInput.value = '';
             confirmarSenhaInput.value = '';
+            
             modalSenha.classList.remove('visible');
         });
     }
