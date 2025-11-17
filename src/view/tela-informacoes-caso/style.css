@@ -968,3 +968,411 @@ body {
     text-overflow: ellipsis;
     max-width: 250px;
 }
+
+/* Responsividade para monitores grandes e ultrawide */
+@media screen and (min-width: 1921px) {
+    .main-content {
+        max-width: 1600px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 50px 100px;
+    }
+
+    .sidebar {
+        width: clamp(400px, 25vw, 500px);
+    }
+
+    .title h1 {
+        font-size: 40px;
+    }
+
+    #acessar-form {
+        font-size: 44px;
+        height: 180px;
+    }
+
+    .infos,
+    #redes-contatadas {
+        font-size: 26px;
+    }
+
+    .nome-arquivo,
+    .tamanho-arquivo,
+    .texto-progresso {
+        font-size: 26px;
+    }
+
+    .provas h1,
+    .redes h1 {
+        font-size: 36px;
+    }
+
+    #anexar-prova,
+    #anexar-relatorio {
+        font-size: 36px;
+        height: 120px;
+    }
+
+    #encaminhamento {
+        font-size: 28px;
+        height: 80px;
+    }
+
+    .icone-arquivo {
+        width: 120px;
+        height: 120px;
+        margin-right: 25px;
+    }
+
+    .item-anexo {
+        padding: 35px 25px;
+    }
+
+    .btn-apagar .material-symbols-outlined,
+    .btn-cancelar .material-symbols-outlined {
+        font-size: 55px;
+        width: 55px;
+        height: 55px;
+    }
+
+    .rodape p {
+        font-size: 18px;
+    }
+
+    .logo-esquerda {
+        width: 130px;
+        height: 95px;
+    }
+
+    .logo-direita {
+        width: 150px;
+        height: 115px;
+    }
+
+    .popup-content {
+        width: 1100px;
+        height: 600px;
+    }
+
+    .modal-content {
+        width: 1100px;
+        height: 550px;
+    }
+}
+
+@media screen and (min-width: 2560px) {
+    .main-content {
+        max-width: 2000px;
+        padding: 60px 120px;
+    }
+
+    .sidebar {
+        width: clamp(450px, 22vw, 550px);
+    }
+
+    .sidebar-header h1 {
+        font-size: 56px;
+    }
+
+    .sidebar-nav a {
+        font-size: 38px;
+        padding: 18px 50px;
+    }
+
+    .sidebar-nav .material-symbols-outlined {
+        width: 48px;
+        height: 48px;
+        font-size: 48px;
+    }
+
+    .title h1 {
+        font-size: 46px;
+    }
+
+    .title button .material-symbols-outlined {
+        font-size: 42px;
+    }
+
+    #acessar-form {
+        font-size: 50px;
+        height: 200px;
+    }
+
+    .infos,
+    #redes-contatadas {
+        font-size: 30px;
+    }
+
+    .nome-arquivo,
+    .tamanho-arquivo,
+    .texto-progresso {
+        font-size: 30px;
+    }
+
+    .provas h1,
+    .redes h1 {
+        font-size: 40px;
+    }
+
+    #anexar-prova,
+    #anexar-relatorio {
+        font-size: 40px;
+        height: 135px;
+    }
+
+    #encaminhamento {
+        font-size: 32px;
+        height: 90px;
+    }
+
+    .icone-arquivo {
+        width: 135px;
+        height: 135px;
+        margin-right: 30px;
+    }
+
+    .item-anexo {
+        padding: 40px 30px;
+    }
+
+    .btn-apagar .material-symbols-outlined,
+    .btn-cancelar .material-symbols-outlined {
+        font-size: 60px;
+        width: 60px;
+        height: 60px;
+    }
+
+    .rodape p {
+        font-size: 20px;
+    }
+
+    .logo-esquerda {
+        width: 145px;
+        height: 105px;
+    }
+
+    .logo-direita {
+        width: 165px;
+        height: 125px;
+    }
+
+    .popup-content {
+        width: 1300px;
+        height: 700px;
+    }
+
+    .modal-content {
+        width: 1300px;
+        height: 650px;
+    }
+}
+
+/* Responsividade para notebooks e monitores menores */
+@media screen and (max-width: 1440px) {
+    .main-content {
+        padding: 40px 25px;
+    }
+
+    .title h1 {
+        font-size: 32px;
+    }
+
+    #acessar-form {
+        font-size: 36px;
+        height: 150px;
+    }
+
+    .infos,
+    .nome-arquivo,
+    .tamanho-arquivo,
+    .texto-progresso,
+    #redes-contatadas {
+        font-size: 22px;
+    }
+
+    .provas h1,
+    .redes h1 {
+        font-size: 28px;
+    }
+
+    #anexar-prova,
+    #anexar-relatorio {
+        font-size: 28px;
+        height: 95px;
+    }
+
+    #encaminhamento {
+        font-size: 22px;
+        height: 65px;
+    }
+
+    .icone-arquivo {
+        width: 90px;
+        height: 90px;
+    }
+
+    .rodape p {
+        font-size: 14px;
+    }
+
+    .logo-esquerda {
+        width: 100px;
+        height: 70px;
+    }
+
+    .logo-direita {
+        width: 120px;
+        height: 90px;
+    }
+}
+
+@media screen and (max-width: 1280px) {
+    .main-content {
+        padding: 35px 20px;
+        margin-left: calc(clamp(300px, 25vw, 400px) + 25px);
+    }
+
+    .title h1 {
+        font-size: 28px;
+    }
+
+    #acessar-form {
+        font-size: 32px;
+        height: 140px;
+    }
+
+    .infos,
+    .nome-arquivo,
+    .tamanho-arquivo,
+    .texto-progresso,
+    #redes-contatadas {
+        font-size: 20px;
+    }
+
+    .provas h1,
+    .redes h1 {
+        font-size: 26px;
+    }
+
+    #anexar-prova,
+    #anexar-relatorio {
+        font-size: 26px;
+        height: 90px;
+    }
+
+    #encaminhamento {
+        font-size: 20px;
+        height: 60px;
+    }
+
+    .icone-arquivo {
+        width: 80px;
+        height: 80px;
+        margin-right: 15px;
+    }
+
+    .item-anexo {
+        padding: 25px 15px;
+    }
+
+    .btn-apagar .material-symbols-outlined,
+    .btn-cancelar .material-symbols-outlined {
+        font-size: 45px;
+        width: 45px;
+        height: 45px;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .sidebar {
+        width: clamp(280px, 22vw, 350px);
+    }
+
+    .sidebar-header {
+        width: 90%;
+    }
+
+    .sidebar-header h1 {
+        font-size: 40px;
+    }
+
+    .sidebar-nav a {
+        font-size: 28px;
+        padding: 12px 30px;
+    }
+
+    .sidebar-nav .material-symbols-outlined {
+        width: 35px;
+        height: 35px;
+        font-size: 35px;
+    }
+
+    .main-content {
+        padding: 30px 20px;
+        margin-left: calc(clamp(280px, 22vw, 350px) + 20px);
+    }
+
+    .title h1 {
+        font-size: 26px;
+    }
+
+    .title button .material-symbols-outlined {
+        font-size: 32px;
+    }
+
+    #acessar-form {
+        font-size: 28px;
+        height: 130px;
+    }
+
+    .infos,
+    #redes-contatadas {
+        font-size: 18px;
+    }
+
+    .nome-arquivo,
+    .tamanho-arquivo,
+    .texto-progresso {
+        font-size: 20px;
+    }
+
+    .provas h1,
+    .redes h1 {
+        font-size: 24px;
+    }
+
+    #anexar-prova,
+    #anexar-relatorio {
+        font-size: 24px;
+        height: 85px;
+    }
+
+    #encaminhamento {
+        font-size: 18px;
+        height: 55px;
+    }
+
+    .icone-arquivo {
+        width: 75px;
+        height: 75px;
+        margin-right: 12px;
+    }
+
+    .item-anexo {
+        padding: 20px 12px;
+    }
+
+    .rodape p {
+        font-size: 13px;
+    }
+
+    .logo-esquerda {
+        width: 90px;
+        height: 60px;
+    }
+
+    .logo-direita {
+        width: 110px;
+        height: 80px;
+    }
+}
