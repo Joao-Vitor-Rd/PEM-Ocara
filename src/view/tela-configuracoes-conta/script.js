@@ -3,6 +3,9 @@ class PasswordValidator {
         if (senhaAtual === '' || novaSenha === '' || confirmarSenha === '') {
             return 'Por favor, preencha todos os campos.';
         }
+        if (novaSenha === senhaAtual) {
+            return 'A nova senha não pode ser igual à senha atual.';
+        }
         if (novaSenha.length < 8) {
             return 'A nova senha deve ter pelo menos 8 caracteres.';
         }
