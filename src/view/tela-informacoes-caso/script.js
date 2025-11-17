@@ -472,6 +472,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    // Listener para mudança de status
+    const selectStatus = document.getElementById('StatusAssistenciaSelect');
+    if (selectStatus) {
+        selectStatus.addEventListener('change', async (e) => {
+            const novoStatus = e.target.value;
+            console.log('Alterando status para:', novoStatus);
+            
+            try {
+                dadosDoCaso.statusAssistencia = novoStatus;
+                sessionStorage.setItem('dadosCaso', JSON.stringify(dadosDoCaso));
+                
+                mostrarPopup('Status atualizado com sucesso!');
+                console.log('Status salvo no sessionStorage');
+            } catch (error) {
+                console.error('Erro ao atualizar status:', error);
+                mostrarPopup('Erro ao atualizar o status. Tente novamente.');
+            }
+        });
+    }
+
     // Inicializa mensagem padrão de redes contatadas
     const redesContatadas = document.getElementById('redes-contatadas');
     if (redesContatadas && !redesContatadas.textContent.trim()) {

@@ -197,6 +197,43 @@ body {
     font-weight: 700;
 }
 
+/* Selecionar Status de Andamento*/
+#StatusAssistenciaSelect {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: transparent;
+    border: none;
+    color: inherit;
+    font-size: inherit;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    text-decoration: inherit;
+    line-height: inherit;
+    vertical-align: baseline;
+    display: inline;
+}
+
+#StatusAssistenciaSelect:hover {
+    opacity: 0.8;
+}
+
+#StatusAssistenciaSelect:focus {
+    outline: none;
+}
+
+#StatusAssistenciaSelect option {
+    background-color: #FFFFFF;
+    color: #63468C;
+    padding: 10px;
+    font-size: 20px;
+    font-weight: 500;
+}
+
 
 /* Provas e Relatórios do Caso*/
 .provas h1 {
@@ -969,6 +1006,59 @@ body {
     max-width: 250px;
 }
 
+/* Popup de Confirmação */
+.popup-confirmacao {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-confirmacao.visible {
+    display: flex;
+}
+
+.popup-confirmacao-content {
+    background-color: #FFFFFF;
+    border-radius: 15px;
+    padding: 40px 50px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+}
+
+.popup-confirmacao-content p {
+    font-size: 20px;
+    color: #63468C;
+    font-weight: 500;
+    margin: 0 0 30px 0;
+    line-height: 1.4;
+}
+
+.popup-btn-ok {
+    background-color: #63468C;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 50px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    font-family: 'Poppins', sans-serif;
+}
+
+.popup-btn-ok:hover {
+    background-color: #4d3670;
+}
+
 /* Responsividade para monitores grandes e ultrawide */
 @media screen and (min-width: 1921px) {
     .main-content {
@@ -1375,57 +1465,4 @@ body {
         width: 110px;
         height: 80px;
     }
-}
-
-/* Popup de Confirmação */
-.popup-confirmacao {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 10000;
-    justify-content: center;
-    align-items: center;
-}
-
-.popup-confirmacao.visible {
-    display: flex;
-}
-
-.popup-confirmacao-content {
-    background-color: #FFFFFF;
-    border-radius: 15px;
-    padding: 40px 50px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    max-width: 500px;
-    width: 90%;
-}
-
-.popup-confirmacao-content p {
-    font-size: 20px;
-    color: #63468C;
-    font-weight: 500;
-    margin: 0 0 30px 0;
-    line-height: 1.4;
-}
-
-.popup-btn-ok {
-    background-color: #63468C;
-    color: #FFFFFF;
-    border: none;
-    border-radius: 10px;
-    padding: 12px 50px;
-    font-size: 18px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
-    font-family: 'Poppins', sans-serif;
-}
-
-.popup-btn-ok:hover {
-    background-color: #4d3670;
 }
