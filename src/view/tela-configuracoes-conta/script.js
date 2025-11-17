@@ -35,25 +35,32 @@ function togglePassword(iconElement) {
     }
 }
 
+function initializePasswordIcons() {
+    document.querySelectorAll('.password-toggle-icon').forEach(icon => {
+        icon.textContent = "visibility";
+        icon.classList.add('material-symbols-outlined');
+    });
+}
+
 class ModalManager {
     constructor(modalId, triggerId) {
         this.modal = document.getElementById(modalId);
         this.trigger = document.getElementById(triggerId);
-        
-        if (!this.modal || !this.trigger) {
+    
+        if (!this.modal || !this.trigger) { 
             console.warn(`Modal ou Gatilho não encontrado: ${modalId}, ${triggerId}`);
             return;
         }
 
         this.closeBtn = this.modal.querySelector('.modal-close');
-        this.inputs = this.modal.querySelectorAll('input');
-        this.errorDisplay = this.modal.querySelector('#senhaError');
+        this.inputs = this.modal.querySelectorAll('input');        
+        this.errorDisplay = this.modal.querySelector('.error-message'); 
 
         if (!this.closeBtn) {
             console.warn(`Botão de fechar não encontrado no modal: ${modalId}`);
             return;
         }
-        
+
         this.setupListeners();
     }
 
@@ -91,13 +98,11 @@ class PasswordController {
     constructor(passwordValidator, passwordModalManager) {
         this.validator = passwordValidator;
         this.modalManager = passwordModalManager;
-
-        this.btnAtualizar = document.querySelector('#modalSenha .btn-atualizar');
+        this.btnAtualizar = document.querySelector('#modalSenha .btn-atualizar'); 
         this.senhaAtualInput = document.getElementById('senhaAtual');
         this.novaSenhaInput = document.getElementById('novaSenha');
-        this.confirmarSenhaInput = document.getElementById('confirmarSenha');
-        this.errorDisplay = document.getElementById('senhaError');
-
+        this.confirmarSenhaInput = document.getElementById('confirmarSenha');        
+        this.errorDisplay = document.getElementById('senhaError'); 
         this.setupListener();
     }
 
@@ -133,12 +138,12 @@ class PasswordController {
 
     showSuccess() {
         alert('Senha atualizada com sucesso! (Isso é uma simulação)');
-        
         this.modalManager.close();
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+
     const passwordValidator = new PasswordValidator();
 
     new ModalManager('modalNome', 'itemNome');
@@ -146,12 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new ModalManager('modalEmail', 'itemEmail');
     const passwordModalManager = new ModalManager('modalSenha', 'itemSenha');
 
-    const icons = document.querySelectorAll('.password-toggle-icon');
-    icons.forEach(icon => {
-        icon.textContent = "visibility";
-        icon.classList.add('material-symbols-outlined');
-    });
-
+    initializePasswordIcons();
     new PasswordController(passwordValidator, passwordModalManager);
 
 });
