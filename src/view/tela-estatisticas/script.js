@@ -30,9 +30,9 @@ function setupFilterModal() {
   errorMessage.style.display = "none";
   errorMessage.style.fontFamily = "Poppins";
 
-  // Inserir a mensagem de erro após o campo data-fim
+  // Inserir a mensagem de erro após o grupo completo da data fim
   const dateFimGroup = dataFim.closest(".date-input-group");
-  dateFimGroup.appendChild(errorMessage);
+  dateFimGroup.parentNode.insertBefore(errorMessage, dateFimGroup.nextSibling);
 
   // ===== ESTADO DOS FILTROS =====
   /**
