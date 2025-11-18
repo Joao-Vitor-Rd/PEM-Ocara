@@ -1059,6 +1059,46 @@ body {
     background-color: #4d3670;
 }
 
+.popup-botoes {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.popup-btn-cancelar {
+    background-color: #FFFFFF;
+    color: #63468C;
+    border: 2px solid #63468C;
+    border-radius: 10px;
+    padding: 12px 40px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    font-family: 'Poppins', sans-serif;
+}
+
+.popup-btn-cancelar:hover {
+    background-color: #f0f0f0;
+}
+
+.popup-btn-confirmar {
+    background-color: #63468C;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 40px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    font-family: 'Poppins', sans-serif;
+}
+
+.popup-btn-confirmar:hover {
+    background-color: #4d3670;
+}
+
 /* Responsividade para monitores grandes e ultrawide */
 @media screen and (min-width: 1921px) {
     .main-content {

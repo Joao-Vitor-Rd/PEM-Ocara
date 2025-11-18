@@ -136,7 +136,7 @@
                 <p class="info-tamanho">Tamanho Máximo para arquivo: 100MB</p>
             </div>
             
-            <input type="file" id="file-input" style="display: none;" accept=".pdf,.docx,.txt,.jpg,.jpeg,.png,.mp3,.m4a,.mp4,.zip">
+            <input type="file" id="file-input" style="display: none;" accept=".pdf,.docx,.txt,.jpg,.jpeg,.png,.mp3,.m4a,.mp4,.zip" multiple>
         </div>
     </div>
 
@@ -145,6 +145,17 @@
         <div class="popup-confirmacao-content">
             <p id="popupMensagem"></p>
             <button class="popup-btn-ok" id="popupBtnOk">OK</button>
+        </div>
+    </div>
+
+    <!-- Popup de Confirmação com Sim/Não -->
+    <div class="popup-confirmacao" id="popupConfirmar">
+        <div class="popup-confirmacao-content">
+            <p id="popupConfirmarMensagem"></p>
+            <div class="popup-botoes">
+                <button class="popup-btn-cancelar" id="popupBtnCancelar">Cancelar</button>
+                <button class="popup-btn-confirmar" id="popupBtnConfirmar">Confirmar</button>
+            </div>
         </div>
     </div>
 

@@ -11,15 +11,21 @@ const Config = {
         BTN_OK_CONFIRMACAO: 'popupBtnOk'
     },
     ICONS: {
-        'pdf': 'icons/pdf.png',
-        'doc': 'icons/doc.png', 'docx': 'icons/doc.png',
-        'txt': 'icons/txt.png',
-        'jpg': 'icons/jpg.png', 'jpeg': 'icons/jpg.png',
-        'png': 'icons/png.png',
-        'mp3': 'icons/mp3.png',
-        'mp4': 'icons/mov.png', 'm4a': 'icons/mov.png',
-        'zip': 'icons/fecho-eclair.png', 'rar': 'icons/fecho-eclair.png',
-        'default': 'icons/pdf.png'
+        'pdf': './icons/pdf.png',
+        'doc': './icons/doc.png', 'docx': './icons/doc.png',
+        'txt': './icons/txt.png',
+        'jpg': './icons/jpg.png', 'jpeg': './icons/jpg.png',
+        'png': './icons/png.png',
+        'mp3': './icons/mp3.png',
+        'mp4': './icons/mov.png', 'm4a': './icons/mov.png',
+        'zip': './icons/fecho-eclair.png', 'rar': './icons/fecho-eclair.png',
+        'default': './icons/pdf.png'
+    },
+    POPUP_CONFIRMAR: {
+        POPUP: 'popupConfirmar',
+        MENSAGEM: 'popupConfirmarMensagem',
+        BTN_CANCELAR: 'popupBtnCancelar',
+        BTN_CONFIRMAR: 'popupBtnConfirmar'
     }
 };
 
@@ -120,6 +126,32 @@ class UIManager {
         }
     }
 
+    mostrarConfirmacao(mensagem) {
+        return new Promise((resolve) => {
+            const popup = document.getElementById(Config.POPUP_CONFIRMAR.POPUP);
+            const popupMensagem = document.getElementById(Config.POPUP_CONFIRMAR.MENSAGEM);
+            const btnCancelar = document.getElementById(Config.POPUP_CONFIRMAR.BTN_CANCELAR);
+            const btnConfirmar = document.getElementById(Config.POPUP_CONFIRMAR.BTN_CONFIRMAR);
+            
+            if (popup && popupMensagem && btnCancelar && btnConfirmar) {
+                popupMensagem.textContent = mensagem;
+                popup.classList.add('visible');
+                
+                const fecharPopup = (resultado) => {
+                    popup.classList.remove('visible');
+                    btnCancelar.onclick = null;
+                    btnConfirmar.onclick = null;
+                    resolve(resultado);
+                };
+                
+                btnCancelar.onclick = () => fecharPopup(false);
+                btnConfirmar.onclick = () => fecharPopup(true);
+            } else {
+                resolve(confirm(mensagem));
+            }
+        });
+    }
+
     renderizarLista(tipo, arquivos, callbacks) {
         const container = this.containers[tipo];
         if (!container) return;
@@ -129,6 +161,7 @@ class UIManager {
         arquivos.forEach(arquivo => {
             const li = document.createElement("li");
             li.className = "item-anexo";
+            li.setAttribute('data-arquivo-id', arquivo.id);
             const icone = Formatters.obterIcone(arquivo.nome);
 
             if (arquivo.status === 'upando') {
@@ -138,9 +171,8 @@ class UIManager {
                         <div class="progresso-info"><span class="texto-progresso">Upando arquivo... ${arquivo.progresso}%</span></div>
                         <div class="barra-progresso"><div class="barra-progresso-preenchida" style="width: ${arquivo.progresso}%"></div></div>
                     </div>
-                    <button class="btn-cancelar" type="button"><span class="material-symbols-outlined">cancel</span></button>
+                    <button class="btn-cancelar" type="button" data-action="cancel"><span class="material-symbols-outlined">cancel</span></button>
                 `;
-                li.querySelector('.btn-cancelar').onclick = () => callbacks.onCancel(arquivo.id);
             } else {
                 const nomeExibicao = Formatters.truncarNome(arquivo.nome);
                 li.innerHTML = `
@@ -149,11 +181,42 @@ class UIManager {
                         <span class="nome-arquivo" title="${arquivo.nome}">${nomeExibicao}</span>
                         <span class="tamanho-arquivo">${arquivo.tamanho}</span>
                     </div>
-                    <button class="btn-apagar" type="button"><span class="material-symbols-outlined">delete_forever</span></button>
+                    <button class="btn-apagar" type="button" data-action="delete"><span class="material-symbols-outlined">delete_forever</span></button>
                 `;
-                li.querySelector('.btn-apagar').onclick = () => callbacks.onDelete(arquivo.id);
             }
             container.appendChild(li);
+        });
+    }
+
+    configurarEventDelegation(callbacks) {
+        // Configura event delegation uma única vez para cada container
+        Object.values(this.containers).forEach(container => {
+            if (!container) return;
+            
+            // Remove listener antigo se existir
+            if (container._clickHandler) {
+                container.removeEventListener('click', container._clickHandler);
+            }
+            
+            // Adiciona novo listener
+            container._clickHandler = async (e) => {
+                const btn = e.target.closest('button[data-action]');
+                if (!btn) return;
+                
+                const li = btn.closest('.item-anexo');
+                if (!li) return;
+                
+                const arquivoId = li.getAttribute('data-arquivo-id');
+                const action = btn.getAttribute('data-action');
+                
+                if (action === 'cancel' && callbacks.onCancel) {
+                    await callbacks.onCancel(arquivoId);
+                } else if (action === 'delete' && callbacks.onDelete) {
+                    await callbacks.onDelete(arquivoId);
+                }
+            };
+            
+            container.addEventListener('click', container._clickHandler);
         });
     }
 
@@ -257,53 +320,69 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const redesCadastradas = [];
 
-    const atualizarTela = ()=> {
-        const acoesArquivo = {
-            onDelete: (id) => {
-                const confirmar = confirm('Tem certeza que deseja apagar este arquivo?');
-                if (confirmar) {
-                    fileManager.remover(id);
-                    atualizarTela();
-                }
-            },
-            onCancel: (id) => {
-                const confirmar = confirm('Cancelar o upload?');
-                if (confirmar) {
-                    fileManager.remover(id);
-                    atualizarTela();
-                }
+    const acoesArquivo = {
+        onDelete: async (id) => {
+            const confirmar = await uiManager.mostrarConfirmacao('Tem certeza que deseja apagar este arquivo?');
+            if (confirmar) {
+                fileManager.remover(id);
+                atualizarTela();
             }
-        };
+        },
+        onCancel: async (id) => {
+            const confirmar = await uiManager.mostrarConfirmacao('Cancelar o upload?');
+            if (confirmar) {
+                fileManager.remover(id);
+                atualizarTela();
+            }
+        }
+    };
 
+    const atualizarTela = ()=> {
         uiManager.renderizarLista('prova', fileManager.obterTodos('prova'), acoesArquivo);
         uiManager.renderizarLista('relatorio', fileManager.obterTodos('relatorio'), acoesArquivo);
     };
 
     const iniciarUpload = (files) => {
         if (!files || files.length === 0) return;
-        const file = files[0];
         
-        console.log('Arquivo selecionado:', file.name);
-        console.log('Tipo de anexo:', estadoUpload.tipoAtual);
-
-        if (file.size > Config.MAX_FILE_SIZE) {
-            uiManager.mostrarPopup('O arquivo excede o tamanho máximo permitido de 100MB.');
+        // Validar todos os arquivos primeiro
+        const arquivosInvalidos = [];
+        for (let i = 0; i < files.length; i++) {
+            if (files[i].size > Config.MAX_FILE_SIZE) {
+                arquivosInvalidos.push(files[i].name);
+            }
+        }
+        
+        if (arquivosInvalidos.length > 0) {
+            const mensagem = arquivosInvalidos.length === 1 
+                ? `O arquivo "${arquivosInvalidos[0]}" excede o tamanho máximo permitido de 100MB.`
+                : `${arquivosInvalidos.length} arquivo(s) excedem o tamanho máximo permitido de 100MB:\n${arquivosInvalidos.join(', ')}`;
+            uiManager.mostrarPopup(mensagem);
             return;
         }
 
-        const novoArquivo = {
-            id: 'uuid-' + Date.now(),
-            nome: file.name,
-            tamanho: Formatters.tamanhoArquivo(file.size),
-            status: 'upando',
-            progresso: 0,
-            rawFile: file
-        };
+        // Processar todos os arquivos válidos
+        console.log(`${files.length} arquivo(s) selecionado(s)`);
+        console.log('Tipo de anexo:', estadoUpload.tipoAtual);
+        
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            
+            const novoArquivo = {
+                id: 'uuid-' + Date.now() + '-' + i,
+                nome: file.name,
+                tamanho: Formatters.tamanhoArquivo(file.size),
+                status: 'upando',
+                progresso: 0,
+                rawFile: file
+            };
 
-        fileManager.adicionar(estadoUpload.tipoAtual, novoArquivo);
+            fileManager.adicionar(estadoUpload.tipoAtual, novoArquivo);
+            simularBackendUpload(novoArquivo.id, estadoUpload.tipoAtual);
+        }
+        
         uiManager.togglePopupUpload(false);
         atualizarTela();
-        simularBackendUpload(novoArquivo.id, estadoUpload.tipoAtual);
     };
 
     const simularBackendUpload = (id, tipo) => {
@@ -431,6 +510,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             const emailAssunto = document.getElementById('email-assunto').value;
             const emailCorpo = document.getElementById('email-corpo').value;
             
+            // Validações
+            if (!emailPara || emailPara === '') {
+                uiManager.mostrarPopup('Por favor, selecione um destinatário.');
+                return;
+            }
+            
+            if (!emailCorpo || emailCorpo.trim().length < 5) {
+                uiManager.mostrarPopup('O campo de mensagem deve conter pelo menos 10 caracteres.');
+                return;
+            }
+            
             console.log('Enviando encaminhamento...');
             console.log('Para:', emailPara);
             console.log('Assunto:', emailAssunto);
@@ -449,6 +539,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             menuAnexos.style.display = 'none';
         };
     }
+
+    // Configura event delegation uma única vez
+    uiManager.configurarEventDelegation(acoesArquivo);
 
     // Carrega dados do caso do backend
     async function carregarDadosDoCaso() {
