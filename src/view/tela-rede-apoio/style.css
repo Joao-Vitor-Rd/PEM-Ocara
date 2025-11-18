@@ -110,32 +110,18 @@ body {
     flex-shrink: 0;
 }
 
-
-.main-content {
-    flex-grow: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
-    padding: 50px 80px;
-    box-sizing: border-box;
-    max-width: 1920px;
-    margin: 0 auto;
-
-}
-
-
 .icone-rede {
     width: 40px;
     height: 40px;
-    flex-shrink: 0;
     font-size: 40px;
+    flex-shrink: 0;
+    transform: scale(1.35);
 
 }
 
 /* ---================ Conteúdo Principal ===================== --- */
 .main-content {
-    flex-grow: 10;
+    flex-grow: 1;
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
@@ -231,7 +217,7 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/*===== BARRA busca*/
+/*===== BARRA busca =========*/
 
 .barra-busca-full {
     margin-left: -25px;
