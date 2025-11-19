@@ -1,8 +1,25 @@
-import { User } from "./User";
+export class AssistenteSocial {
+    private name: string;
+    private emailInstitucional: string;
 
-export class AssistenteSocial extends User {
+    constructor(name: string, emailInstitucional: string) {
+        this.name = name;
+        this.emailInstitucional = emailInstitucional;
+    }
 
-    constructor(nome: string, emailInstitucional: string) {
-        super(nome, emailInstitucional);
+    public getName(): string {
+        return this.name;
+    }
+
+    public getEmailInstitucional(): string {
+        return this.emailInstitucional;
+    }
+
+    public setName(name: string): void {
+        this.name = name;
+    }
+
+    public setEmailInstitucional(emailInstitucional: string): void {
+        this.emailInstitucional = emailInstitucional;
     }
 }

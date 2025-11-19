@@ -1,14 +1,18 @@
+// src/types/windown.d.ts
+
 export interface IElectronAPI {
   createUser: (name: string, email: string) => Promise<{
     success: boolean;
     user?: any;
     error?: string;
   }>;
+
   getUsers: () => Promise<{
     success: boolean;
     users?: any[];
     error?: string;
   }>;
+
   getUserById: (id: string) => Promise<{
     success: boolean;
     user?: any;
@@ -94,8 +98,8 @@ export interface IElectronAPI {
     assistida?: any;
     error?: string;
   }>;
-    
-  criarAssistida:(
+
+  criarAssistida: (
     nome: string,
     idade: number,
     identidadeGenero: string,
@@ -114,8 +118,8 @@ export interface IElectronAPI {
     success: boolean;
     assistida?: any;
     error?: string;
-  }>
-  
+  }>;
+
   listarAssistidas: () => Promise<{
     success: boolean;
     assistidas?: any[];
@@ -138,6 +142,24 @@ export interface IElectronAPI {
   closeWindow: () => void;
   onUserCreated: (callback: (user: any) => void) => void;
   removeUserCreatedListener: () => void;
+
+  // ============================
+  // REDE DE APOIO (NOVO)
+  // ============================
+  criarOrgaoRedeApoio: (
+    nome: string,
+    email: string
+  ) => Promise<{
+    success: boolean;
+    orgao?: any;
+    error?: string;
+  }>;
+
+  listarOrgaosRedeApoio: () => Promise<{
+    success: boolean;
+    orgaos?: any[];
+    error?: string;
+  }>;
 }
 
 declare global {
@@ -145,3 +167,5 @@ declare global {
     api: IElectronAPI;
   }
 }
+
+export {};

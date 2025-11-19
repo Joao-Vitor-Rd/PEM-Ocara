@@ -2,14 +2,20 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 import { WindowManager } from './utils/WindowManeger';
 import { Logger } from './utils/Logger';
-import { UserController } from './controllers/UserController';
+import { UserController } from './controllers/userController';
 import { AssistidaController } from './controllers/AssistidaController';
 import { CasoController } from './controllers/CasoController';
+import { ControladorOrgao } from './controllers/ControladorOrgao';
+import { MockOrgaoRepository } from './repositories/MockOrgaoRepository';
+
 
 const windowManager = new WindowManager();
 const userController = new UserController();
 const assistidaController = new AssistidaController();
 const casoController = new CasoController(assistidaController.getAssistidaService());
+
+const orgaoRepository = new MockOrgaoRepository();
+const orgaoController = new ControladorOrgao(orgaoRepository);
 
 // ==========================================
 // IPC HANDLERS - Backend Logic
@@ -290,6 +296,69 @@ ipcMain.handle('user:getById', async (_event, id: string) => {
   }
 });
 
+// Criar órgão da Rede de Apoio
+ipcMain.handle('orgao:create', async (_event, data: { nome: string; email: string }) => {
+  try {
+    Logger.info('Requisição para criar órgão da rede de apoio:', data);
+
+    const result = await orgaoController.cadastrarOrgao(data.nome, data.email);
+
+    if (!result.success || !result.orgao) {
+      return {
+        success: false,
+        error: result.error ?? 'Erro ao cadastrar órgão da rede de apoio',
+      };
+    }
+
+    const orgao = result.orgao;
+
+    return {
+      success: true,
+      orgao: orgao.toJSON ? orgao.toJSON() : {
+        nome: orgao.getNome(),
+        objetivo: orgao.getObjetivo(),
+        email: orgao.getEmail(),
+        telefone: orgao.getTelefone(),
+        endereco: orgao.getEndereco(),
+      },
+    };
+  } catch (error) {
+    Logger.error('Erro ao criar órgão da rede de apoio:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido',
+    };
+  }
+});
+
+ipcMain.handle('orgao:listarTodos', async () => {
+  try {
+    Logger.info('Requisição para listar órgãos da rede de apoio');
+    const orgaos = await orgaoController.listarOrgaos();
+
+    return {
+      success: true,
+      orgaos: orgaos.map(orgao =>
+        orgao.toJSON ? orgao.toJSON() : {
+          nome: orgao.getNome(),
+          objetivo: orgao.getObjetivo(),
+          email: orgao.getEmail(),
+          telefone: orgao.getTelefone(),
+          endereco: orgao.getEndereco(),
+        }
+      ),
+    };
+  } catch (error) {
+    Logger.error('Erro ao listar órgãos da rede de apoio:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido',
+      orgaos: [],
+    };
+  }
+});
+
+
 // ==========================================
 // WINDOW MANAGEMENT
 // ==========================================
@@ -331,6 +400,10 @@ ipcMain.on('window:open', (_event, windowName: string) => {
     case 'telaCasosRegistrados':
       windowManager.loadContent('main', 'tela-casos-registrados/index.html');
       break;
+        case 'telaRedeApoio':
+      windowManager.loadContent('main', 'tela-rede-apoio/index.html');
+      break;
+
     default:
       console.log('tela desconhecida:', windowName);
   }

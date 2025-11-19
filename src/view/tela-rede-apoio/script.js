@@ -16,8 +16,32 @@ const popupBtnOk = document.getElementById("popupBtnOk");
 const popupMensagem = document.getElementById("popupMensagem");
 const btnCadastrar = document.querySelector(".btn-atualizar");
 
+// Container da lista de redes de apoio
+const listaRedes = document.getElementById("listaRedes");
+
 // Elemento único para exibição de mensagens de erro
 const redeError = document.getElementById("redeError");
+
+// ===== MENU LATERAL (SIDEBAR) =====
+const menuAssistidas = document.getElementById("menuAssistidas");
+const menuRedeApoio = document.getElementById("menuRedeApoio");
+const menuInicial = document.getElementById("menuInicial");
+
+menuAssistidas?.addEventListener("click", (event) => {
+  event.preventDefault();
+  window.api.openWindow("telaListarAssistidas");
+});
+
+menuInicial?.addEventListener("click", (event) => {
+  event.preventDefault();
+  window.api.openWindow("telaInicial");
+});
+
+// Estamos na própria tela de Rede de Apoio; aqui é opcional recarregar
+menuRedeApoio?.addEventListener("click", (event) => {
+  event.preventDefault();
+  // window.api.openWindow("telaRedeApoio");
+});
 
 // ===== CLASSES DE VALIDAÇÃO =====
 /**
@@ -146,6 +170,64 @@ const limparErro = () => {
   redeError.style.display = "none";
 };
 
+// ===== LISTAGEM DE REDES DE APOIO =====
+/**
+ * Renderiza os cards de redes de apoio no container #listaRedes
+ * @param {Array<any>} orgaos
+ */
+const renderizarRedes = (orgaos) => {
+  if (!listaRedes) return;
+
+  listaRedes.innerHTML = "";
+
+  if (!orgaos || orgaos.length === 0) {
+    listaRedes.innerHTML = `
+      <div class="col-12">
+        <p class="text-center text-muted">Nenhuma rede de apoio cadastrada.</p>
+      </div>
+    `;
+    return;
+  }
+
+  orgaos.forEach((orgao) => {
+    const col = document.createElement("div");
+    col.className = "col-md-6";
+
+    col.innerHTML = `
+      <div class="text-center card-paciente card-rede-apoio">
+        <h3 class="mb-2">${orgao.nome}</h3>
+        ${orgao.email ? `<p class="mb-1">${orgao.email}</p>` : ""}
+      </div>
+    `;
+
+    listaRedes.appendChild(col);
+  });
+};
+
+/**
+ * Busca no backend (mock) a lista de redes cadastradas
+ */
+const carregarRedes = async () => {
+  try {
+    if (!window.api || !window.api.listarOrgaosRedeApoio) {
+      console.error("API listarOrgaosRedeApoio não disponível");
+      return;
+    }
+
+    const resultado = await window.api.listarOrgaosRedeApoio();
+    console.log("Redes de apoio carregadas:", resultado);
+
+    if (!resultado.success) {
+      console.error(resultado.error || "Erro ao listar redes de apoio");
+      return;
+    }
+
+    renderizarRedes(resultado.orgaos || []);
+  } catch (err) {
+    console.error("Erro ao carregar redes de apoio:", err);
+  }
+};
+
 // ===== CONFIGURAÇÃO DE EVENT LISTENERS =====
 // Controle de abertura e fechamento de modais
 btnAbrir.addEventListener("click", abrirModal);
@@ -169,9 +251,8 @@ popupConfirmacao.addEventListener("click", (e) => {
 /**
  * Handler principal para o processo de cadastro
  * Executa validações em sequência e procede com cadastro se válido
- * @returns {void}
  */
-btnCadastrar.addEventListener("click", () => {
+btnCadastrar.addEventListener("click", async () => {
   // Captura dos valores atuais dos campos
   const nomeRede = document.getElementById("nomeRede").value;
   const emailRede = document.getElementById("emailRede").value;
@@ -193,14 +274,45 @@ btnCadastrar.addEventListener("click", () => {
     return; // Interrompe execução se email for inválido
   }
 
-  // Fluxo de sucesso - todas as validações passaram
-  fecharModal();
-  popupMensagem.textContent = "Rede cadastrada com sucesso!";
-  abrirPopup();
-  limparFormulario(); // Limpeza adicional por segurança
+  // Chama backend via IPC
+  try {
+    if (!window.api || !window.api.criarOrgaoRedeApoio) {
+      console.error("API do Electron não disponível.");
+      mostrarErro("Erro interno: API não disponível.");
+      return;
+    }
+
+    const resultado = await window.api.criarOrgaoRedeApoio(
+      nomeRede,
+      emailRede
+    );
+    console.log("Resultado cadastro rede de apoio:", resultado);
+
+    if (!resultado || !resultado.success) {
+      const mensagemErro =
+        resultado?.error || "Não foi possível cadastrar a rede de apoio.";
+      mostrarErro(mensagemErro);
+      return;
+    }
+
+    // Sucesso
+    fecharModal();
+    popupMensagem.textContent = "Rede cadastrada com sucesso!";
+    abrirPopup();
+    limparFormulario();
+
+    // Recarrega a lista com a nova rede
+    await carregarRedes();
+  } catch (err) {
+    console.error("Erro ao cadastrar Rede de Apoio:", err);
+    mostrarErro("Erro interno ao cadastrar a rede de apoio.");
+  }
 });
 
 // ===== MELHORIA DE USABILIDADE =====
 // Limpa mensagens de erro durante a digitação para feedback imediato
 document.getElementById("nomeRede").addEventListener("input", limparErro);
 document.getElementById("emailRede").addEventListener("input", limparErro);
+
+// Carrega as redes cadastradas ao abrir a tela
+carregarRedes();

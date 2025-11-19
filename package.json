@@ -19,8 +19,8 @@
   "license": "MIT",
   "devDependencies": {
     "@types/electron": "^1.4.38",
-    "@types/node": "^20.19.24",
-    "@types/nodemailer": "^7.0.3",
+    "@types/node": "^20.19.25",
+    "@types/nodemailer": "^7.0.4",
     "@types/pdfmake": "^0.2.12",
     "electron": "^28.3.3",
     "ts-node": "^10.9.2",

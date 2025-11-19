@@ -55,4 +55,14 @@ export class OrgaoRedeApoio {
     public setEndereco(endereco: string): void {
         this.endereco = endereco;
     }
+
+    public toJSON() {
+        return {
+            nome: this.nome,
+            objetivo: this.objetivo,
+            email: this.email,
+            telefone: this.telefone,
+            endereco: this.endereco,
+        };
+    }
 }
