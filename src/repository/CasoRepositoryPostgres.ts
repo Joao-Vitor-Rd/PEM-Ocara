@@ -126,11 +126,11 @@ export class CasoRepositoryPostgres implements ICasoRepository {
     private async salvarAssistida(client: PoolClient, assistida: any): Promise<number> {
         const queryAssistida = `
             INSERT INTO ASSISTIDA (
-                nome, idade, endereco, identidade_genero, nome_social, escolaridade,
-                religiao, nacionalidade, zona, ocupacao, cadastro_social,
-                dependentes, cor_raca
+                Nome, Idade, endereco, identidadeGenero, n_social, Escolaridade,
+                Religiao, Nacionalidade, zona, ocupacao, cad_social,
+                Dependentes, Cor_Raca
             ) VALUES (
-                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
             ) RETURNING id
         `;
 
@@ -147,7 +147,7 @@ export class CasoRepositoryPostgres implements ICasoRepository {
             assistida.getProfissao() || '',
             assistida.getNumeroCadastroSocial() || '',
             assistida.getQuantidadeDependentes() || 0,
-            assistida.getCorRaca() ? assistida.getCorRaca() : 'Não informado'
+            assistida.getCorRaca ? assistida.getCorRaca() : 'Não informado'
         ];
 
         const result = await client.query(queryAssistida, valuesAssistida);
@@ -160,61 +160,52 @@ export class CasoRepositoryPostgres implements ICasoRepository {
     private async salvarFilhos(client: PoolClient, idAssistida: number, sobreVoce: any): Promise<void> {
         const faixaFilhos = sobreVoce.getFaixaFilhos() || [];
 
-        // Para cada faixa etária
+        if (faixaFilhos.length === 0) return;
+
+        // Inserir em FILHO SEM seq_filho (deixa o DB auto-gerar)
+        const queryFilho = `
+            INSERT INTO FILHO (
+                qtd_filhos_deficiencia, viu_violencia,
+                violencia_gravidez, id_assistida, qtd_filho_agressor,
+                qtd_filho_outro_relacionamento
+            ) VALUES (
+                $1, $2, $3, $4, $5, $6
+            ) RETURNING seq_filho
+        `;
+
+        const valuesFilho = [
+            sobreVoce.getFilhosComDeficiencia?.() ? `${sobreVoce.getFilhosComDeficiencia()}` : '0',
+            sobreVoce.getFilhosPresenciaramViolencia() || false,
+            sobreVoce.getViolenciaDuranteGravidez() || false,
+            idAssistida,
+            sobreVoce.getTemFilhosComAgressor() ? sobreVoce.getQntFilhosComAgressor() : 0,
+            sobreVoce.getTemFilhosOutroRelacionamento() ? sobreVoce.getQntFilhosOutroRelacionamento() : 0
+        ];
+
+        const resultFilho = await client.query(queryFilho, valuesFilho);
+        const seqFilhoInserido = resultFilho.rows[0].seq_filho;
+
         for (const faixa of faixaFilhos) {
-            // 1. Inserir na tabela FILHO com as informações gerais
-            const queryFilho = `
-                INSERT INTO FILHO (
-                    qtd_filhos_deficiencia, viu_violencia,
-                    violencia_gravidez, id_assistida, qtd_filho_agressor,
-                    qtd_filho_outro_relacionamento
-                ) VALUES (
-                    $1, $2, $3, $4, $5, $6
-                ) RETURNING seq_filho
-            `;
-
-            const valuesFilho = [
-                sobreVoce.getFilhosComDeficiencia ? `${sobreVoce.getFilhosComDeficiencia()}` : '0',
-                sobreVoce.getFilhosPresenciaramViolencia() || false,
-                sobreVoce.getViolenciaDuranteGravidez() || false,
-                idAssistida,
-                sobreVoce.getTemFilhosComAgressor() ? sobreVoce.getQntFilhosComAgressor() : 0,
-                sobreVoce.getTemFilhosOutroRelacionamento() ? sobreVoce.getQntFilhosOutroRelacionamento() : 0
-            ];
-
-            const resultFilho = await client.query(queryFilho, valuesFilho);
-            const seqFilhoInserido = resultFilho.rows[0].seq_filho;
-
-            // 2. Inserir na tabela FAIXA_FILHO com a faixa etária
             const queryFaixaFilho = `
                 INSERT INTO FAIXA_FILHO (
                     id_assistida, id_filhos, faixa_etaria
-                ) VALUES (
-                    $1, $2, $3
-                )
+                ) VALUES ($1, $2, $3)
             `;
 
-            const valuesFaixaFilho = [
-                idAssistida,
-                seqFilhoInserido,
-                faixa || ''
-            ];
+            await client.query(queryFaixaFilho, [idAssistida, seqFilhoInserido, faixa || '']);
+        }
 
-            await client.query(queryFaixaFilho, valuesFaixaFilho);
-
-            // 3. Salvar conflitos do filho se houver
-            const conflito = sobreVoce.getConflitoAgressor();
-            if (conflito) {
-                const tiposConflito = conflito.split(';').map((c: string) => c.trim());
-                for (const tipo of tiposConflito) {
-                    if (tipo) {
-                        const queryConflito = `
-                            INSERT INTO CONFLITO_FILHO (
-                                tipo_conflito, id_assistida, seq_filho
-                            ) VALUES ($1, $2, $3)
-                        `;
-                        await client.query(queryConflito, [tipo, idAssistida, seqFilhoInserido]);
-                    }
+        const conflito = sobreVoce.getConflitoAgressor();
+        if (conflito) {
+            const tiposConflito = conflito.split(';').map((c: string) => c.trim());
+            for (const tipo of tiposConflito) {
+                if (tipo) {
+                    const queryConflito = `
+                        INSERT INTO CONFLITO_FILHO (
+                            tipo_conflito, id_assistida, seq_filho
+                        ) VALUES ($1, $2, $3)
+                    `;
+                    await client.query(queryConflito, [tipo, idAssistida, seqFilhoInserido]);
                 }
             }
         }
