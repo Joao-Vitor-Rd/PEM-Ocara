@@ -103,4 +103,16 @@ export class CasoController {
                 throw new Error("Falha ao gerar PDF.");
         }
     }
+
+    async handlerPreviewCaso(dados: any): Promise<string> {
+        try {
+            const casoTemporario = this.casoService.instanciarCasoSemSalvar(dados);
+
+            const path = await this.PdfService.gerarPdfPreview(casoTemporario);
+            return path;
+        } catch (error) {
+            console.error("Erro no controller preview:", error);
+            throw error;
+        }
+    }
 }

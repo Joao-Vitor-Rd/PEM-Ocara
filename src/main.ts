@@ -269,6 +269,17 @@ ipcMain.handle('assistida:criar', async(
   }
 });
 
+ipcMain.handle('caso:preview', async (_event, dados) => {
+  try {
+    Logger.info('Gerando preview do caso...');
+    const pdfPath = await casoController.handlerPreviewCaso(dados);
+    return { success: true, path: pdfPath };
+  } catch (error) {
+    Logger.error('Erro ao gerar preview:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Erro desconhecido' };
+  }
+});
+
 // Buscar todos os usuários
 ipcMain.handle('user:getAll', async () => {
   try {

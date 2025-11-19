@@ -205,7 +205,8 @@ export class PdfUtil {
 
   public async gerarPdfFormulario(
     assistida: Assistida,
-    data: IFormularioCompleto
+    data: IFormularioCompleto,
+    customDirectory?: string
   ): Promise<string> {
     
     const { atendimento, agressor, blocoI, blocoII, blocoIII, blocoIV, outrasInformacoes, preenchimentoProfissional } = data;
@@ -903,8 +904,11 @@ export class PdfUtil {
     };
 
     const pdfDoc = this.printer.createPdfKitDocument(docDefinition);
+
+    const directory = customDirectory || app.getPath('desktop')
     const desktopPath = app.getPath('desktop');
-    const filePath = path.join(desktopPath, `formulario-assistida-${assistida.getProtocolo()}-${Date.now()}.pdf`);
+    const fileName = `formulario-assistida-${assistida.getProtocolo()}-${Date.now()}.pdf`;
+    const filePath = path.join(directory, fileName);
 
     return new Promise((resolve, reject) => {
       const stream = fs.createWriteStream(filePath);

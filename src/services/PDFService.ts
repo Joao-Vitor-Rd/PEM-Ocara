@@ -1,4 +1,5 @@
 import { CasoService } from "../services/CasoService";
+import { app } from 'electron';
 import { Caso } from "../models/Caso/Caso";
 import { Assistida } from "../models/assistida/Assistida";
 import { PdfUtil, IFormularioCompleto, IAtendimentoData, IAgressorData, IBlocoIData, IBlocoIIData, IBlocoIIIData, IBlocoIVData, IPreenchimentoProfissional } from "../utils/PdfUtil";
@@ -11,6 +12,18 @@ export class PdfService {
   constructor(casoService: CasoService) {
     this.casoService = casoService;
     this.pdfUtil = new PdfUtil();
+  }
+
+  public async gerarPdfPreview(caso: Caso): Promise<string> {
+    const assistida = caso.getAssistida();
+    
+    if (!assistida) {
+      throw new Error("Caso não possui uma assistida vinculada para o preview.");
+    }
+
+    const dadosFormulario: IFormularioCompleto = this.mapFormularioCompleto(caso, assistida);
+
+    return this.pdfUtil.gerarPdfFormulario(assistida, dadosFormulario, app.getPath('temp'));
   }
 
   public async criarPdfDeFormulario(protocoloCaso: number): Promise<string> {
@@ -218,12 +231,12 @@ export class PdfService {
       : 'BRANCA'
   };
 
-  const mora_risco = outrasInformacoes?.getMoraEmAreaRisco() || 'NAO';
+  const mora_risco = String(outrasInformacoes?.getMoraEmAreaRisco() || 'NAO').toUpperCase();
   const dependente_financeiro = outrasInformacoes?.getDependenteFinanceiroAgressor() || false;
   const aceita_abrigamento = outrasInformacoes?.getAceitaAbrigamentoTemporario() || false;
 
   const blocoIV: IBlocoIVData = {
-     p_mora_risco: mora_risco.includes('SIM')
+     p_mora_risco: mora_risco.includes('SIM') || mora_risco == 'TRUE'
      ? 'SIM'
      : 'NAO',
 

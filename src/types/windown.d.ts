@@ -16,6 +16,7 @@ export interface IElectronAPI {
   }>;
 
   criarCaso: (dados: {
+    anexo: string[]
     // Assistida
     nomeAssistida: string;
     idadeAssistida: number;
@@ -62,7 +63,7 @@ export interface IElectronAPI {
     terceiroComunicante: boolean;
     tipoViolencia: string;
     // Outras Infor Importantes
-    moraEmAreaRisco: boolean;
+    moraEmAreaRisco: string; //arrumar
     dependenteFinanceiroAgressor: boolean;
     aceitaAbrigamentoTemporario: boolean;
     // Sobre voce
@@ -72,7 +73,7 @@ export interface IElectronAPI {
     temFilhosOutroRelacionamento: boolean;
     qntFilhosOutroRelacionamento: number;
     faixaFilhos: string[];
-    filhosComDeficiencia: boolean;
+    filhosComDeficiencia: number;
     conflitoAgressor: string;
     filhosPresenciaramViolencia: boolean;
     violenciaDuranteGravidez: boolean;
@@ -144,7 +145,15 @@ export interface IElectronAPI {
   closeWindow: () => void;
   onUserCreated: (callback: (user: any) => void) => void;
   removeUserCreatedListener: () => void;
+  getPathForFile: (file: File) => string;
+  
+  gerarPreviewCaso: (dados: any) => Promise<{
+      success: boolean;
+      path?: string;
+      error?: string;
+    }>;
 }
+
 
 declare global {
   interface Window {

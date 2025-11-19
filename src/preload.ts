@@ -1,12 +1,20 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer, webUtils } from 'electron';
 
 contextBridge.exposeInMainWorld('api', {
-  createUser: (name: string, email: string) =>
+  createUser: (name: string, email: string) =>  
     ipcRenderer.invoke('user:create', { name, email }),
-
   getUsers: () => ipcRenderer.invoke('user:getAll'),
-
   getUserById: (id: string) => ipcRenderer.invoke('user:getById', id),
+
+  getPathForFile: (file: File) => {
+    if(webUtils && webUtils.getPathForFile) {
+      return webUtils.getPathForFile(file);
+    }
+    return (file as any).path;
+  },
+
+  gerarPreviewCaso: (dados:any) => ipcRenderer.invoke('caso:preview', dados),
+
 
   openWindow: (windowName: string) =>
     ipcRenderer.send('window:open', windowName),

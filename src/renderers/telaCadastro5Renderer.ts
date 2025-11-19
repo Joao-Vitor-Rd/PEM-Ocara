@@ -2,6 +2,8 @@
 
 export {}
 
+let caminhosArquivosSelecionados: string[] = [];
+
 function mostrarSucesso(mensagem: string) {
     let modal = document.getElementById('sucesso-modal');
     if (!modal) {
@@ -77,6 +79,12 @@ voltarBtn.addEventListener('click', async (event) => {
 });
 
 pxmBtn.addEventListener('click', async (event) => {
+    if (caminhosArquivosSelecionados.length > 0) {
+        sessionStorage.setItem('cadastro_anexos', JSON.stringify(caminhosArquivosSelecionados));
+    } else {
+        sessionStorage.removeItem('cadastro_anexos');
+    }
+
     window.api.openWindow("telaCadastro6");
 });
 
@@ -123,10 +131,11 @@ function handleFiles(files: FileList | null) {
             tamanho: (file.size / 1024 / 1024).toFixed(2) + ' MB'
         });
         arquivosValidos++;
+
+        const caminho = window.api.getPathForFile(file);
+        caminhosArquivosSelecionados.push(caminho);
     }
     if (arquivosValidos > 0) {
         alert(`${arquivosValidos} arquivo(s) selecionado(s) com sucesso!`);
     }
 }
-
-

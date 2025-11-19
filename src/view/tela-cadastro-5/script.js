@@ -1,33 +1,3 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const btnProximo = document.getElementById('proximo')
-    const btnVoltar = document.getElementById('voltar');
-
-    if (btnVoltar) {
-        btnVoltar.addEventListener('click', () => {
-            window.api.openWindow('tela-cadastro-4');
-        });
-    }
-
-    btnProximo.addEventListener('click', async (e) => {
-        e.preventDefault();
-        btnProximo.disable = true;
-        btnProximo.textContent = 'Processando...'
-    });
-
-    try {
-        const dadosArmazenados = JSON.parse(sessionStorage.getItem('dadosFormulario') || '{}');
-
-        const dadosCompletos = {
-            ...dadosArmazenados,
-            data: newDate(),
-            profissionalResponsavel: nomeProfissional
-        };
-
-        console.log("Criando caso com responsável:", nomeProfissional);
-        const resultadoCaso = await window.api.criarCaso(dadosCompletos);
-    }
-});
-
 const areaUpload = document.getElementById('areaUpload');
 const fileInput = document.getElementById('fileInput');
 const escolherArquivo = document.querySelector('.escolher-arquivo');
