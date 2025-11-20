@@ -43,6 +43,7 @@ header .material-symbols-outlined {
     border-radius: 50px;
 }
 
+
 /* Conteúdo */
 .conteúdo {
     display: flex;
@@ -119,6 +120,7 @@ header .material-symbols-outlined {
     letter-spacing: 0.05em;
     margin-bottom: 5px;
 }
+
 
 /* Rodapé */
 footer {
