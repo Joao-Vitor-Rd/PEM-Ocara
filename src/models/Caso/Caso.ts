@@ -85,7 +85,7 @@ export class Caso {
         assistidaSemCondicoes: boolean,
         assistidaRecusou: boolean,
         terceiroComunicante: boolean,
-        tipoViolencia: string,
+        tipoViolencia: string[],
 
         //Outras Infor Importantes
         moraEmAreaRisco: string,
@@ -367,7 +367,7 @@ export class Caso {
                 assistidaSemCondicoes: this.preenchimentoProfissional?.getAssistidaSemCondicoes() ?? false,
                 assistidaRecusou: this.preenchimentoProfissional?.getAssistidaRecusou() ?? false,
                 terceiroComunicante: this.preenchimentoProfissional?.getTerceiroComunicante() ?? false,
-                tipoViolencia: this.preenchimentoProfissional?.getTipoViolencia() ?? ""
+                tipoViolencia: this.preenchimentoProfissional?.getTipoViolencia() ?? []
             },
             anexos: this.anexos ?? [],
             encaminhamentos: this.encaminhamentos ?? []

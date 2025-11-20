@@ -4,7 +4,7 @@ export class PreenchimentoProfissional {
     private assistidaSemCondicoes: boolean;
     private assistidaRecusou: boolean;
     private terceiroComunicante: boolean;
-    private tipoViolencia: string;
+    private tipoViolencia: string[];
 
     constructor(
         assistidaRespondeuSemAjuda: boolean,
@@ -12,7 +12,7 @@ export class PreenchimentoProfissional {
         assistidaSemCondicoes: boolean,
         assistidaRecusou: boolean,
         terceiroComunicante: boolean,
-        tipoViolencia: string
+        tipoViolencia: string[]
     )
         {
         this.assistidaRespondeuSemAjuda = assistidaRespondeuSemAjuda;
@@ -40,7 +40,7 @@ export class PreenchimentoProfissional {
     public getTerceiroComunicante(): boolean {
         return this.terceiroComunicante;
     }
-    public getTipoViolencia(): string {
+    public getTipoViolencia(): string[] {
         return this.tipoViolencia;
     }
 
@@ -61,7 +61,7 @@ export class PreenchimentoProfissional {
     private setTerceiroComunicante(value: boolean): void {
         this.terceiroComunicante = value;
     }
-    private setTipoViolencia(value: string): void {
+    private setTipoViolencia(value: string[]): void {
         this.tipoViolencia = value;
     }
 }

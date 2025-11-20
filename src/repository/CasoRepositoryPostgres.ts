@@ -34,7 +34,7 @@ export class CasoRepositoryPostgres implements ICasoRepository {
                 throw new Error('Caso deve ter uma assistida associada');
             }
 
-            const idAssistida = await this.salvarAssistida(client, assistida);
+            const idAssistida = await this.salvarAssistida(client, assistida, caso.getSobreVoce());
 
             // 2. Salvar Caso base
             const sobreVoce = caso.getSobreVoce();
@@ -43,9 +43,9 @@ export class CasoRepositoryPostgres implements ICasoRepository {
             const queryCase = `
                 INSERT INTO CASO (
                     Data, separacao, novo_relac, abrigo, depen_finc, 
-                    mora_risco, medida, frequencia, id_assistida
+                    mora_risco, medida, frequencia, id_assistida, outras_informacoes
                 ) VALUES (
-                    $1, $2, $3, $4, $5, $6, $7, $8, $9
+                    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
                 ) RETURNING id_caso
             `;
 
@@ -58,7 +58,8 @@ export class CasoRepositoryPostgres implements ICasoRepository {
                 outrasInfo?.getMoraEmAreaRisco() || 'Não',
                 caso.getSobreAgressor()?.getAgressorCumpriuMedidaProtetiva() || false,
                 caso.getHistoricoViolencia()?.getAgressoesMaisFrequentesUltimamente() || false,
-                idAssistida
+                idAssistida,
+                caso.getOutrasInformacoesEncaminhamento()?.anotacoesLivres || ''
             ];
 
             const resultCaso = await client.query(queryCase, valuesCaso);
@@ -95,7 +96,13 @@ export class CasoRepositoryPostgres implements ICasoRepository {
                 await this.salvarComportamentosViolencia(client, idViolencia, idCaso, idAssistida, historicoViolencia);
             }
 
-            // 8. Salvar Anexos
+            // 8. Salvar PreenchimentoProfissional
+            const preenchimentoProfissional = caso.getPreenchimentoProfissional();
+            if (preenchimentoProfissional) {
+                await this.salvarPreenchimentoProfissional(client, idCaso, idAssistida, preenchimentoProfissional);
+            }
+
+            // 9. Salvar Anexos
             const anexos = caso.getAnexos();
             if (anexos && anexos.length > 0) {
                 for (const anexo of anexos) {
@@ -103,7 +110,7 @@ export class CasoRepositoryPostgres implements ICasoRepository {
                 }
             }
 
-            // 9. Salvar Funcionário que acompanha o caso
+            // 10. Salvar Funcionário que acompanha o caso
             if (caso.getProfissionalResponsavel()) {
                 await this.salvarFuncionarioCaso(client, idCaso, caso.getProfissionalResponsavel());
             }
@@ -123,14 +130,14 @@ export class CasoRepositoryPostgres implements ICasoRepository {
     /**
      * Salva os dados da Assistida
      */
-    private async salvarAssistida(client: PoolClient, assistida: any): Promise<number> {
+    private async salvarAssistida(client: PoolClient, assistida: any, sobreVoce: any): Promise<number> {
         const queryAssistida = `
             INSERT INTO ASSISTIDA (
                 Nome, Idade, endereco, identidadeGenero, n_social, Escolaridade,
                 Religiao, Nacionalidade, zona, ocupacao, cad_social,
-                Dependentes, Cor_Raca
+                Dependentes, Cor_Raca, deficiencia
             ) VALUES (
-                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
             ) RETURNING id
         `;
 
@@ -147,7 +154,8 @@ export class CasoRepositoryPostgres implements ICasoRepository {
             assistida.getProfissao() || '',
             assistida.getNumeroCadastroSocial() || '',
             assistida.getQuantidadeDependentes() || 0,
-            assistida.getCorRaca ? assistida.getCorRaca() : 'Não informado'
+            sobreVoce.getCorRaca() ? sobreVoce.getCorRaca() : 'Não informado',
+            sobreVoce.getPossuiDeficienciaDoenca() ? sobreVoce.getPossuiDeficienciaDoenca() : 'Não informado'
         ];
 
         const result = await client.query(queryAssistida, valuesAssistida);
@@ -425,6 +433,53 @@ export class CasoRepositoryPostgres implements ICasoRepository {
     }
 
     /**
+     * Salva dados de PreenchimentoProfissional
+     */
+    private async salvarPreenchimentoProfissional(
+        client: PoolClient,
+        idCaso: number,
+        idAssistida: number,
+        preenchimentoProfissional: any
+    ): Promise<void> {
+        const queryPreenchimento = `
+            INSERT INTO PREENCHIMENTO_PROFISSIONAL (
+                id_caso, id_assistida,
+                assistida_respondeu_sem_ajuda,
+                assistida_respondeu_com_auxilio,
+                assistida_sem_condicoes,
+                assistida_recusou,
+                terceiro_comunicante
+            ) VALUES (
+                $1, $2, $3, $4, $5, $6, $7
+            ) RETURNING id_preenchimento
+        `;
+
+        const valuesPreenchimento = [
+            idCaso,
+            idAssistida,
+            preenchimentoProfissional.getAssistidaRespondeuSemAjuda() || false,
+            preenchimentoProfissional.getAssistidaRespondeuComAuxilio() || false,
+            preenchimentoProfissional.getAssistidaSemCondicoes() || false,
+            preenchimentoProfissional.getAssistidaRecusou() || false,
+            preenchimentoProfissional.getTerceiroComunicante() || false
+        ];
+
+        const resultPreenchimento = await client.query(queryPreenchimento, valuesPreenchimento);
+        const idPreenchimento = resultPreenchimento.rows[0].id_preenchimento;
+
+        // Salvar tipos de violência multivalorados
+        const tiposViolencia = preenchimentoProfissional.getTipoViolencia() || [];
+        for (const tipo of tiposViolencia) {
+            const queryTipo = `
+                INSERT INTO TIPO_VIOLENCIA_PREENCHIMENTO (
+                    id_preenchimento, tipo_violencia
+                ) VALUES ($1, $2)
+            `;
+            await client.query(queryTipo, [idPreenchimento, tipo]);
+        }
+    }
+
+    /**
      * Salva associação de funcionário ao caso
      */
     private async salvarFuncionarioCaso(
@@ -464,6 +519,37 @@ export class CasoRepositoryPostgres implements ICasoRepository {
         const result = await this.pool.query(query);
         return result.rows;
     }
+
+    async getInformacoesGeraisDoCaso(idCaso: number): Promise<any> {
+        const query = `
+            SELECT
+                c.id_caso,
+                a.id as id_assistida,
+                a.nome as nomeAssistida,
+                ag.nome as nomeAgressor,
+                c.data,
+                pp.assistida_respondeu_sem_ajuda,
+                pp.assistida_respondeu_com_auxilio,
+                pp.assistida_sem_condicoes,
+                pp.assistida_recusou,
+                pp.terceiro_comunicante,
+                array_agg(DISTINCT tv.tipo_violencia) as tipoViolencia
+            FROM
+                caso c
+            LEFT JOIN assistida a ON c.id_assistida = a.id
+            LEFT JOIN agressor ag ON c.id_caso = ag.id_caso
+            LEFT JOIN preenchimento_profissional pp ON pp.id_caso = c.id_caso
+            LEFT JOIN tipo_violencia_preenchimento tv ON tv.id_preenchimento = pp.id_preenchimento
+            WHERE 
+                c.id_caso = $1
+            GROUP BY c.id_caso, a.id, a.nome, ag.nome, c.data, pp.assistida_respondeu_sem_ajuda, pp.assistida_respondeu_com_auxilio, pp.assistida_sem_condicoes, pp.assistida_recusou, pp.terceiro_comunicante
+        `;
+        
+        const result = await this.pool.query(query, [idCaso]);
+        return result.rows[0] || null;
+    }
+
+
 
     async getAllCasosAssistida(idAssistida: number): Promise<any[]> {
         const query = `

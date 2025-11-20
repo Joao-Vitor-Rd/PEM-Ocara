@@ -235,7 +235,8 @@ export class PdfService {
 
  const outrasInformacoesTexto = outrasInformacoesEncaminhamentos?.getAnotacoesLivres() || '';
 
-  const tipoViolencia = preenchimentoProfissional?.getTipoViolencia()?.toUpperCase() || '';
+  const tiposViolenciaArray = preenchimentoProfissional?.getTipoViolencia() || [];
+  const tipoViolencia = tiposViolenciaArray.map(t => t.toUpperCase()).join(', ') || '';
 
   const preenchimento: IPreenchimentoProfissional = {
       assistida_respondeu: preenchimentoProfissional?.getAssistidaRespondeuSemAjuda()

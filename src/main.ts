@@ -271,6 +271,23 @@ ipcMain.handle('caso:listarPorAssistida', async(_event, idAssistida: number) => 
   }
 });
 
+ipcMain.handle('caso:obterInformacoesGerais', async(_event, idCaso: number) => {
+  try {
+    Logger.info('Requisição para obter informações gerais do caso:', idCaso);
+    const infosCaso = await casoController.getInformacoesGeraisDoCaso(idCaso);
+    return {
+      success: true,
+      informacoes: infosCaso
+    };
+  } catch (error) {
+    Logger.error('Erro ao obter informações gerais do caso:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido ao obter informações gerais do caso'
+    };
+  }
+});
+
 ipcMain.handle('caso:salvarBD', async(_event, dados: {
   assistida: any;
   caso: any;
@@ -465,6 +482,9 @@ ipcMain.on('window:open', (_event, windowName: string) => {
       break;
     case 'testeForm':
       windowManager.loadContent('main', 'telaAssistidas.html');
+      break;
+    case 'telaInformacoesCaso':
+      windowManager.loadContent('main', 'tela-informacoes-caso/index.html');
       break;
     default:
       console.log('tela desconhecida:', windowName);

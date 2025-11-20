@@ -141,7 +141,7 @@ function exibirInformacoesCaso(caso: any) {
             { label: 'Assistida Sem Condições', valor: caso.preenchimentoProfissional.assistidaSemCondicoes },
             { label: 'Assistida Recusou', valor: caso.preenchimentoProfissional.assistidaRecusou },
             { label: 'Terceiro Comunicante', valor: caso.preenchimentoProfissional.terceiroComunicante },
-            { label: 'Tipo de Violência', valor: caso.preenchimentoProfissional.tipoViolencia }
+            { label: 'Tipo de Violência', valor: Array.isArray(caso.preenchimentoProfissional.tipoViolencia) ? caso.preenchimentoProfissional.tipoViolencia.join('; ') : caso.preenchimentoProfissional.tipoViolencia }
         ]);
     }
 

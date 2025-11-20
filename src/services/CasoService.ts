@@ -142,7 +142,7 @@ export class CasoService {
             dados.assistidaSemCondicoes,
             dados.assistidaRecusou,
             dados.terceiroComunicante,
-            dados.tipoViolencia,
+            Array.isArray(dados.tipoViolencia) ? dados.tipoViolencia : [dados.tipoViolencia],
             dados.moraEmAreaRisco,
             dados.dependenteFinanceiroAgressor,
             dados.aceitaAbrigamentoTemporario,
@@ -258,5 +258,15 @@ export class CasoService {
             // Funcionário responsável
             funcionarioResponsavel: dados.funcionario
         };
+    }
+
+    async getInformacoesGeraisDoCaso(idCaso: number): Promise<any> {
+        try {
+            const infosCaso = await this.casoRepository.getInformacoesGeraisDoCaso(idCaso);
+            return infosCaso;
+        } catch (error) {
+            console.error('Erro ao obter informações gerais do caso:', error);
+            throw error;
+        }
     }
 }

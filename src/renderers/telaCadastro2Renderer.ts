@@ -165,7 +165,10 @@ window.addEventListener('DOMContentLoaded', () => {
         setRadioValue('q16-4-presenciaram-violencia', dadosCaso._q16Presenciaram);
         setRadioValue('q16-5-violencia-gravidez', dadosCaso._q16ViolenciaGravidez);
         
-        setRadioValue('q18-deficiencia', dadosCaso.possuiDeficienciaDoenca || undefined);
+        setRadioValue('q18-deficiencia', dadosCaso.possuiDeficienciaDoenca ? 'Sim' : (dadosCaso.possuiDeficienciaDoenca === false ? 'Não' : undefined));
+        if (dadosCaso.possuiDeficienciaDoenca && dadosCaso.possuiDeficienciaDoenca !== 'Sim' && dadosCaso.possuiDeficienciaDoenca !== 'Não') {
+            setInputValue('q18-qual-deficiencia', dadosCaso.possuiDeficienciaDoenca);
+        }
         
         setRadioValue('cor', dadosCaso.corRaca);
         setRadioValue('q20-local-risco', dadosCaso.moraEmAreaRisco ? 'Sim' : (dadosCaso.moraEmAreaRisco === false ? 'Não' : undefined));
@@ -226,7 +229,9 @@ btnVoltar.addEventListener('click', async () => {
         dadosCaso._q16Presenciaram = getRadioValue('q16-4-presenciaram-violencia');
         dadosCaso._q16ViolenciaGravidez = getRadioValue('q16-5-violencia-gravidez');
         
-        const deficiencia = getRadioValue('q18-deficiencia');
+        const deficienciaResposta = getRadioValue('q18-deficiencia');
+        const deficienciaDescricao = getInputValue('q18-qual-deficiencia');
+        dadosCaso.possuiDeficienciaDoenca = deficienciaResposta === 'Sim' ? deficienciaDescricao : deficienciaResposta;
         
         dadosCaso._moraEmAreaRisco = getRadioValue('q20-local-risco');
         
@@ -280,7 +285,9 @@ btnProximo.addEventListener('click', async () => {
         const q16Presenciaram = getRadioValue('q16-4-presenciaram-violencia');
         const q16ViolenciaGravidez = getRadioValue('q16-5-violencia-gravidez');
         
-        const deficiencia = getRadioValue('q18-deficiencia');
+        const deficienciaResposta = getRadioValue('q18-deficiencia');
+        const deficienciaDescricao = getInputValue('q18-qual-deficiencia');
+        const deficiencia = deficienciaResposta === 'Sim' ? deficienciaDescricao : deficienciaResposta;
         const corRaca = getRadioValue('cor');
         const moraEmAreaRisco = getRadioValue('q20-local-risco');
         const dependenteFinanceira = getRadioValue('q21-dependente-financeira');

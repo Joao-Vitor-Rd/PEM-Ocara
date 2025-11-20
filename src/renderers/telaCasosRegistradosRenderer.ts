@@ -52,6 +52,7 @@ async function carregarCasos() {
         const idAssistida = parseInt(protocoloAssistida);
         console.log('Carregando casos para assistida:', idAssistida);
         const resultado = await window.api.listarCasosPorAssistida(idAssistida);
+        sessionStorage.removeItem('protocoloAssistidaSelecionada');
         console.log('Resultado da API:', resultado);
         
         if (resultado.success && resultado.casos && resultado.casos.length > 0) {
@@ -112,6 +113,8 @@ function exibirCasos(casos: any[]) {
                 cardElement.style.transform = 'scale(1)';
             });
             cardElement.addEventListener('click', () => {
+                sessionStorage.setItem('idCasoAtual', idCaso.toString());
+                window.api.openWindow("telaInformacoesCaso");
                 console.log(`Caso selecionado: ID ${idCaso}`);
                 console.log(caso);
             });

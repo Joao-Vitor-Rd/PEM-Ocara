@@ -90,4 +90,8 @@ export class CasoController {
     getCasosPorProtocoloAssistida(protocoloAssistida: number): Caso[] {
         return this.casoService.getCasosPorProtocoloAssistida(protocoloAssistida);
     }
+
+    async getInformacoesGeraisDoCaso(idCaso: number): Promise<any> {
+        return await this.casoService.getInformacoesGeraisDoCaso(idCaso);
+    }
 }

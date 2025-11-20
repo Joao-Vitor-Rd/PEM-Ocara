@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
+import { get } from 'http';
 
 contextBridge.exposeInMainWorld('api', {
   createUser: (name: string, email: string) =>
@@ -32,6 +33,9 @@ contextBridge.exposeInMainWorld('api', {
 
   obterCasosPorProtocoloAssistida: (protocoloAssistida: number) =>
     ipcRenderer.invoke('caso:obterPorProtocoloAssistida', protocoloAssistida),
+
+  getInformacoesGeraisDoCaso: (idCaso: number) =>
+    ipcRenderer.invoke('caso:obterInformacoesGerais', idCaso),
 
   criarAssistida: (
     nome: string,

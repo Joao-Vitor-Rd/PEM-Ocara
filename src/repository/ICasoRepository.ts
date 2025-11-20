@@ -34,4 +34,13 @@ export interface ICasoRepository {
      * @returns Promise<any> - Dados completos do caso
      */
     getCaso(idCaso: number): Promise<any>;
+
+    /**
+     * Recupera informações gerais de um caso específico
+     * @param idCaso - ID do caso
+     * @returns Promise<any> - Informações gerais do caso
+     */
+    getInformacoesGeraisDoCaso(idCaso: number): Promise<any>;
+    
 }
+

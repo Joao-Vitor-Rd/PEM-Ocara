@@ -95,7 +95,7 @@ pxmBtn.addEventListener('click', async (event) => {
         dadosCaso.assistidaRecusou = respostaFormularioValue === 'Assistida recusou';
         dadosCaso.terceiroComunicante = respostaFormularioValue === 'Terceiro comunicante';
 
-        dadosCaso.tipoViolencia = tiposViolenciaArray.join('; ');
+        dadosCaso.tipoViolencia = tiposViolenciaArray;
 
         dadosCaso.preenchimentoProfissional = {
             respostaFormulario: respostaFormularioValue,
