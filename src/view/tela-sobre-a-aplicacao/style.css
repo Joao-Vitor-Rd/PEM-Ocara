@@ -19,7 +19,7 @@ header .title {
 header h1 {
     font-size: 48px;
     font-weight: 800;
-    letter-spacing: 2.4px;
+    letter-spacing: 0.05em;
     margin: 0;
 }
 
@@ -58,7 +58,7 @@ header .material-symbols-outlined {
 
 .title-logo h1 {
     font-size: 96px;
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: 0.25em;
     text-decoration: underline;
     margin: 0;
@@ -110,11 +110,13 @@ header .material-symbols-outlined {
     font-weight: 300;
     color: #3A3A3A;
     letter-spacing: 0.05em;
+    margin-bottom: 5px;
 }
 
 /* Rodapé */
 footer {
     text-align: center;
     font-size: 24px;
-    font-weight: 300;
+    font-weight: 200;
+    letter-spacing: 0.05em;
 }
