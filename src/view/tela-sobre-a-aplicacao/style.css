@@ -7,7 +7,13 @@ body {
 
 /* Header */
 header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     padding: 20px 20px 0px 20px;
+    background-color: #ffffff;
+    z-index: 1000;
 }
 
 header .title {
@@ -43,6 +49,7 @@ header .material-symbols-outlined {
     flex-direction: column;
     padding: 25px 25px;
     gap: 40px;
+    margin-top: 150px;
 }
 
 /* Titulo */
