@@ -11,6 +11,7 @@ body {
     overflow-x: hidden;
 }
 
+
 /* --- Layout Principal do App --- */
 .app-container {
     display: flex;
@@ -108,6 +109,7 @@ body {
     flex-shrink: 0;
 }
 
+
 .main-content {
     flex-grow: 1;
     overflow-y: auto;
@@ -124,9 +126,11 @@ body {
 
 }
 
+
 .icone-rede-apoio {
     transform: scale(1.4);
 }
+
 
 /* --- Conteúdo Principal --- */
 .main-content {
@@ -140,6 +144,7 @@ body {
     max-width: 1920px;
     margin: 0 auto;
 }
+
 
 /* --- rodape --- */
 .rodape {
@@ -167,6 +172,7 @@ body {
     height: 100px;
     object-fit: contain;
 }
+
 
 .card-paciente {
     background-color: #CEB3F2;
