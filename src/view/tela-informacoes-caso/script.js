@@ -490,6 +490,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     const btnFecharPrivacidade = document.getElementById('fecharModalPrivacidade');
     if (btnFecharPrivacidade) btnFecharPrivacidade.onclick = () => uiManager.toggleModalPrivacidade(false);
 
+    const btnSalvarPrivacidade = document.querySelector('#modalPrivacidade button');
+    if (btnSalvarPrivacidade) {
+        btnSalvarPrivacidade.onclick = async () => {
+            const radioSelecionado = document.querySelector('input[name="privacidade"]:checked');
+            if (radioSelecionado) {
+                const tipoPrivacidade = radioSelecionado.value === 'publico' ? 'público' : 'privado';
+                uiManager.toggleModalPrivacidade(false);
+                uiManager.mostrarPopup(`Anexo definido como ${tipoPrivacidade} com sucesso!`);
+            }
+        };
+    }
+
     // Dropdown de anexos no modal
     const botaoDropdownAnexo = document.getElementById('botaoAnexo');
     const menuAnexos = document.getElementById('menuAnexos');
