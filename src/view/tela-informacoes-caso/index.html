@@ -253,9 +253,19 @@
         <div class="modal-privacidade-content">
             <button type="button" class="modal-close" id="fecharModalPrivacidade">&times;</button>
             
-            <!-- Preencha aqui os elementos do modal -->
-            
-        </div>
+            <h1>Selecione a privacidade desse Anexo</h1>
+            <div class="opcoes-privacidade">
+                <label>
+                    <input type="radio" name="privacidade" value="publico" checked>
+                    Anexo público (disponível para assistente social e para jurídico)
+                </label>
+                <label>
+                    <input type="radio" name="privacidade" value="restrito">
+                    Anexo privado (disponível apenas para assistente social)
+                </label>
+            </div>
+
+            <button>Salvar Alterações</button>
     </div>
 
     <script src="script.js"></script>
