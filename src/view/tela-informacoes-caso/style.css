@@ -1130,6 +1130,43 @@ body {
     background-color: #4d3670;
 }
 
+/* Modal de Privacidade */
+.modal-privacidade-content {
+    background-color: #FFFFFF;
+    border-radius: 15px;
+    width: 843px;
+    height: 286px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    padding: 28px 40px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.modal-privacidade-content .modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: #63468C;
+    font-size: 36px;
+    font-weight: 300;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-privacidade-content .modal-close:hover {
+    opacity: 1;
+}
+
 /* Responsividade para monitores grandes e ultrawide */
 @media screen and (min-width: 1921px) {
     .main-content {

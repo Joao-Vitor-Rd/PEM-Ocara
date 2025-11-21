@@ -214,6 +214,8 @@ class UIManager {
                     await callbacks.onCancel(arquivoId);
                 } else if (action === 'delete' && callbacks.onDelete) {
                     await callbacks.onDelete(arquivoId);
+                } else if (action === 'visibility' && callbacks.onVisibility) {
+                    await callbacks.onVisibility(arquivoId);
                 }
             };
             
@@ -284,6 +286,19 @@ class UIManager {
         }
     }
 
+    toggleModalPrivacidade(mostrar) {
+        const modal = document.getElementById('modalPrivacidade');
+        if (modal) {
+            if (mostrar) {
+                modal.classList.add('visible');
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.classList.remove('visible');
+                document.body.style.overflow = '';
+            }
+        }
+    }
+
     preencherDadosCaso(dados) {
         const mapaCampos = {
             'Protocolo': 'protocolo',
@@ -335,6 +350,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 fileManager.remover(id);
                 atualizarTela();
             }
+        },
+        onVisibility: async (id) => {
+            uiManager.toggleModalPrivacidade(true);
         }
     };
 
@@ -467,6 +485,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const btnFecharEncaminhamento = document.getElementById('fecharModalEncaminhamento');
     if (btnFecharEncaminhamento) btnFecharEncaminhamento.onclick = () => uiManager.toggleModalEncaminhamento(false);
+
+    // Modal de Privacidade
+    const btnFecharPrivacidade = document.getElementById('fecharModalPrivacidade');
+    if (btnFecharPrivacidade) btnFecharPrivacidade.onclick = () => uiManager.toggleModalPrivacidade(false);
 
     // Dropdown de anexos no modal
     const botaoDropdownAnexo = document.getElementById('botaoAnexo');
