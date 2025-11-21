@@ -181,6 +181,7 @@ class UIManager {
                         <span class="nome-arquivo" title="${arquivo.nome}">${nomeExibicao}</span>
                         <span class="tamanho-arquivo">${arquivo.tamanho}</span>
                     </div>
+                    <button class="btn-visibilidade" type="button" data-action="visibility"><span class="material-symbols-outlined">visibility_lock</span></button>
                     <button class="btn-apagar" type="button" data-action="delete"><span class="material-symbols-outlined">delete_forever</span></button>
                 `;
             }
