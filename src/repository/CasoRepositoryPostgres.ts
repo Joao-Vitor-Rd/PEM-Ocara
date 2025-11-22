@@ -49,8 +49,10 @@ export class CasoRepositoryPostgres implements ICasoRepository {
                 ) RETURNING id_caso
             `;
 
+            const dataOcorrida = caso.getAgressor()?.getDataOcorrida() || caso.getData();
+            
             const valuesCaso = [
-                caso.getData(),
+                dataOcorrida,
                 sobreVoce?.getSeparacaoRecente() || 'Não',
                 sobreVoce?.getNovoRelacionamentoAumentouAgressao() || false,
                 outrasInfo?.getAceitaAbrigamentoTemporario() || false,
@@ -725,4 +727,48 @@ export class CasoRepositoryPostgres implements ICasoRepository {
             return null;
         }
     }
+
+        // ...existing code...
+
+    async getTotalCasosNoAno(): Promise<any[]> {
+        const query = `
+            WITH meses_serie AS (
+                SELECT 
+                    DATE_TRUNC('month', CURRENT_DATE - INTERVAL '12 months')::date + (INTERVAL '1 month' * generate_subscripts(ARRAY[0,1,2,3,4,5,6,7,8,9,10,11], 1)) as mes_inicio
+            ),
+            casos_agrupados AS (
+                SELECT
+                    DATE_TRUNC('month', c.data)::date as mes,
+                    COUNT(*) as quantidade
+                FROM CASO c
+                WHERE c.data >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '12 months')
+                  AND c.data <= DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month - 1 day'
+                GROUP BY DATE_TRUNC('month', c.data)
+            )
+            SELECT
+                EXTRACT(MONTH FROM ms.mes_inicio)::int as mes_numero,
+                COALESCE(ca.quantidade, 0) as quantidade,
+                ms.mes_inicio
+            FROM meses_serie ms
+            LEFT JOIN casos_agrupados ca ON DATE_TRUNC('month', ca.mes) = ms.mes_inicio
+            ORDER BY ms.mes_inicio ASC
+        `;
+
+        try {
+            const result = await this.pool.query(query);
+            const mesesPT = [
+                '', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+            ];
+
+            return result.rows.map((row: any) => ({
+                mes: mesesPT[parseInt(row.mes_numero, 10)],
+                quantidade: parseInt(row.quantidade, 10),
+            }));
+        } catch (error) {
+            console.error('Erro ao recuperar casos por mês:', error);
+            return [];
+        }
+    }
+
 }

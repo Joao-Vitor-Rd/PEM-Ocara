@@ -312,6 +312,23 @@ ipcMain.handle('caso:obterInformacoesGerais', async(_event, idCaso: number) => {
   }
 });
 
+ipcMain.handle('caso:getTotalCasosNoAno', async() => {
+  try {
+    Logger.info('Requisição para obter total de casos no ano');
+    const totalCasos = await casoController.getTotalCasosNoAno();
+    return {
+      success: true,
+      totalCasos
+    };
+  } catch (error) {
+    Logger.error('Erro ao obter total de casos no ano:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido ao obter total de casos no ano'
+    };
+  }
+});
+
 ipcMain.handle('caso:salvarBD', async(_event, dados: {
   assistida: any;
   caso: any;
@@ -520,6 +537,9 @@ ipcMain.on('window:open', (_event, windowName: string) => {
       break;
     case 'telaInformacoesCaso':
       windowManager.loadContent('main', 'tela-informacoes-caso/index.html');
+      break;
+    case 'telaEstatisticas':
+      windowManager.loadContent('main', 'tela-estatisticas/index.html');
       break;
     default:
       console.log('tela desconhecida:', windowName);

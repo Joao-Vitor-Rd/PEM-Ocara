@@ -129,6 +129,12 @@ export interface IElectronAPI {
     error?: string;
   }>;
 
+  getTotalCasosNoAno: () => Promise<{
+    success: boolean;
+    totalCasos?: any[];
+    error?: string;
+  }>;
+
   listarCasosPorAssistida: (idAssistida: number) => Promise<{
     success: boolean;
     casos?: any[];

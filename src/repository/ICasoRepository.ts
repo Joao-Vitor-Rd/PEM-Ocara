@@ -41,6 +41,9 @@ export interface ICasoRepository {
      * @returns Promise<any> - Informações gerais do caso
      */
     getInformacoesGeraisDoCaso(idCaso: number): Promise<any>;
-    
+    /**
+     * Recupera o total de casos no ano, com mês e quantidade
+     * @returns Promise<number> - Total de casos no ano, e nome dos meses
+     */
+    getTotalCasosNoAno(): Promise<any[]>;
 }
-

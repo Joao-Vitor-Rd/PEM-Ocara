@@ -120,4 +120,8 @@ export class CasoController {
     async getInformacoesGeraisDoCaso(idCaso: number): Promise<any> {
         return await this.casoService.getInformacoesGeraisDoCaso(idCaso);
     }
+
+    async getTotalCasosNoAno(): Promise<any[]> {
+        return await this.casoService.getTotalCasosNoAno();
+    }
 }

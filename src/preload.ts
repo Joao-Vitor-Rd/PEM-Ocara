@@ -28,6 +28,8 @@ contextBridge.exposeInMainWorld('api', {
   criarCaso: (data: any) =>
     ipcRenderer.invoke('caso:criar', data),
 
+  getTotalCasosNoAno: () => ipcRenderer.invoke('caso:getTotalCasosNoAno'),
+
   salvarCasoBD: (dados: {
     assistida: any;
     caso: any;

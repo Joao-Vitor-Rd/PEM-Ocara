@@ -128,8 +128,20 @@ window.addEventListener('DOMContentLoaded', () => {
         setInputValue('vinculo', dadosCaso.vinculoAssistida);
         
         if (dadosCaso.dataOcorrida) {
-            const date = new Date(dadosCaso.dataOcorrida);
-            setInputValue('data-fato', date.toISOString().split('T')[0]);
+            let dateStr = '';
+            if (typeof dadosCaso.dataOcorrida === 'string') {
+                dateStr = dadosCaso.dataOcorrida.split('T')[0];
+            } else if (dadosCaso.dataOcorrida instanceof Date) {
+                dateStr = dadosCaso.dataOcorrida.toISOString().split('T')[0];
+            } else if (dadosCaso.dataOcorrida) {
+                const date = new Date(dadosCaso.dataOcorrida);
+                if (!isNaN(date.getTime())) {
+                    dateStr = date.toISOString().split('T')[0];
+                }
+            }
+            if (dateStr) {
+                setInputValue('data-fato', dateStr);
+            }
         }
 
         // Bloco I - Histórico de Violência

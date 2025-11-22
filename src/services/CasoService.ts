@@ -356,4 +356,14 @@ export class CasoService {
             throw error;
         }
     }
+
+    async getTotalCasosNoAno(): Promise<any[]> {
+        try {
+            const totalCasos = await this.casoRepository.getTotalCasosNoAno();
+            return totalCasos;
+        } catch (error) {
+            console.error('Erro ao obter total de casos no ano:', error);
+            throw error;
+        }
+    }
 }
