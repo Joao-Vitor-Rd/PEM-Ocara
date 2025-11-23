@@ -1,6 +1,6 @@
 // Configurações gerais
 const Config = {
-    MAX_FILE_SIZE: 100 * 1024 * 1024, // 100MB
+    MAX_FILE_SIZE: 100 * 1024 * 1024,
     IDS: {
         LISTA_ANEXOS: 'lista-anexos',
         LISTA_RELATORIOS: 'lista-relatorios',
@@ -181,6 +181,7 @@ class UIManager {
                         <span class="nome-arquivo" title="${arquivo.nome}">${nomeExibicao}</span>
                         <span class="tamanho-arquivo">${arquivo.tamanho}</span>
                     </div>
+                    <button class="btn-visibilidade" type="button" data-action="visibility"><span class="material-symbols-outlined">visibility_lock</span></button>
                     <button class="btn-apagar" type="button" data-action="delete"><span class="material-symbols-outlined">delete_forever</span></button>
                 `;
             }
@@ -213,6 +214,8 @@ class UIManager {
                     await callbacks.onCancel(arquivoId);
                 } else if (action === 'delete' && callbacks.onDelete) {
                     await callbacks.onDelete(arquivoId);
+                } else if (action === 'visibility' && callbacks.onVisibility) {
+                    await callbacks.onVisibility(arquivoId);
                 }
             };
             
@@ -283,6 +286,19 @@ class UIManager {
         }
     }
 
+    toggleModalPrivacidade(mostrar) {
+        const modal = document.getElementById('modalPrivacidade');
+        if (modal) {
+            if (mostrar) {
+                modal.classList.add('visible');
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.classList.remove('visible');
+                document.body.style.overflow = '';
+            }
+        }
+    }
+
     preencherDadosCaso(dados) {
         const mapaCampos = {
             'Protocolo': 'protocolo',
@@ -334,6 +350,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 fileManager.remover(id);
                 atualizarTela();
             }
+        },
+        onVisibility: async (id) => {
+            uiManager.toggleModalPrivacidade(true);
         }
     };
 
@@ -466,6 +485,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const btnFecharEncaminhamento = document.getElementById('fecharModalEncaminhamento');
     if (btnFecharEncaminhamento) btnFecharEncaminhamento.onclick = () => uiManager.toggleModalEncaminhamento(false);
+
+    // Modal de Privacidade
+    const btnFecharPrivacidade = document.getElementById('fecharModalPrivacidade');
+    if (btnFecharPrivacidade) btnFecharPrivacidade.onclick = () => uiManager.toggleModalPrivacidade(false);
+
+    const btnSalvarPrivacidade = document.querySelector('#modalPrivacidade button');
+    if (btnSalvarPrivacidade) {
+        btnSalvarPrivacidade.onclick = async () => {
+            const radioSelecionado = document.querySelector('input[name="privacidade"]:checked');
+            if (radioSelecionado) {
+                const tipoPrivacidade = radioSelecionado.value === 'publico' ? 'público' : 'privado';
+                uiManager.toggleModalPrivacidade(false);
+                uiManager.mostrarPopup(`Anexo definido como ${tipoPrivacidade} com sucesso!`);
+            }
+        };
+    }
 
     // Dropdown de anexos no modal
     const botaoDropdownAnexo = document.getElementById('botaoAnexo');
