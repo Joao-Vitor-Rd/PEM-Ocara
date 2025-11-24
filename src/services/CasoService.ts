@@ -366,4 +366,54 @@ export class CasoService {
             throw error;
         }
     }
+
+    async totalCasos(): Promise<number> {
+        try {
+            const total = await this.casoRepository.getTotalCasos();
+            return total;
+        } catch (error) {
+            console.error('Erro ao obter total de casos:', error);
+            throw error;
+        }
+    }
+
+    async totalCasosMes(mes: number, ano: number): Promise<number> {
+        try {
+            const total = await this.casoRepository.getTotalCasosMes(mes, ano);
+            return total;
+        } catch (error) {
+            console.error('Erro ao obter total de casos do mês:', error);
+            throw error;
+        }
+    }
+
+    async getTotalCasosNoAnoFiltrado(regioes: string[], dataInicio?: string, dataFim?: string): Promise<any[]> {
+        try {
+            const totalCasos = await this.casoRepository.getTotalCasosNoAnoFiltrado(regioes, dataInicio, dataFim);
+            return totalCasos;
+        } catch (error) {
+            console.error('Erro ao obter total de casos no ano filtrado:', error);
+            throw error;
+        }
+    }
+
+    async getEnderecosAssistidasFiltrado(dataInicio?: string, dataFim?: string): Promise<any[]> {
+        try {
+            const enderecos = await this.casoRepository.getEnderecosAssistidasFiltrado(dataInicio, dataFim);
+            return enderecos;
+        } catch (error) {
+            console.error('Erro ao obter endereços filtrados:', error);
+            throw error;
+        }
+    }
+
+    async getTotalCasosFiltrado(regioes: string[], dataInicio?: string, dataFim?: string): Promise<number> {
+        try {
+            const total = await this.casoRepository.getTotalCasosFiltrado(regioes, dataInicio, dataFim);
+            return total;
+        } catch (error) {
+            console.error('Erro ao obter total de casos filtrado:', error);
+            throw error;
+        }
+    }
 }

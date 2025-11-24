@@ -98,16 +98,48 @@ ipcMain.handle('user:create', async (_event, data: { name: string; email: string
   }
 });
 
-ipcMain.handle('assistida:listarTodas', async () => {
-  Logger.info("requisicao: listar Assistidas")
+ipcMain.handle('assistida:getEnderecos', async () => {
+  Logger.info("requisicao: obter enderecos das Assistidas")
   try {
-    const assistidas = await assistidaController.handlerListarTodasAssistidas();
+    const enderecos = await assistidaController.handlergetEnderecosAssistidas();
     return {
       success: true,
-      assistidas: assistidas
+      enderecos: enderecos
     };
   } catch (error) {
     Logger.error('Erro ao buscar assistidas:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido'
+    };
+  }
+});
+
+ipcMain.handle('caso:getTotalCasos', async() => { 
+  try {
+    const total = await casoController.getTotalCasos();
+    return {
+      success: true,
+      totalCasos: total
+    };
+  } catch (error) {
+    Logger.error('Erro ao obter total de casos:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido'
+    };
+  }
+});
+
+ipcMain.handle('caso:getTotalCasosMes', async(_event, args: { mes: number; ano: number }) => {
+  try {
+    const total = await casoController.getTotalCasosMes(args.mes, args.ano);
+    return {
+      success: true,
+      totalCasosMes: total
+    };
+  } catch (error) {
+    Logger.error('Erro ao obter total de casos do mês:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Erro desconhecido'
@@ -325,6 +357,57 @@ ipcMain.handle('caso:getTotalCasosNoAno', async() => {
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Erro desconhecido ao obter total de casos no ano'
+    };
+  }
+});
+
+ipcMain.handle('caso:getTotalCasosNoAnoFiltrado', async(_event, args: { regioes: string[], dataInicio?: string, dataFim?: string }) => {
+  try {
+    Logger.info('Requisição para obter total de casos no ano filtrado', args.regioes);
+    const totalCasos = await casoController.getTotalCasosNoAnoFiltrado(args.regioes, args.dataInicio, args.dataFim);
+    return {
+      success: true,
+      totalCasos
+    };
+  } catch (error) {
+    Logger.error('Erro ao obter total de casos no ano filtrado:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido'
+    };
+  }
+});
+
+ipcMain.handle('caso:getEnderecosAssistidasFiltrado', async(_event, args?: { dataInicio?: string; dataFim?: string }) => {
+  try {
+    Logger.info('Requisição para obter endereços filtrados', args);
+    const enderecos = await casoController.getEnderecosAssistidasFiltrado(args?.dataInicio, args?.dataFim);
+    return {
+      success: true,
+      enderecos
+    };
+  } catch (error) {
+    Logger.error('Erro ao obter endereços filtrados:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido'
+    };
+  }
+});
+
+ipcMain.handle('caso:getTotalCasosFiltrado', async(_event, args: { regioes: string[]; dataInicio?: string; dataFim?: string }) => {
+  try {
+    Logger.info('Requisição para obter total de casos filtrado', args);
+    const total = await casoController.getTotalCasosFiltrado(args.regioes, args.dataInicio, args.dataFim);
+    return {
+      success: true,
+      totalCasos: total
+    };
+  } catch (error) {
+    Logger.error('Erro ao obter total de casos filtrado:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido'
     };
   }
 });

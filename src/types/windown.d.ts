@@ -123,6 +123,42 @@ export interface IElectronAPI {
     error?: string;
   }>;
 
+  getEnderecosAssistidas: () => Promise<{
+    success: boolean;
+    enderecos?: any[];
+    error?: string;
+  }>;
+
+  getTotalCasos: () => Promise<{
+    success: boolean;
+    totalCasos?: number;
+    error?: string;
+  }>;
+
+  getTotalCasosMes: (mes: number, ano: number) => Promise<{
+    success: boolean;
+    totalCasosMes?: number;
+    error?: string;
+  }>;
+
+  getTotalCasosNoAnoFiltrado: (regioes: string[], dataInicio?: string, dataFim?: string) => Promise<{
+    success: boolean;
+    totalCasos?: any[];
+    error?: string;
+  }>;
+
+  getEnderecosAssistidasFiltrado: (dataInicio?: string, dataFim?: string) => Promise<{
+    success: boolean;
+    enderecos?: any[];
+    error?: string;
+  }>;
+
+  getTotalCasosFiltrado: (regioes: string[], dataInicio?: string, dataFim?: string) => Promise<{
+    success: boolean;
+    totalCasos?: number;
+    error?: string;
+  }>;
+
   getInformacoesGeraisDoCaso: (idCaso: number) => Promise<{
     success: boolean;
     informacoes?: any;

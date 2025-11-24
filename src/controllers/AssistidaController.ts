@@ -68,5 +68,9 @@ export class AssistidaController {
         }
 
     }
+    
+    public async handlergetEnderecosAssistidas(): Promise<any[]> {
+        return await this.assistidaService.getEnderecosAssistidas();
+    }
 
 }

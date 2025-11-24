@@ -46,4 +46,36 @@ export interface ICasoRepository {
      * @returns Promise<number> - Total de casos no ano, e nome dos meses
      */
     getTotalCasosNoAno(): Promise<any[]>;
+
+    getEnderecosAssistidas(): Promise<any[]>;
+
+    getTotalCasos(): Promise<number>;
+
+    getTotalCasosMes(mes: number, ano: number): Promise<number>;
+
+    /**
+     * Recupera o total de casos no ano filtrado por regiões e data
+     * @param regioes - Array de regiões/endereços para filtrar
+     * @param dataInicio - Data inicial (YYYY-MM-DD) - opcional
+     * @param dataFim - Data final (YYYY-MM-DD) - opcional
+     * @returns Promise<any[]> - Total de casos por mês filtrados
+     */
+    getTotalCasosNoAnoFiltrado(regioes: string[], dataInicio?: string, dataFim?: string): Promise<any[]>;
+
+    /**
+     * Recupera endereços das assistidas filtrados por data
+     * @param dataInicio - Data inicial (YYYY-MM-DD)
+     * @param dataFim - Data final (YYYY-MM-DD)
+     * @returns Promise<any[]> - Endereços e quantidades
+     */
+    getEnderecosAssistidasFiltrado(dataInicio?: string, dataFim?: string): Promise<any[]>;
+
+    /**
+     * Recupera total de casos com filtros de região e data
+     * @param regioes - Array de regiões para filtrar
+     * @param dataInicio - Data inicial (YYYY-MM-DD)
+     * @param dataFim - Data final (YYYY-MM-DD)
+     * @returns Promise<number> - Total filtrado
+     */
+    getTotalCasosFiltrado(regioes: string[], dataInicio?: string, dataFim?: string): Promise<number>;
 }

@@ -124,4 +124,25 @@ export class CasoController {
     async getTotalCasosNoAno(): Promise<any[]> {
         return await this.casoService.getTotalCasosNoAno();
     }
+
+    async getTotalCasos(): Promise<number> {
+        return this.casoService.totalCasos();
+    }
+
+    async getTotalCasosMes(mes: number, ano: number): Promise<number> {
+        return this.casoService.totalCasosMes(mes, ano);
+    }
+
+    async getTotalCasosNoAnoFiltrado(regioes: string[], dataInicio?: string, dataFim?: string): Promise<any[]> {
+        return this.casoService.getTotalCasosNoAnoFiltrado(regioes, dataInicio, dataFim);
+    }
+
+    async getEnderecosAssistidasFiltrado(dataInicio?: string, dataFim?: string): Promise<any[]> {
+        return this.casoService.getEnderecosAssistidasFiltrado(dataInicio, dataFim);
+    }
+
+    async getTotalCasosFiltrado(regioes: string[], dataInicio?: string, dataFim?: string): Promise<number> {
+        return this.casoService.getTotalCasosFiltrado(regioes, dataInicio, dataFim);
+    }
+
 }

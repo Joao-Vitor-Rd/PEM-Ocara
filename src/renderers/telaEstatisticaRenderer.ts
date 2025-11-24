@@ -311,35 +311,139 @@ function setupFilterModal(): void {
   /**
    * Aplica os filtros selecionados e fecha o modal
    */
-  btnAplicar.addEventListener("click", () => {
-    // Validar datas antes de aplicar
+  btnAplicar.addEventListener("click", async () => {
+
     if (validarDatas()) {
-      aplicarFiltros();
+      await aplicarFiltros();
       fecharModal();
     } else {
-      // Mostrar mensagem de erro se as datas forem inválidas
       mostrarPopupConfirmacao("Erro: Data inicial maior que data final!");
     }
   });
 
   /**
    * Processa a aplicação dos filtros selecionados
-   * - Aqui deve ser implementada a integração com o sistema de dados
-   * - Atualiza gráficos, tabelas ou outros componentes com os filtros
+   * Atualiza ambos os gráficos (barras e pizza) com os filtros aplicados
    * @returns {void}
    */
-  function aplicarFiltros(): void {
-    // TODO: Implementar integração com sistema de dados
-    // Exemplo: atualizar gráficos, tabelas, ou fazer requisições API
+  async function aplicarFiltros(): Promise<void> {
+    try {
+      const regioesArray: string[] = Array.from(filtrosAtuais.regioes) as string[];
+      const dataInicio = filtrosAtuais.dataInicio || undefined;
+      const dataFim = filtrosAtuais.dataFim || undefined;
+      
+      console.log("Aplicando filtros com parâmetros:", {
+        regioes: regioesArray,
+        dataInicio,
+        dataFim,
+      });
 
-    console.log("Aplicando filtros:", {
-      regioes: Array.from(filtrosAtuais.regioes),
-      dataInicio: filtrosAtuais.dataInicio,
-      dataFim: filtrosAtuais.dataFim,
-    });
+      // Limpar gráficos antigos
+      const containerEvolucao = document.getElementById("grafico-evolucao");
+      const containerDistribuicao = document.getElementById("grafico-distribuicao");
+      const totalCasosEl = document.getElementById("total-casos") as HTMLParagraphElement | null;
+      const casosMesEl = document.getElementById("casos-mes") as HTMLParagraphElement | null;
+      
+      if (containerEvolucao) {
+        containerEvolucao.innerHTML = '';
+      }
+      if (containerDistribuicao) {
+        containerDistribuicao.innerHTML = '';
+      }
+
+      // ===== GRÁFICO DE BARRAS (EVOLUÇÃO) COM FILTRO =====
+      const queryData = await window.api.getTotalCasosNoAnoFiltrado(regioesArray, dataInicio, dataFim);
+      console.log("Dados de barras filtrados:", queryData);
+      if (queryData && queryData.success && queryData.totalCasos) {
+        const data: number[] = queryData.totalCasos.map((item: any) => item.quantidade);
+        const mesesLabels: string[] = queryData.totalCasos.map((item: any) => {
+          const anoAtual = new Date().getFullYear();
+          return `${item.mes} ${anoAtual}`;
+        });
+        console.log("Renderizando barras com:", { data, mesesLabels });
+        Graficos.createBarChart(data, mesesLabels);
+      }
+
+      // ===== GRÁFICO DE PIZZA (DISTRIBUIÇÃO) COM FILTRO =====
+      const enderecos = await window.api.getEnderecosAssistidasFiltrado(dataInicio, dataFim);
+      console.log("Dados de endereços filtrados:", enderecos);
+      if (enderecos?.enderecos) {
+        let dadosFiltrados = enderecos.enderecos;
+
+        // Aplicar filtro de regiões se não estiver "todas" selecionada
+        if (!regioesArray.includes('todas')) {
+          dadosFiltrados = enderecos.enderecos.filter((item: any) =>
+            regioesArray.includes(item.endereco)
+          );
+        }
+
+        if (dadosFiltrados.length > 0) {
+          const data: number[] = dadosFiltrados.map((item: any) => item.quantidade);
+          const labels: string[] = dadosFiltrados.map((item: any) => item.endereco);
+          console.log("Renderizando pizza com:", { data, labels });
+          Graficos.createPieChart(data, labels);
+        }
+      }
+
+      // ===== ATUALIZAR TOTAIS COM FILTRO =====
+      if (totalCasosEl) {
+        try {
+          const totalCasosData = await window.api.getTotalCasosFiltrado(regioesArray, dataInicio, dataFim);
+          console.log("Total de casos filtrado:", totalCasosData);
+          if (totalCasosData && totalCasosData.success && totalCasosData.totalCasos !== undefined) {
+            const valor = totalCasosData.totalCasos;
+            totalCasosEl.textContent = valor.toString();
+            console.log("Total atualizado para:", valor);
+          }
+        } catch (err) {
+          console.error("Erro ao atualizar total de casos:", err);
+        }
+      }
+
+      if (casosMesEl) {
+        try {
+          let mesDataInicio: string;
+          let mesDataFim: string;
+
+          // Se houver data final no filtro, filtra o último mês do intervalo; senão usa o mês atual
+          if (dataFim) {
+            const dataFimObj = new Date(dataFim);
+            const ano = dataFimObj.getFullYear();
+            const mes = String(dataFimObj.getMonth() + 1).padStart(2, '0');
+            
+            // Primeiro dia do mês
+            mesDataInicio = `${ano}-${mes}-01`;
+            // Último dia do mês
+            const ultimoDia = new Date(ano, dataFimObj.getMonth() + 1, 0);
+            mesDataFim = `${ano}-${mes}-${String(ultimoDia.getDate()).padStart(2, '0')}`;
+          } else {
+            const hoje = new Date();
+            const ano = hoje.getFullYear();
+            const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+            
+            mesDataInicio = `${ano}-${mes}-01`;
+            const ultimoDia = new Date(ano, hoje.getMonth() + 1, 0);
+            mesDataFim = `${ano}-${mes}-${String(ultimoDia.getDate()).padStart(2, '0')}`;
+          }
+
+          const casosMesData = await window.api.getTotalCasosFiltrado(regioesArray, mesDataInicio, mesDataFim);
+          console.log("Casos do mês filtrado:", casosMesData);
+          if (casosMesData && casosMesData.success && casosMesData.totalCasos !== undefined) {
+            const valor = casosMesData.totalCasos;
+            casosMesEl.textContent = valor.toString();
+            console.log("Mês atualizado para:", valor);
+          }
+        } catch (err) {
+          console.error("Erro ao atualizar casos do mês:", err);
+        }
+      }
 
     // Feedback visual para o usuário
-    mostrarPopupConfirmacao("Filtro aplicado com sucesso!");
+      mostrarPopupConfirmacao("Filtro aplicado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao aplicar filtros:", error);
+      mostrarPopupConfirmacao("Erro ao aplicar filtro. Tente novamente.");
+    }
   }
 
   // ===== INICIALIZAÇÃO DA INTERFACE =====
@@ -364,20 +468,62 @@ function setupFilterModal(): void {
  */
 document.addEventListener("DOMContentLoaded", async () => {
   setupFilterModal();
-  
+  const totalCasosEl = document.getElementById("total-casos") as HTMLParagraphElement | null;
+  const casosMesEl = document.getElementById("casos-mes") as HTMLParagraphElement| null;
+
+  if (totalCasosEl) {
+    try {
+      const totalCasosData = await window.api.getTotalCasos();
+      if (totalCasosData.success && totalCasosData.totalCasos !== undefined) {
+        totalCasosEl.textContent = totalCasosData.totalCasos.toString();
+      } else {
+        totalCasosEl.textContent = "0";
+      }
+    }
+    catch (error) {
+      console.error("Erro ao buscar total de casos:", error);
+      totalCasosEl.textContent = "Erro";
+    }
+  }
+  if (casosMesEl) {
+    try {
+      const hoje = new Date();
+      const mesAtual = hoje.getMonth() + 1;
+      const anoAtual = hoje.getFullYear();
+      const casosMesData = await window.api.getTotalCasosMes(mesAtual, anoAtual);
+      if (casosMesData.success && casosMesData.totalCasosMes !== undefined) {
+        casosMesEl.textContent = casosMesData.totalCasosMes.toString();
+      } else {
+        casosMesEl.textContent = "0";
+      }
+    }
+    catch (error) {
+      console.error("Erro ao buscar casos do mês:", error);
+      casosMesEl.textContent = "Erro";
+    }
+  }
+
   try {
+
     const queryData = await window.api.getTotalCasosNoAno();
-    
     if (queryData.success && queryData.totalCasos) {
       const data: number[] = queryData.totalCasos.map((item: any) => item.quantidade);
       const mesesLabels: string[] = queryData.totalCasos.map((item: any) => item.mes);
-      
       Graficos.createBarChart(data, mesesLabels);
-      Graficos.createPieChart(data, mesesLabels);
     } else {
       console.error("Erro ao buscar dados de casos");
     }
+
+    // ===== GRÁFICO DE PIZZA (DISTRIBUIÇÃO) =====
+    const enderecos = await window.api.getEnderecosAssistidas();
+    if (enderecos?.enderecos && enderecos.enderecos.length > 0) {
+      const data: number[] = enderecos.enderecos.map((item: any) => item.quantidade);
+      const labels: string[] = enderecos.enderecos.map((item: any) => item.endereco);
+      Graficos.createPieChart(data, labels);
+    } else {
+      console.error("Erro ao buscar dados de endereços");
+    }
   } catch (error) {
-    console.error("Erro ao carregar gráfico:", error);
+    console.error("Erro ao carregar gráficos:", error);
   }
 });

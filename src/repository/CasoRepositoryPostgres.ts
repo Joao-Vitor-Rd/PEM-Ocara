@@ -146,7 +146,7 @@ export class CasoRepositoryPostgres implements ICasoRepository {
         const valuesAssistida = [
             assistida.getNome() || '',
             assistida.getIdade() || 0,
-            assistida.getEndereco() || '',
+            assistida.getEndereco()?.toUpperCase() || '',
             assistida.getIdentidadeGenero() || '',
             assistida.getNomeSocial() || '',
             assistida.getEscolaridade() || '',
@@ -728,8 +728,6 @@ export class CasoRepositoryPostgres implements ICasoRepository {
         }
     }
 
-        // ...existing code...
-
     async getTotalCasosNoAno(): Promise<any[]> {
         const query = `
             WITH meses_serie AS (
@@ -768,6 +766,220 @@ export class CasoRepositoryPostgres implements ICasoRepository {
         } catch (error) {
             console.error('Erro ao recuperar casos por mês:', error);
             return [];
+        }
+    }
+
+    async getEnderecosAssistidas(): Promise<any[]> {
+        const query = `
+            select endereco, count(*)
+            from assistida
+            where endereco IS NOT NULL
+            group by endereco
+        `;
+
+        try {
+            const result = await this.pool.query(query);
+            return result.rows.map((row: any) => ({
+                endereco: row.endereco,
+                quantidade: parseInt(row.count, 10),
+            }));
+        } catch (error) {
+            console.error('Erro ao recuperar endereços das assistidas:', error);
+            return [];
+        }
+    }
+
+    async getTotalCasos(): Promise<number> {
+        const query = `SELECT COUNT(*) AS total FROM CASO`;
+        
+        try {
+            const result = await this.pool.query(query);
+            return parseInt(result.rows[0].total, 10);
+        } catch (error) {
+            console.error('Erro ao recuperar total de casos:', error);
+            return 0;
+        }
+    }
+
+    async getTotalCasosMes(mes: number, ano: number): Promise<number> {
+        const query = `
+            SELECT COUNT(*) AS total
+            FROM CASO
+            WHERE EXTRACT(MONTH FROM data) = $1 AND EXTRACT(YEAR FROM data) = $2
+        `;
+
+        try {
+            const result = await this.pool.query(query, [mes, ano]);
+            return parseInt(result.rows[0].total, 10);
+        } catch (error) {
+            console.error('Erro ao recuperar total de casos do mês:', error);
+            return 0;
+        }
+    }
+
+    async getTotalCasosNoAnoFiltrado(regioes: string[], dataInicio?: string, dataFim?: string): Promise<any[]> {
+        console.log('========== getTotalCasosNoAnoFiltrado ==========');
+        console.log('Regiões:', regioes);
+        console.log('Data Início:', dataInicio);
+        console.log('Data Fim:', dataFim);
+
+        // Se "todas" está selecionado, ignora o filtro de regiões
+        const temFiltroRegiao = !regioes.includes('todas') && regioes.length > 0;
+        const whereClauseRegiao = temFiltroRegiao
+            ? `AND a.endereco IN (${regioes.map((_, i) => `$${i + 1}`).join(',')})`
+            : '';
+
+        // Montar parâmetros - só adiciona regiões se houver filtro
+        const params: any[] = [];
+        if (temFiltroRegiao) {
+            params.push(...regioes);
+        }
+
+        let dataInicioBD: string = dataInicio || '';
+        let dataFimBD: string = dataFim || '';
+        let paramIndexData = params.length + 1;
+
+        // Se não houver intervalo de datas, usar últimos 12 meses
+        if (!dataInicio && !dataFim) {
+            const dataObj = new Date();
+            dataObj.setMonth(dataObj.getMonth() - 12);
+            dataInicioBD = dataObj.toISOString().split('T')[0];
+            dataFimBD = new Date().toISOString().split('T')[0];
+        }
+
+        // Adicionar datas aos parâmetros
+        params.push(dataInicioBD);
+        const paramDataInicio = paramIndexData;
+        paramIndexData++;
+        
+        params.push(dataFimBD);
+        const paramDataFim = paramIndexData;
+
+        const query = `
+            WITH data_series AS (
+                SELECT DATE_TRUNC('month', d)::date as mes_data
+                FROM generate_series($${paramDataInicio}::date, $${paramDataFim}::date, interval '1 month') d
+            ),
+            casos_agrupados AS (
+                SELECT
+                    DATE_TRUNC('month', c.data)::date as mes_data,
+                    COUNT(*) as quantidade
+                FROM CASO c
+                JOIN ASSISTIDA a ON c.id_assistida = a.id
+                WHERE c.data >= $${paramDataInicio}::date 
+                  AND c.data <= $${paramDataFim}::date
+                  ${whereClauseRegiao}
+                GROUP BY DATE_TRUNC('month', c.data)
+            )
+            SELECT
+                ds.mes_data,
+                EXTRACT(MONTH FROM ds.mes_data)::int as mes_numero,
+                EXTRACT(YEAR FROM ds.mes_data)::int as ano,
+                COALESCE(ca.quantidade, 0) as quantidade
+            FROM data_series ds
+            LEFT JOIN casos_agrupados ca ON ds.mes_data = ca.mes_data
+            ORDER BY ds.mes_data ASC
+        `;
+
+        try {
+            console.log('Query SQL:', query);
+            console.log('Parâmetros:', params);
+            
+            const result = await this.pool.query(query, params);
+            console.log('Resultado bruto da query:', result.rows);
+            
+            const mesesPT = [
+                '', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+            ];
+
+            // Mapear resultado
+            const resultado = result.rows.map((row: any) => ({
+                mes: mesesPT[parseInt(row.mes_numero, 10)],
+                quantidade: parseInt(row.quantidade, 10),
+                ano: row.ano
+            }));
+            
+            console.log('Resultado final mapeado:', resultado);
+            return resultado;
+        } catch (error) {
+            console.error('Erro ao recuperar casos filtrados por mês:', error);
+            return [];
+        }
+    }
+
+    async getEnderecosAssistidasFiltrado(dataInicio?: string, dataFim?: string): Promise<any[]> {
+        let whereClause = '';
+        const params: any[] = [];
+
+        if (dataInicio && dataFim) {
+            whereClause = ` WHERE c.data >= $1 AND c.data <= $2`;
+            params.push(dataInicio, dataFim);
+        } else if (dataInicio) {
+            whereClause = ` WHERE c.data >= $1`;
+            params.push(dataInicio);
+        } else if (dataFim) {
+            whereClause = ` WHERE c.data <= $1`;
+            params.push(dataFim);
+        }
+
+        const query = `
+            SELECT a.endereco, COUNT(*) as quantidade
+            FROM ASSISTIDA a
+            JOIN CASO c ON a.id = c.id_assistida
+            ${whereClause}
+            AND a.endereco IS NOT NULL
+            GROUP BY a.endereco
+            ORDER BY quantidade DESC
+        `;
+
+        try {
+            const result = await this.pool.query(query, params);
+            return result.rows.map((row: any) => ({
+                endereco: row.endereco,
+                quantidade: parseInt(row.quantidade, 10),
+            }));
+        } catch (error) {
+            console.error('Erro ao recuperar endereços filtrados:', error);
+            return [];
+        }
+    }
+
+    async getTotalCasosFiltrado(regioes: string[], dataInicio?: string, dataFim?: string): Promise<number> {
+        let whereClause = '';
+        const params: any[] = [];
+        let paramIndex = 1;
+
+        // Filtro de regiões
+        if (!regioes.includes('todas') && regioes.length > 0) {
+            whereClause += ` AND a.endereco IN (${regioes.map(() => `$${paramIndex++}`).join(',')})`;
+            params.push(...regioes);
+        }
+
+        // Filtro de datas
+        if (dataInicio) {
+            whereClause += ` AND c.data >= $${paramIndex++}`;
+            params.push(dataInicio);
+        }
+
+        if (dataFim) {
+            whereClause += ` AND c.data <= $${paramIndex++}`;
+            params.push(dataFim);
+        }
+
+        const query = `
+            SELECT COUNT(*) AS total
+            FROM CASO c
+            JOIN ASSISTIDA a ON c.id_assistida = a.id
+            WHERE 1=1 ${whereClause}
+        `;
+
+        try {
+            const result = await this.pool.query(query, params);
+            return parseInt(result.rows[0].total, 10);
+        } catch (error) {
+            console.error('Erro ao recuperar total de casos filtrado:', error);
+            return 0;
         }
     }
 

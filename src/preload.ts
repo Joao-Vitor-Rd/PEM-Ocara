@@ -30,6 +30,8 @@ contextBridge.exposeInMainWorld('api', {
 
   getTotalCasosNoAno: () => ipcRenderer.invoke('caso:getTotalCasosNoAno'),
 
+  getEnderecosAssistidas: () => ipcRenderer.invoke('assistida:getEnderecos'),
+
   salvarCasoBD: (dados: {
     assistida: any;
     caso: any;
@@ -41,8 +43,22 @@ contextBridge.exposeInMainWorld('api', {
   casosPorProtocolo: (protocolo: number) =>
     ipcRenderer.invoke('caso:getByProtocolo', protocolo),
 
+  getTotalCasos: () => ipcRenderer.invoke('caso:getTotalCasos'),
+
+  getTotalCasosMes: (mes: number, ano: number) =>
+    ipcRenderer.invoke('caso:getTotalCasosMes', { mes, ano }),
+
   obterCasosPorProtocoloAssistida: (protocoloAssistida: number) =>
     ipcRenderer.invoke('caso:obterPorProtocoloAssistida', protocoloAssistida),
+
+  getTotalCasosNoAnoFiltrado: (regioes: string[], dataInicio?: string, dataFim?: string) =>
+    ipcRenderer.invoke('caso:getTotalCasosNoAnoFiltrado', { regioes, dataInicio, dataFim }),
+
+  getEnderecosAssistidasFiltrado: (dataInicio?: string, dataFim?: string) =>
+    ipcRenderer.invoke('caso:getEnderecosAssistidasFiltrado', { dataInicio, dataFim }),
+
+  getTotalCasosFiltrado: (regioes: string[], dataInicio?: string, dataFim?: string) =>
+    ipcRenderer.invoke('caso:getTotalCasosFiltrado', { regioes, dataInicio, dataFim }),
 
   gerarPdf: (protocoloCaso: number) =>
     ipcRenderer.invoke('caso:gerarPdf', protocoloCaso),

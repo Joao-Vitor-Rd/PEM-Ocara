@@ -72,10 +72,10 @@ export class Graficos {
       new Chart(canvas, {
       type: 'pie',
       data: {
-        labels: ["local1","local2","local3","local4","local5","local6","local7","local8","local9","local10","local11","local12"],
+        labels: labels,
         datasets: [{
           label: 'Casos Registrados na região',
-          data: [10,20,30,1,2,3,50,60,80,10,3,70],
+          data: data,
         }]
       },
       options: {

@@ -87,4 +87,14 @@ export class AssistidaService {
         }
     }
 
+    public async getEnderecosAssistidas(): Promise<any[]> {
+        try {
+            const enderecos = await this.casoRepository.getEnderecosAssistidas();
+            return enderecos;
+        } catch (error) {
+            Logger.error('Erro ao obter endereços das assistidas:', error);
+            return [];
+        }
+    }
+
 }
