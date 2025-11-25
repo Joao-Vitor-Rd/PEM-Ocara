@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700;800&display=swap');
 
 html,
-html,
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
@@ -29,7 +28,6 @@ body {
     box-sizing: border-box;
     border-top-right-radius: 25px;
     border-bottom-right-radius: 25px;
-
 }
 
 .sidebar-header {
@@ -101,33 +99,20 @@ body {
     flex-shrink: 0;
 }
 
+.icone-material {
+    transform: scale(1.35);
+}
+
 .main-content {
     flex-grow: 1;
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
-    padding: 50px 80px;
+    padding: 50px 5%; 
     box-sizing: border-box;
-    max-width: 1920px;
-    margin: 0 auto;
-
-}
-
-#iconeRedeApoio {
-    transform: scale(1.35);
-}
-
-/*COMECA A TELA INICIAL ==========*/
-.container-geral {
-    width: 100%;
-    max-width: 960px;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    padding: 50px;
-    gap: 40px;
-    box-sizing: border-box;
+    max-width: 100%;
+    margin: 0;
 }
 
 .cabecalho {
@@ -202,6 +187,7 @@ body {
     flex-wrap: wrap;
     width: 100%;
     margin-top: 70px;
+    gap: 20px;
 }
 
 .rodape p {
