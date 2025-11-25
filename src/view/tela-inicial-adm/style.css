@@ -114,8 +114,8 @@ body {
 
 }
 
-.icone-rede-apoio {
-    transform: scale(1.4);
+#iconeRedeApoio {
+    transform: scale(1.35);
 }
 
 /*COMECA A TELA INICIAL ==========*/
