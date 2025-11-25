@@ -10,7 +10,6 @@ body {
     overflow-x: hidden;
 }
 
-
 /* --- Layout Principal do App --- */
 .app-container {
     display: flex;
@@ -29,7 +28,6 @@ body {
     box-sizing: border-box;
     border-top-right-radius: 25px;
     border-bottom-right-radius: 25px;
-
 }
 
 .sidebar-header {
@@ -60,7 +58,6 @@ body {
     align-items: center;
     justify-content: center;
 }
-
 
 .sidebar-nav ul {
     list-style: none;
@@ -102,6 +99,9 @@ body {
     flex-shrink: 0;
 }
 
+.icone-material {
+    transform: scale(1.35);
+}
 
 .main-content {
     flex-grow: 1;
@@ -109,27 +109,10 @@ body {
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
-    padding: 50px 80px;
+    padding: 50px 5%; 
     box-sizing: border-box;
-    max-width: 1920px;
-    margin: 0 auto;
-
-}
-
-.icone-rede-apoio {
-    transform: scale(1.4);
-}
-
-/*COMECA A TELA INICIAL ==========*/
-.container-geral {
-    width: 100%;
-    max-width: 960px;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    padding: 50px;
-    gap: 40px;
-    box-sizing: border-box;
+    max-width: 100%;
+    margin: 0;
 }
 
 .cabecalho {
@@ -204,6 +187,7 @@ body {
     flex-wrap: wrap;
     width: 100%;
     margin-top: 70px;
+    gap: 20px;
 }
 
 .rodape p {
