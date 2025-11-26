@@ -22,7 +22,7 @@
     "@types/electron": "^1.4.38",
     "@types/jest": "^30.0.0",
     "@types/node": "^20.19.24",
-    "@types/nodemailer": "^7.0.3",
+    "@types/nodemailer": "^7.0.4",
     "@types/pdfmake": "^0.2.12",
     "@types/pg": "^8.15.6",
     "electron": "^39.1.1",
