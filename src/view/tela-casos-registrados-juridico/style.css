@@ -111,23 +111,6 @@ body {
 }
 
 
-.main-content {
-  flex-grow: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-
-  display: flex;
-  flex-direction: column;
-  padding: 50px 80px;
-  box-sizing: border-box;
-
-  max-width: 1920px;
-
-  margin: 0 auto;
-
-}
-
-
 .icone-rede-apoio {
   transform: scale(1.4);
 }
