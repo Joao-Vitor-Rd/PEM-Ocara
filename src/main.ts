@@ -657,6 +657,18 @@ ipcMain.handle('delete-funcionario', async (_event, email: string) => {
   }
 });
 
+// 6. Atualizar Perfil (Autoatendimento / Minha Conta)
+ipcMain.handle('user:update-profile', async (_event, data) => {
+  try {
+    Logger.info('Requisição de atualização de perfil para:', data.email);
+    // O front deve enviar: { email, nome, senhaAtual, novaSenha }
+    return await funcionarioController.atualizarMinhaConta(data.email, data);
+  } catch (error) {
+    Logger.error('Erro no handler user:update-profile:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Erro desconhecido' };
+  }
+});
+
 // ==========================================
 // WINDOW MANAGEMENT
 // ==========================================
