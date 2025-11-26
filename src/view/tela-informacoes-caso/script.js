@@ -1,6 +1,6 @@
 // Configurações gerais
 const Config = {
-    MAX_FILE_SIZE: 100 * 1024 * 1024, // 100MB
+    MAX_FILE_SIZE: 100 * 1024 * 1024,
     IDS: {
         LISTA_ANEXOS: 'lista-anexos',
         LISTA_RELATORIOS: 'lista-relatorios',
