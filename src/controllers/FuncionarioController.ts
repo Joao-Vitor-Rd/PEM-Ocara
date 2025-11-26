@@ -94,4 +94,30 @@ export class ControladorFuncionario {
       return { success: false, error: err.message };
     }
   }
+
+  // ==========================================================
+  // 6. ATUALIZAR MEU PERFIL (Conta)
+  // ==========================================================
+  public async atualizarMinhaConta(email: string, dados: any): Promise<ResultadoOperacao> {
+    const nome = dados.nome;
+    const senhaAtual = dados.senhaAtual;
+    const novaSenha = dados.novaSenha; // Pode ser vazio se ele só quiser mudar o nome
+
+    // Validação
+    if (!email) return { success: false, error: "Sessão inválida (email ausente)." };
+    if (!nome) return { success: false, error: "O nome não pode ficar vazio." };
+    if (!senhaAtual) return { success: false, error: "É necessário informar a senha atual para salvar alterações." };
+
+    try {
+      const atualizado = await this.funcionarioService.atualizarPerfil(
+        email,
+        nome,
+        senhaAtual,
+        novaSenha
+      );
+      return { success: true, funcionario: atualizado };
+    } catch (err: any) {
+      return { success: false, error: err.message || "Erro ao atualizar perfil." };
+    }
+  }
 }
