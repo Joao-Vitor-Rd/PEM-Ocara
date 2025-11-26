@@ -105,13 +105,13 @@
                 <p>Assistida: <span id="Assistida"></span></p>
                 <p>Agressor: <span id="Agressor"></span></p>
                 <p>Data de abertura do Caso: <span id="DataCadastro"></span></p>
-                <p>Status do Caso na Assistência Social: 
+                <p>Status do Caso na Assistência Social: <span id="StatusAssistente"></span></p>
+                <p>Status do Caso no Processo Jurídico: 
                     <select name="status" id="StatusAssistenciaSelect">
                         <option value="arquivado">Caso Arquivado</option>
                         <option value="aberto" selected>Caso Aberto</option>
                     </select>
                 </p>
-                <p>Status do Caso no Processo Jurídico: <span id="StatusJuridico"></span></p>
                 <p>Tipo de Violência: <span id="TipoViolencia"></span></p>
             </div>
 
@@ -198,9 +198,6 @@
         </div>
     </div>
 
-    <!-- Modal de Privacidade do anexo -->
-
-
     <!-- Modal de Encaminhamento -->
     <div class="modal-overlay" id="modalEncaminhamento">
         <div class="modal-content"> 
@@ -257,12 +254,12 @@
             
             <div class="opcoes-privacidade">
                 <label>
-                    <input type="radio" name="privacidade" value="publico" checked>
+                    <input type="radio" name="privacidade" value="publico">
                     Anexo público (disponível para assistente social e para jurídico)
                 </label>
                 <label>
-                    <input type="radio" name="privacidade" value="restrito">
-                    Anexo privado (disponível apenas para assistente social)
+                    <input type="radio" name="privacidade" value="restrito" checked>
+                    Anexo privado (disponível apenas para o jurídico)
                 </label>
             </div>
 
