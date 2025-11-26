@@ -305,7 +305,7 @@ class UIManager {
             'Assistida': 'assistida',
             'Agressor': 'agressor',
             'DataCadastro': 'dataCadastro',
-            'StatusAssistencia': 'statusAssistencia',
+            'StatusAssistente': 'statusAssistencia',
             'StatusJuridico': 'statusJuridico',
             'TipoViolencia': 'tipoViolencia',
             'redes-contatadas': 'redesContatadas'
