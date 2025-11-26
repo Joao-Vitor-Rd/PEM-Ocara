@@ -14,6 +14,10 @@ import { CasoService } from './services/CasoService';
 import { FuncionarioRepositoryPostgres } from './repository/FuncionarioRepositoryPostgres';
 import { FuncionarioService } from './services/FuncionarioService';
 import { ControladorFuncionario } from './controllers/FuncionarioController';
+// Imports do Módulo de Credenciais
+import { CredencialRepositoryPostgres } from './repository/CredencialRepositoryPostgres';
+import { CredencialService } from './services/CredencialService';
+import { ControladorCredencial } from './controllers/ControladorCredencial';
 
 
 
@@ -25,6 +29,7 @@ let casoRepository: CasoRepositoryPostgres;
 let assistidaController: AssistidaController;
 let casoController: CasoController;
 let funcionarioController: ControladorFuncionario;
+let credencialController: ControladorCredencial;
 
 // Repository para salvar casos no BD
 
@@ -54,14 +59,17 @@ async function bootstrap(): Promise<void> {
   const postgresInitializer = dbInitializer as PostgresInitializer;
   casoRepository = new CasoRepositoryPostgres(postgresInitializer.pool());
   const funcionarioRepository = new FuncionarioRepositoryPostgres(postgresInitializer.pool());
+  const credencialRepository = new CredencialRepositoryPostgres(postgresInitializer.pool());
   Logger.info('Repository inicializado com sucesso!');
   
   // Inicializar controllers
   assistidaController = new AssistidaController(casoRepository);
   const funcionarioService = new FuncionarioService(funcionarioRepository);
+  const credencialService = new CredencialService(credencialRepository);
 
   casoController = new CasoController(assistidaController.getAssistidaService(), casoRepository);
   funcionarioController = new ControladorFuncionario(funcionarioService);
+  credencialController = new ControladorCredencial(credencialService);
   createMainWindow();
   Logger.info('Aplicação iniciada com sucesso!');
 }
@@ -665,6 +673,32 @@ ipcMain.handle('user:update-profile', async (_event, data) => {
     return await funcionarioController.atualizarMinhaConta(data.email, data);
   } catch (error) {
     Logger.error('Erro no handler user:update-profile:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Erro desconhecido' };
+  }
+});
+
+// ==========================================
+// IPC HANDLERS - MÓDULO CREDENCIAIS
+// ==========================================
+
+// 1. Salvar/Atualizar Credenciais
+ipcMain.handle('credencial:salvar', async (_event, data) => {
+  try {
+    Logger.info('Requisição para salvar credenciais de e-mail...');
+    return await credencialController.salvarCredenciais(data);
+  } catch (error) {
+    Logger.error('Erro no handler credencial:salvar:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Erro desconhecido' };
+  }
+});
+
+// 2. Obter Credenciais (para exibir na tela)
+ipcMain.handle('credencial:obter', async () => {
+  try {
+    Logger.info('Requisição para obter credenciais atuais...');
+    return await credencialController.obterCredenciais();
+  } catch (error) {
+    Logger.error('Erro no handler credencial:obter:', error);
     return { success: false, error: error instanceof Error ? error.message : 'Erro desconhecido' };
   }
 });
