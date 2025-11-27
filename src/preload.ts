@@ -99,6 +99,14 @@ contextBridge.exposeInMainWorld('api', {
       temDependentes,
     }),
 
+  recuperarAnexosDoCaso: (idCaso: number) =>
+    ipcRenderer.invoke('caso:recuperarAnexos', { idCaso }),
+
+  salvarAnexo: (anexo: { nome: string; tipo: string; tamanho: number; dados: Buffer }, idCaso: number, idAssistida: number) =>
+    ipcRenderer.invoke('caso:salvarAnexo', { anexo, idCaso, idAssistida }),
+
+  downloadAnexo: (idAnexo: string, nomeArquivo: string) =>
+    ipcRenderer.invoke('anexo:download', { idAnexo, nomeArquivo }),
 
   closeWindow: () => ipcRenderer.send('window:close'),
 
@@ -110,3 +118,4 @@ contextBridge.exposeInMainWorld('api', {
     ipcRenderer.removeAllListeners('user:created');
   },
 });
+

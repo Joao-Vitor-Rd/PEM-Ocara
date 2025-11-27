@@ -208,7 +208,7 @@ class UIManager {
                 li.innerHTML = `
                     <div class="icone-arquivo"><img src="${icone}" alt="file"></div>
                     <div class="info-arquivo">
-                        <span class="nome-arquivo" title="${arquivo.nome}">${nomeExibicao}</span>
+                        <span class="nome-arquivo" title="${arquivo.nome}" data-action="download" style="cursor: pointer;">${nomeExibicao}</span>
                         <span class="tamanho-arquivo">${arquivo.tamanho}</span>
                     </div>
                     <button class="btn-apagar" type="button" data-action="delete"><span class="material-symbols-outlined">delete_forever</span></button>
@@ -227,6 +227,32 @@ class UIManager {
             if ((container as any)._clickHandler) {
                 container.removeEventListener('click', (container as any)._clickHandler);
             }
+
+            // Remove listener de download antigo se existir
+            if ((container as any)._downloadHandler) {
+                container.removeEventListener('click', (container as any)._downloadHandler);
+            }
+            
+            // Adiciona novo listener para download
+            (container as any)._downloadHandler = async (e: any) => {
+                const nomeSpan = e.target.closest('.nome-arquivo');
+                if (!nomeSpan) return;
+
+                const li = nomeSpan.closest('.item-anexo');
+                if (!li) return;
+
+                const arquivoId = li.getAttribute('data-arquivo-id');
+                const nomeArquivo = nomeSpan.textContent || 'arquivo';
+                
+                console.log('Download solicitado para:', arquivoId, nomeArquivo);
+                try {
+                    await window.api.downloadAnexo(arquivoId, nomeArquivo);
+                } catch (err: any) {
+                    console.error('Erro ao baixar arquivo:', err);
+                }
+            };
+
+            container.addEventListener('click', (container as any)._downloadHandler);
             
             // Adiciona novo listener
             (container as any)._clickHandler = async (e: any) => {
@@ -353,8 +379,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const informacoesGerais = await window.api.getInformacoesGeraisDoCaso(Number(idCaso));
     sessionStorage.removeItem('idCasoAtual');
 
-
-
     const fileManager = new FileManager();
     const uiManager = new UIManager();
 
@@ -363,17 +387,50 @@ document.addEventListener('DOMContentLoaded', async () => {
     let estadoUpload = { tipoAtual: 'prova' };
     let estadoEncaminhamento = { anexosSelecionadosIds: [] as any[] };
     let dadosDoCaso: any = {};
+    let idAssistida: number = 0;
 
     const redesCadastradas: any[] = [];
 
     // Carrega e exibe dados do caso
     if (informacoesGerais.success && informacoesGerais.informacoes) {   
         dadosDoCaso = informacoesGerais.informacoes;
+        idAssistida = dadosDoCaso.id_assistida || 0;
         uiManager.preencherDadosCaso(dadosDoCaso);
         console.log('Dados do caso carregados:', dadosDoCaso);
     } else {
         console.error('Erro ao carregar informações do caso:', informacoesGerais);
     }
+
+    // 🔄 RECUPERAR ANEXOS DO BANCO DE DADOS
+    const recuperarAnexosDoBanco = async () => {
+        try {
+            const resultado = await window.api.recuperarAnexosDoCaso(Number(idCaso));
+            
+            if (resultado.success && resultado.anexos && resultado.anexos.length > 0) {
+                resultado.anexos.forEach((anexo: any, index: number) => {
+                    const novoArquivo = {
+                        id: anexo.idAnexo || `anexo-bd-${index}`,
+                        nome: anexo.nomeAnexo,
+                        tamanho: Formatters.tamanhoArquivo(anexo.tamanho),
+                        status: 'upado',
+                        progresso: 100,
+                        tipo: anexo.tipo
+                        // Dados NÃO são enviados - será baixado quando clicado
+                    };
+                    
+                    // Determina se é prova ou relatório baseado no tipo MIME ou padrão
+                    const tipo = anexo.tipo && anexo.tipo.includes('pdf') ? 'relatorio' : 'prova';
+                    fileManager.adicionar(tipo, novoArquivo);
+                });
+                
+                atualizarTela();
+            }
+        } catch (error) {
+            console.error('Erro ao recuperar anexos:', error);
+        }
+    };
+
+
 
     const acoesArquivo = {
         onDelete: async (id: any) => {
@@ -429,35 +486,60 @@ document.addEventListener('DOMContentLoaded', async () => {
                 tamanho: Formatters.tamanhoArquivo(file.size),
                 status: 'upando',
                 progresso: 0,
+                tipo: file.type,
                 rawFile: file
             };
 
             fileManager.adicionar(estadoUpload.tipoAtual, novoArquivo);
-            simularBackendUpload(novoArquivo.id, estadoUpload.tipoAtual);
+            salvarArquivoRealizado(novoArquivo, estadoUpload.tipoAtual);
         }
         
         uiManager.togglePopupUpload(false);
         atualizarTela();
     };
 
-    const simularBackendUpload = (id: any, tipo: any) => {
-        let progresso = 0;
-        const intervalo = setInterval(() => {
-            progresso += 10;
-            const arquivo = fileManager.atualizarProgresso(id, progresso);
-            
-            if (!arquivo) {
-                clearInterval(intervalo);
-                return;
-            }
+    const salvarArquivoRealizado = async (arquivo: any, tipo: string) => {
+        try {
+            // Ler arquivo como ArrayBuffer (não usar Buffer no renderer)
+            const arrayBuffer = await new Promise<ArrayBuffer>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const buffer = e.target?.result as ArrayBuffer;
+                    resolve(buffer);
+                };
+                reader.onerror = reject;
+                reader.readAsArrayBuffer(arquivo.rawFile);
+            });
 
-            if (progresso >= 100) {
-                clearInterval(intervalo);
-            }
+            // Converter ArrayBuffer para Uint8Array para manter compatibilidade
+            const uint8Array = new Uint8Array(arrayBuffer);
+            const tamanhoArquivo = uint8Array.length;
             
-            atualizarTela(); 
-        }, 500);
+            // Atualizar tamanho real do arquivo
+            arquivo.tamanho = Formatters.tamanhoArquivo(tamanhoArquivo);
+
+            // Salvar no banco (Uint8Array será convertido para Buffer no main process)
+            const resultado = await window.api.salvarAnexo({
+                nome: arquivo.nome,
+                tipo: arquivo.rawFile.type || 'application/octet-stream',
+                tamanho: tamanhoArquivo,
+                dados: uint8Array
+            }, Number(idCaso), idAssistida);
+
+            if (resultado.success) {
+                arquivo.status = 'upado';
+                arquivo.progresso = 100;
+            } else {
+                arquivo.status = 'erro';
+            }
+        } catch (error) {
+            console.error('Erro ao salvar arquivo:', error);
+            arquivo.status = 'erro';
+        } finally {
+            atualizarTela();
+        }
     };
+
 
     // Botões de anexar
     const btnAnexarProva = document.getElementById('anexar-prova');
@@ -627,6 +709,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (redesContatadas && !redesContatadas.textContent.trim()) {
         redesContatadas.textContent = 'Nenhuma rede de apoio foi contatada até o momento';
     }
+    
+    // 🔄 CARREGAR ANEXOS DO BANCO QUANDO A PÁGINA INICIA
+    await recuperarAnexosDoBanco();
     
     atualizarTela();
 });

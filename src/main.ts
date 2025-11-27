@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
+import * as fs from 'fs';
 import { WindowManager } from './utils/WindowManeger';
 import { Logger } from './utils/Logger';
 import { UserController } from './controllers/UserController';
@@ -9,6 +10,7 @@ import { CasoController } from './controllers/CasoController';
 import { PostgresInitializer } from './db/PostgresInitializer';
 import { IDataBase } from './db/IDataBase';
 import { CasoRepositoryPostgres } from './repository/CasoRepositoryPostgres';
+import { AnexoRepositorioPostgres } from './repository/AnexoRepositorioPostgres';
 import { CasoService } from './services/CasoService';
 
 
@@ -19,6 +21,7 @@ const userController = new UserController();
 
 // Repository será inicializado na função bootstrap
 let casoRepository: CasoRepositoryPostgres;
+let anexoRepository: AnexoRepositorioPostgres;
 let assistidaController: AssistidaController;
 let casoController: CasoController;
 
@@ -49,12 +52,13 @@ async function bootstrap(): Promise<void> {
   // Inicializar repository com a pool existente do PostgreSQL
   const postgresInitializer = dbInitializer as PostgresInitializer;
   casoRepository = new CasoRepositoryPostgres(postgresInitializer.pool());
-  Logger.info('Repository inicializado com sucesso!');
+  anexoRepository = new AnexoRepositorioPostgres(postgresInitializer.pool());
+  Logger.info('Repositories inicializados com sucesso!');
   
   // Inicializar controllers
   assistidaController = new AssistidaController(casoRepository);
 
-  casoController = new CasoController(assistidaController.getAssistidaService(), casoRepository);
+  casoController = new CasoController(assistidaController.getAssistidaService(), casoRepository, anexoRepository);
   
   createMainWindow();
   Logger.info('Aplicação iniciada com sucesso!');
@@ -421,7 +425,34 @@ ipcMain.handle('caso:salvarBD', async(_event, dados: {
   try {
     Logger.info('Requisição para salvar caso no banco de dados via Repository');
     
-    // 1. Criar o objeto Caso usando o controller
+    // 1. Processar anexos - converter caminhos para Buffer
+    let anexosProcessados: any[] = [];
+    
+    if (dados.caso.anexos && Array.isArray(dados.caso.anexos)) {
+      for (const caminhoArquivo of dados.caso.anexos) {
+        try {
+          if (typeof caminhoArquivo === 'string' && fs.existsSync(caminhoArquivo)) {
+            const buffer = fs.readFileSync(caminhoArquivo);
+            const nomeArquivo = path.basename(caminhoArquivo);
+            const tipoArquivo = getTipoMIME(nomeArquivo);
+            const tamanhoArquivo = buffer.length;
+            
+            anexosProcessados.push({
+              nome: nomeArquivo,
+              tipo: tipoArquivo,
+              tamanho: tamanhoArquivo,
+              dados: buffer
+            });
+            
+            Logger.info(`Anexo processado: ${nomeArquivo} (${tamanhoArquivo} bytes)`);
+          }
+        } catch (erro) {
+          Logger.error(`Erro ao processar anexo ${caminhoArquivo}:`, erro);
+        }
+      }
+    }
+    
+    // 2. Criar o objeto Caso usando o controller
     const casoCriado = casoController.handlerCriarCaso({
       nomeAssistida: dados.assistida.nome,
       idadeAssistida: dados.assistida.idade,
@@ -438,15 +469,16 @@ ipcMain.handle('caso:salvarBD', async(_event, dados: {
       quantidadeDependentes: dados.assistida.quantidadeDependentes || 0,
       temDependentes: dados.assistida.temDependentes || false,
       
-      // Dados do caso
+      // Dados do caso com anexos processados
       ...dados.caso,
+      anexos: anexosProcessados,
       
       data: dados.data,
       profissionalResponsavel: dados.profissionalResponsavel,
       descricao: ''
     });
     
-    // 2. Salvar no BD usando o repository
+    // 3. Salvar no BD usando o repository
     const idCasoSalvo = await casoRepository.salvar(casoCriado);
     
     Logger.info('Caso salvo com sucesso no BD com ID:', idCasoSalvo);
@@ -459,6 +491,164 @@ ipcMain.handle('caso:salvarBD', async(_event, dados: {
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Erro desconhecido ao salvar caso'
+    };
+  }
+});
+
+// ==========================================
+// HANDLERS PARA ANEXOS
+// ==========================================
+
+ipcMain.handle('caso:recuperarAnexos', async(_event, { idCaso }: { idCaso: number }) => {
+  try {
+    Logger.info(`Requisição para recuperar anexos do caso ${idCaso}`);
+    
+    const anexos = await casoController.handlerRecuperarAnexosDoCaso(idCaso);
+    
+    // Converter objetos Anexo para objetos plain SEM os dados (dados não podem ser serializados)
+    const anexosConvertidos = anexos.map((anexo: any) => {
+      // Retornar objeto plain com as propriedades necessárias (SEM dados)
+      return {
+        idAnexo: anexo.getIdAnexo?.(),
+        nomeAnexo: anexo.getNomeAnexo?.(),
+        tamanho: anexo.getTamanho?.(),
+        tipo: anexo.getTipo?.()
+        // NÃO enviar dados aqui - serão baixados quando clicado
+      };
+    });
+    
+    Logger.info(`${anexosConvertidos.length} anexo(s) recuperado(s) do caso ${idCaso}`);
+    
+    return {
+      success: true,
+      anexos: anexosConvertidos
+    };
+  } catch (error) {
+    Logger.error('Erro ao recuperar anexos:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido ao recuperar anexos'
+    };
+  }
+});
+
+ipcMain.handle('caso:salvarAnexo', async(_event, { anexo, idCaso, idAssistida }: { anexo: any; idCaso: number; idAssistida: number }) => {
+  try {
+    Logger.info(`Requisição para salvar anexo do caso ${idCaso}`);
+    
+    // Converter dados para Buffer (pode vir como Uint8Array do renderer)
+    let anexoParaSalvar = { ...anexo };
+    
+    if (anexoParaSalvar.dados) {
+      let buffer: Buffer;
+      
+      if (Buffer.isBuffer(anexoParaSalvar.dados)) {
+        buffer = anexoParaSalvar.dados;
+      } else if (anexoParaSalvar.dados instanceof Uint8Array) {
+        buffer = Buffer.from(anexoParaSalvar.dados);
+      } else if (typeof anexoParaSalvar.dados === 'string') {
+        buffer = Buffer.from(anexoParaSalvar.dados, 'utf-8');
+      } else if (Array.isArray(anexoParaSalvar.dados)) {
+        buffer = Buffer.from(anexoParaSalvar.dados);
+      } else if (anexoParaSalvar.dados && typeof anexoParaSalvar.dados === 'object') {
+        buffer = Buffer.from(Object.values(anexoParaSalvar.dados));
+      } else {
+        buffer = Buffer.from(anexoParaSalvar.dados);
+      }
+      
+      // Converter Buffer para bytea (hexadecimal)
+      anexoParaSalvar.dados = '\\x' + buffer.toString('hex');
+    } else {
+      anexoParaSalvar.dados = null;
+    }
+    
+    const success = await casoController.handlerSalvarAnexo(anexoParaSalvar, idCaso, idAssistida);
+    
+    if (success) {
+      Logger.info(`Anexo '${anexo.nome}' salvo no caso ${idCaso}`);
+    }
+    
+    return {
+      success: success,
+      message: success ? 'Anexo salvo com sucesso' : 'Falha ao salvar anexo'
+    };
+  } catch (error) {
+    Logger.error('Erro ao salvar anexo:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido ao salvar anexo'
+    };
+  }
+});
+
+ipcMain.handle('anexo:download', async(_event, { idAnexo, nomeArquivo }: { idAnexo: string; nomeArquivo: string }) => {
+  try {
+    Logger.info(`Requisição para baixar anexo: ${idAnexo} - ${nomeArquivo}`);
+    
+    // Recuperar anexo do banco de dados
+    const anexo = await anexoRepository.getAnexoById(parseInt(idAnexo));
+    
+    if (!anexo) {
+      return {
+        success: false,
+        error: 'Anexo não encontrado'
+      };
+    }
+    
+    // Converter bytea para Buffer
+    const dadosAnexo = anexo.getDados();
+    let buffer: Buffer;
+    
+    if (!dadosAnexo) {
+      return {
+        success: false,
+        error: 'Anexo sem dados no banco de dados'
+      };
+    }
+    
+    if (typeof dadosAnexo === 'string' && dadosAnexo.startsWith('\\x')) {
+      const hexPart = dadosAnexo.slice(2);
+      buffer = Buffer.from(hexPart, 'hex');
+    } else if (Buffer.isBuffer(dadosAnexo)) {
+      buffer = dadosAnexo;
+    } else if (dadosAnexo instanceof Uint8Array) {
+      buffer = Buffer.from(dadosAnexo);
+    } else if (Array.isArray(dadosAnexo)) {
+      buffer = Buffer.from(dadosAnexo);
+    } else if (typeof dadosAnexo === 'string') {
+      buffer = Buffer.from(dadosAnexo, 'utf-8');
+    } else {
+      buffer = Buffer.from(dadosAnexo);
+    }
+    
+    if (!buffer || buffer.length === 0) {
+      throw new Error('Buffer vazio após conversão');
+    }
+    
+    // Definir caminho de download na pasta Downloads do usuário
+    const downloadsPath = path.join(require('os').homedir(), 'Downloads', nomeArquivo);
+    
+    // Criar diretório se não existir
+    const downloadsDir = path.dirname(downloadsPath);
+    if (!fs.existsSync(downloadsDir)) {
+      fs.mkdirSync(downloadsDir, { recursive: true });
+    }
+    
+    // Escrever arquivo no disco
+    fs.writeFileSync(downloadsPath, buffer);
+    
+    Logger.info(`Arquivo '${nomeArquivo}' baixado com sucesso`);
+    
+    return {
+      success: true,
+      message: `Arquivo baixado com sucesso em: ${downloadsPath}`,
+      path: downloadsPath
+    };
+  } catch (error) {
+    Logger.error('Erro ao baixar anexo:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido ao baixar anexo'
     };
   }
 });
@@ -651,6 +841,26 @@ ipcMain.on('window:close', (event) => {
   const window = BrowserWindow.fromWebContents(event.sender);
   window?.close();
 });
+
+// ==========================================
+// UTILITY FUNCTIONS
+// ==========================================
+
+function getTipoMIME(nomeArquivo: string): string {
+  const extensao = path.extname(nomeArquivo).toLowerCase();
+  const tiposMIME: { [key: string]: string } = {
+    '.pdf': 'application/pdf',
+    '.doc': 'application/msword',
+    '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.png': 'image/png',
+    '.txt': 'text/plain',
+    '.xls': 'application/vnd.ms-excel',
+    '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  };
+  return tiposMIME[extensao] || 'application/octet-stream';
+}
 
 // ==========================================
 // APP LIFECYCLE

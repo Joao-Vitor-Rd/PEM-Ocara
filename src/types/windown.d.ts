@@ -147,6 +147,24 @@ export interface IElectronAPI {
     error?: string;
   }>;
 
+  recuperarAnexosDoCaso: (idCaso: number) => Promise<{
+    success: boolean;
+    anexos?: any[];
+    error?: string;
+  }>;
+
+  salvarAnexo: (anexo: any, idCaso: number, idAssistida: number) => Promise<{
+    success: boolean;
+    error?: string;
+  }>;
+
+  downloadAnexo: (idAnexo: string, nomeArquivo: string) => Promise<{
+    success: boolean;
+    message?: string;
+    path?: string;
+    error?: string;
+  }>;
+
   getEnderecosAssistidasFiltrado: (dataInicio?: string, dataFim?: string) => Promise<{
     success: boolean;
     enderecos?: any[];

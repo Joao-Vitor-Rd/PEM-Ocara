@@ -192,9 +192,12 @@ pxmBtn.addEventListener('click', async () => {
         }
 
         // Chamar a API para salvar no banco de dados
+        const anexosJSON = sessionStorage.getItem('cadastro_anexos');
+        const anexos = anexosJSON ? JSON.parse(anexosJSON) : [];
+
         const result = await window.api.salvarCasoBD({
             assistida: dadosAssistida,
-            caso: dadosCaso,
+            caso: Object.assign({}, dadosCaso, { anexos }),
             profissionalResponsavel: 'Assistente Social',
             data: new Date()
         });

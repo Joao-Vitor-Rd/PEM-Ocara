@@ -106,10 +106,16 @@ export class CasoRepositoryPostgres implements ICasoRepository {
 
             // 9. Salvar Anexos
             const anexos = caso.getAnexos();
+            console.log(`\n=== SALVANDO ANEXOS ===`);
+            console.log(`Total de anexos no caso: ${anexos.length}`);
             if (anexos && anexos.length > 0) {
                 for (const anexo of anexos) {
+                    console.log(`Salvando anexo: ${anexo.getNomeAnexo?.()}`);
                     await this.salvarAnexo(client, idCaso, idAssistida, anexo);
                 }
+                console.log(`✓ Todos os ${anexos.length} anexo(s) foram salvos`);
+            } else {
+                console.log(`⚠ Nenhum anexo para salvar`);
             }
 
             // 10. Salvar Funcionário que acompanha o caso
@@ -335,6 +341,7 @@ export class CasoRepositoryPostgres implements ICasoRepository {
         idAssistida: number,
         historicoViolencia: any
     ): Promise<void> {
+        // Salvar ameaças familiares
         const tipos = historicoViolencia.getAmeacaFamiliar() || [];
         
         for (const tipo of tipos) {
@@ -344,6 +351,18 @@ export class CasoRepositoryPostgres implements ICasoRepository {
                 ) VALUES ($1, $2, $3, $4)
             `;
             await client.query(query, [idViolencia, idCaso, idAssistida, tipo]);
+        }
+
+        // Salvar outras formas de violência
+        const outrasFormas = historicoViolencia.getOutrasFormasViolencia() || [];
+        
+        for (const forma of outrasFormas) {
+            const query = `
+                INSERT INTO TIPO_VIOLENCIA (
+                    id_violencia, id_caso, id_assistida, tipo_violencia
+                ) VALUES ($1, $2, $3, $4)
+            `;
+            await client.query(query, [idViolencia, idCaso, idAssistida, forma]);
         }
     }
 
@@ -423,15 +442,50 @@ export class CasoRepositoryPostgres implements ICasoRepository {
             ) VALUES ($1, $2, $3, $4, $5)
         `;
 
+        // Obter dados - pode ser Buffer ou null
+        let dadosAnexo: Buffer | null = null;
+        const dados = anexo.getDados?.();
+        
+        console.log(`  → Processando anexo: ${anexo.getNomeAnexo?.()}`);
+        console.log(`    Tipo de dados: ${typeof dados}, é Buffer: ${Buffer.isBuffer(dados)}`);
+        
+        if (dados) {
+            // Se já é Buffer, usar direto
+            if (Buffer.isBuffer(dados)) {
+                dadosAnexo = dados;
+                console.log(`    ✓ Dados já são Buffer: ${dadosAnexo.length} bytes`);
+            } 
+            // Se é string (pode ser path ou base64), tenta converter
+            else if (typeof dados === 'string') {
+                try {
+                    dadosAnexo = Buffer.from(dados, 'utf-8');
+                    console.log(`    ✓ Convertido de string para Buffer: ${dadosAnexo.length} bytes`);
+                } catch (e) {
+                    console.warn(`    ✗ Erro ao converter dados do anexo: ${e}`);
+                    dadosAnexo = null;
+                }
+            }
+        } else {
+            console.log(`    ⚠ Dados vazios ou null`);
+        }
+
         const values = [
             idCaso,
             idAssistida,
             anexo.getNomeAnexo?.() || '',
             anexo.getTipo?.() || '',
-            anexo.getDados?.() || null
+            dadosAnexo
         ];
 
-        await client.query(query, values);
+        console.log(`  → INSERT ANEXO: id_caso=${values[0]}, id_assistida=${values[1]}, nome=${values[2]}, tipo=${values[3]}, dados_size=${dadosAnexo?.length || 0}`);
+        
+        try {
+            await client.query(query, values);
+            console.log(`  ✓ Anexo salvo com sucesso: ${values[2]}`);
+        } catch (erro) {
+            console.error(`  ✗ Erro ao salvar anexo: ${erro}`);
+            throw erro;
+        }
     }
 
     /**

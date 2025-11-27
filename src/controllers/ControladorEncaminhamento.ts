@@ -36,7 +36,6 @@ export class ControladorEncaminhamento {
 
             const novoRegistroHistorico = new Alteracao(tipo, descricao, data, responsavel);
 
-            caso.getHistorico().adicionarAlteracao(novoRegistroHistorico);
             caso.adicionarEncaminhamento(encaminhamento);
 
             //Adicionar logica para salvar no banco de dados na próxima etapa NÃO ESQUECER DISSO

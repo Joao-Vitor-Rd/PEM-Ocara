@@ -1,6 +1,7 @@
 import { CasoService } from "../services/CasoService";
 import { AssistidaService } from "../services/AssistidaService";
 import { ICasoRepository } from "../repository/ICasoRepository";
+import { IAnexoRepository } from "../repository/IAnexoRepository";
 import { Caso } from "../models/Caso/Caso";
 import { PdfService } from "../services/PDFService";
 
@@ -9,8 +10,8 @@ export class CasoController {
     private PdfService: PdfService
     private casoService: CasoService;
 
-    constructor(assistidaService: AssistidaService, casoRepository: ICasoRepository) {
-        this.casoService = new CasoService(assistidaService, casoRepository);
+    constructor(assistidaService: AssistidaService, casoRepository: ICasoRepository, anexoRepository?: IAnexoRepository) {
+        this.casoService = new CasoService(assistidaService, casoRepository, anexoRepository);
         this.PdfService = new PdfService(this.casoService);
     }
 
@@ -82,6 +83,8 @@ export class CasoController {
         data: Date;
         profissionalResponsavel: string;
         descricao: string;
+        // Anexos
+        anexos?: any[];
     }): Caso {
         return this.casoService.criarCaso(dados);
     }
@@ -143,6 +146,34 @@ export class CasoController {
 
     async getTotalCasosFiltrado(regioes: string[], dataInicio?: string, dataFim?: string): Promise<number> {
         return this.casoService.getTotalCasosFiltrado(regioes, dataInicio, dataFim);
+    }
+
+    async handlerRecuperarAnexosDoCaso(idCaso: number): Promise<any[]> {
+        try {
+            console.log(`🔍 CasoController: Recuperando anexos do caso ${idCaso}`);
+            const anexos = await this.casoService.recuperarAnexosDoCaso(idCaso);
+            console.log(`✓ CasoController: ${anexos.length} anexo(s) recuperado(s)`);
+            return anexos;
+        } catch (error) {
+            console.error(`✗ CasoController: Erro ao recuperar anexos:`, error);
+            throw error;
+        }
+    }
+
+    async handlerSalvarAnexo(anexo: any, idCaso: number, idAssistida: number): Promise<boolean> {
+        try {
+            console.log(`📎 CasoController: Salvando anexo '${anexo.nome}' para caso ${idCaso}`);
+            const success = await this.casoService.salvarAnexo(anexo, idCaso, idAssistida);
+            if (success) {
+                console.log(`✓ CasoController: Anexo salvo com sucesso`);
+            } else {
+                console.warn(`⚠ CasoController: Falha ao salvar anexo`);
+            }
+            return success;
+        } catch (error) {
+            console.error(`✗ CasoController: Erro ao salvar anexo:`, error);
+            throw error;
+        }
     }
 
 }

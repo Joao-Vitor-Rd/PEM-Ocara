@@ -215,7 +215,7 @@ export class Caso {
     }
 
     public getAnexoById(idAnexo: number): Anexo | undefined{
-        return this.anexos.find(anexos => anexos.getidAnexo() === idAnexo);
+        return this.anexos.find(anexos => anexos.getIdAnexo() === idAnexo);
     }
 
     public getData(): Date {
@@ -269,6 +269,84 @@ export class Caso {
     //Setters
     public setAnexos(anexos: Anexo[]) {
         this.anexos = anexos;
+    }
+
+    /**
+     * Adiciona um único anexo ao caso
+     */
+    public adicionarAnexo(anexo: Anexo): void {
+        this.anexos.push(anexo);
+    }
+
+    /**
+     * Adiciona múltiplos anexos ao caso
+     */
+    public adicionarAnexos(anexos: Anexo[]): void {
+        this.anexos.push(...anexos);
+    }
+
+    /**
+     * Remove um anexo pelo ID
+     */
+    public removerAnexo(idAnexo: number): boolean {
+        const index = this.anexos.findIndex(a => a.getIdAnexo() === idAnexo);
+        if (index > -1) {
+            this.anexos.splice(index, 1);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Limpa todos os anexos do caso
+     */
+    public limparAnexos(): void {
+        this.anexos = [];
+    }
+
+    /**
+     * Recupera anexo por ID
+     */
+    public obterAnexoPorId(idAnexo: number): Anexo | undefined {
+        return this.anexos.find(a => a.getIdAnexo() === idAnexo);
+    }
+
+    /**
+     * Recupera anexos por tipo (ex: 'image/png', 'application/pdf')
+     */
+    public obterAnexosPorTipo(tipo: string): Anexo[] {
+        return this.anexos.filter(a => a.getTipo() === tipo);
+    }
+
+    /**
+     * Recupera anexos por padrão de nome (suporta regex)
+     */
+    public obterAnexosPorNome(padraoNome: string | RegExp): Anexo[] {
+        const pattern = typeof padraoNome === 'string' 
+            ? new RegExp(padraoNome, 'i') 
+            : padraoNome;
+        return this.anexos.filter(a => pattern.test(a.getNomeAnexo()));
+    }
+
+    /**
+     * Verifica se tem anexos
+     */
+    public temAnexos(): boolean {
+        return this.anexos.length > 0;
+    }
+
+    /**
+     * Retorna quantidade de anexos
+     */
+    public quantidadeAnexos(): number {
+        return this.anexos.length;
+    }
+
+    /**
+     * Calcula tamanho total dos anexos em bytes
+     */
+    public tamanhoTotalAnexos(): number {
+        return this.anexos.reduce((total, anexo) => total + anexo.getTamanho(), 0);
     }
 
     public setProtocoloCaso(protocoloCaso: number) {

@@ -1,16 +1,20 @@
 import { Caso } from "../models/Caso/Caso";
+import { Anexo } from "../models/assistida/Anexo";
 import { AssistidaService } from "./AssistidaService";
 import { ICasoRepository } from "../repository/ICasoRepository";
+import { IAnexoRepository } from "../repository/IAnexoRepository";
 
 export class CasoService {
 
     private assistidaService: AssistidaService;
     private casoRepository: ICasoRepository;
+    private anexoRepository?: IAnexoRepository;
     private casos: Caso[] = [];
 
-    constructor(assistidaService: AssistidaService, casoRepository: ICasoRepository) {
+    constructor(assistidaService: AssistidaService, casoRepository: ICasoRepository, anexoRepository?: IAnexoRepository) {
         this.assistidaService = assistidaService;
         this.casoRepository = casoRepository;
+        this.anexoRepository = anexoRepository;
     }
     criarCaso(dados: {
         // Assistida
@@ -80,6 +84,8 @@ export class CasoService {
         data: Date;
         profissionalResponsavel: string;
         descricao: string;
+        // Anexos
+        anexos?: any[];
     
     }) {
         // Criar nova assistida sempre
@@ -162,7 +168,14 @@ export class CasoService {
             dados.profissionalResponsavel,
             dados.descricao
         );
-        
+
+        // Adicionar anexos se houver
+        if (dados.anexos && Array.isArray(dados.anexos) && dados.anexos.length > 0) {
+            const anexosObjetos = dados.anexos.map((a: any) => 
+                new Anexo(a.nome || a.nomeAnexo || '', a.tamanho || 0, a.tipo || '', a.dados || null)
+            );
+            novoCaso.setAnexos(anexosObjetos);
+        }
 
         const protocoloAssistida = novoCaso.getAssistida()?.getProtocolo() || 0;
         
@@ -257,6 +270,15 @@ export class CasoService {
         );
 
         novoCaso.setProtocoloCaso(0);
+
+        // Adicionar anexos se houver
+        if (dados.anexos && Array.isArray(dados.anexos) && dados.anexos.length > 0) {
+            const anexosObjetos = dados.anexos.map((a: any) => 
+                new Anexo(a.nome || a.nomeAnexo || '', a.tamanho || 0, a.tipo || '', a.dados || null)
+            );
+            novoCaso.setAnexos(anexosObjetos);
+        }
+
         return novoCaso;
     }
     public getCaso(protocolo: number): Caso | undefined {
@@ -404,6 +426,64 @@ export class CasoService {
         } catch (error) {
             console.error('Erro ao obter endereços filtrados:', error);
             throw error;
+        }
+    }
+
+    /**
+     * Salva um anexo no repositório de anexos
+     */
+    async salvarAnexo(anexo: any, idCaso: number, idAssistida: number): Promise<boolean> {
+        try {
+            if (!this.anexoRepository) {
+                console.warn('AnexoRepository não inicializado');
+                return false;
+            }
+
+            const anexoObj = new Anexo(
+                anexo.nome || anexo.nomeAnexo,
+                anexo.tamanho || 0,
+                anexo.tipo,
+                anexo.dados
+            );
+            
+            const idAnexoSalvo = await this.anexoRepository.salvar(anexoObj, idCaso, idAssistida);
+            
+            if (idAnexoSalvo) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            console.error('Erro ao salvar anexo:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Recupera anexos de um caso do banco de dados
+     */
+    async recuperarAnexosDoCaso(idCaso: number): Promise<Anexo[]> {
+        try {
+            if (!this.anexoRepository) {
+                const caso = await this.casoRepository.getCaso(idCaso);
+                
+                if (!caso) {
+                    return [];
+                }
+                
+                // Fallback: recupera do objeto caso se disponível
+                if (!caso.getAnexos || caso.getAnexos().length === 0) {
+                    return [];
+                }
+                
+                return caso.getAnexos();
+            }
+
+            const anexos = await this.anexoRepository.getAnexosCaso(idCaso);
+            return anexos;
+        } catch (error) {
+            console.error('Erro ao recuperar anexos:', error);
+            return [];
         }
     }
 
