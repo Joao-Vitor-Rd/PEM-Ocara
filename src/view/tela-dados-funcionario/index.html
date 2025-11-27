@@ -139,8 +139,15 @@
                     </div>
                     <div class="form-group">
                         <label for="novoCargo">Novo Cargo</label>
-                        <p style="color: #C94A2C; font-weight: 500; margin-bottom: 8px;">Para atualizar o cargo solicite o <span style="font-weight:700; color:#C94A2C;">Administrador do Sistema</span></p>
+                        <select id="novoCargo">
+                            <option value="" disabled selected hidden>Clique aqui para selecionar o cargo</option>
+                            <option value="Assistente Social">Assistente Social</option>
+                            <option value="Jurídico">Jurídico</option>
+                            <option value="Coordenador">Coordenador</option>
+                        </select>
                     </div>
+                    <p id="cargoError" class="error-message"></p>
+                    <button class="btn-atualizar">Atualizar Dados</button>
                 </div>
             </div>
         </div>
