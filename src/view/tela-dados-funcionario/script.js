@@ -356,7 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordValidator = new PasswordValidator();
     const emailValidator = new EmailValidator();
     const nameValidator = new NameValidator();
-    const jobValidator = new JobValidator(); // Instanciado
+    const jobValidator = new JobValidator();
     const successModalManager = new ModalManager('popupConfirmacao');
     const nameModalManager = new ModalManager('modalNome', 'itemNome');
     const cargoModalManager = new ModalManager('modalCargo', 'itemCargo');
@@ -368,5 +368,5 @@ document.addEventListener('DOMContentLoaded', () => {
     new PasswordController(passwordValidator, passwordModalManager, successModalManager);
     new EmailController(emailValidator, emailModalManager, successModalManager);
     new NameController(nameValidator, nameModalManager, successModalManager);
-    new JobController(jobValidator, cargoModalManager, successModalManager); // Instanciado
+    new JobController(jobValidator, cargoModalManager, successModalManager);
 });
