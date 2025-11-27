@@ -1,11 +1,9 @@
 class PasswordValidator {
-    validate(senhaAtual, novaSenha, confirmarSenha) {
-        if (senhaAtual === '' || novaSenha === '' || confirmarSenha === '') {
+    validate(novaSenha, confirmarSenha) {
+        if (novaSenha === '' || confirmarSenha === '') {
             return 'Por favor, preencha todos os campos.';
         }
-        if (novaSenha === senhaAtual) {
-            return 'A nova senha não pode ser igual à senha atual.';
-        }
+        
         if (novaSenha.length < 8) {
             return 'A nova senha deve ter pelo menos 8 caracteres.';
         }
@@ -52,6 +50,15 @@ class EmailValidator {
     }
 }
 
+class JobValidator {
+    validate(novoCargo) {
+        if (!novoCargo || novoCargo === '') {
+            return 'Por favor, selecione um cargo.';
+        }
+        return null;
+    }
+}
+
 
 function togglePassword(iconElement) {
     const inputWrapper = iconElement.parentElement;
@@ -84,7 +91,7 @@ class ModalManager {
         }
 
         this.closeBtn = this.modal.querySelector('.modal-close, #popupBtnOk'); 
-        this.inputs = this.modal.querySelectorAll('input');   
+        this.inputs = this.modal.querySelectorAll('input, select');
         this.errorDisplay = this.modal.querySelector('.error-message'); 
 
         if (!this.closeBtn && modalId !== 'modalCargo') {
@@ -117,7 +124,7 @@ class ModalManager {
 
         if (this.inputs && this.inputs.length > 0) {
             this.inputs.forEach(input => {
-                if ((input.type === 'text' || input.type === 'password') && !input.readOnly) {
+                if ((input.type === 'text' || input.type === 'password' || input.tagName === 'SELECT') && !input.readOnly) {
                     input.value = '';
                 }
             });
@@ -137,13 +144,14 @@ class ModalManager {
     }
 }
 
+/* --- CONTROLADORES --- */
+
 class PasswordController {
     constructor(passwordValidator, passwordModalManager, successModalManager) {
         this.validator = passwordValidator;
         this.modalManager = passwordModalManager;
         this.successModalManager = successModalManager;
-        this.btnAtualizar = document.querySelector('#modalSenha .btn-atualizar'); 
-        this.senhaAtualInput = document.getElementById('senhaAtual');
+        this.btnAtualizar = document.querySelector('#modalSenha .btn-atualizar');         
         this.novaSenhaInput = document.getElementById('novaSenha');
         this.confirmarSenhaInput = document.getElementById('confirmarSenha');
         this.errorDisplay = document.getElementById('senhaError'); 
@@ -159,13 +167,12 @@ class PasswordController {
     }
 
     handleUpdatePassword() {
-        const senhaAtual = this.senhaAtualInput.value;
         const novaSenha = this.novaSenhaInput.value;
         const confirmarSenha = this.confirmarSenhaInput.value;
         
         this.hideError();
 
-        const errorMessage = this.validator.validate(senhaAtual, novaSenha, confirmarSenha);
+        const errorMessage = this.validator.validate(novaSenha, confirmarSenha);
 
         if (errorMessage) {
             this.showError(errorMessage);
@@ -291,17 +298,68 @@ class EmailController {
     }
 }
 
+class JobController {
+    constructor(jobValidator, jobModalManager, successModalManager) {
+        this.validator = jobValidator;
+        this.modalManager = jobModalManager;
+        this.successModalManager = successModalManager;
+        this.btnAtualizar = document.querySelector('#modalCargo .btn-atualizar');
+        this.novoCargoInput = document.getElementById('novoCargo');
+        this.errorDisplay = document.getElementById('cargoError');
+
+        if (!this.btnAtualizar || !this.novoCargoInput || !this.errorDisplay) {
+            console.warn('Elementos do modal de cargo não encontrados.');
+            return;
+        }
+        this.setupListener();
+    }
+
+    setupListener() {
+        this.btnAtualizar.addEventListener('click', () => this.handleUpdateJob());
+    }
+
+    handleUpdateJob() {
+        const novoCargo = this.novoCargoInput.value;
+        this.hideError();
+
+        const errorMessage = this.validator.validate(novoCargo);
+
+        if (errorMessage) {
+            this.showError(errorMessage);
+        } else {
+            const cargoAtualInput = document.getElementById('cargoAtual');
+            if(cargoAtualInput) cargoAtualInput.value = novoCargo;
+
+            this.showSuccess('Cargo atualizado com sucesso!');
+        }
+    }
+
+    showError(message) {
+        this.errorDisplay.textContent = message;
+        this.errorDisplay.style.display = 'block';
+    }
+
+    hideError() {
+        this.errorDisplay.textContent = '';
+        this.errorDisplay.style.display = 'none';
+    }
+
+    showSuccess(message) {
+        this.modalManager.close();
+        this.successModalManager.setMessage(message);
+        this.successModalManager.open();
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 
     const passwordValidator = new PasswordValidator();
     const emailValidator = new EmailValidator();
     const nameValidator = new NameValidator();
-    
+    const jobValidator = new JobValidator(); // Instanciado
     const successModalManager = new ModalManager('popupConfirmacao');
-
     const nameModalManager = new ModalManager('modalNome', 'itemNome');
     const cargoModalManager = new ModalManager('modalCargo', 'itemCargo');
-    
     const emailModalManager = new ModalManager('modalEmail', 'itemEmail');
     const passwordModalManager = new ModalManager('modalSenha', 'itemSenha');
 
@@ -310,5 +368,5 @@ document.addEventListener('DOMContentLoaded', () => {
     new PasswordController(passwordValidator, passwordModalManager, successModalManager);
     new EmailController(emailValidator, emailModalManager, successModalManager);
     new NameController(nameValidator, nameModalManager, successModalManager);
-
+    new JobController(jobValidator, cargoModalManager, successModalManager); // Instanciado
 });
