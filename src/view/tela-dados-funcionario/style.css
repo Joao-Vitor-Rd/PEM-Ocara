@@ -251,6 +251,15 @@ body {
     flex-direction: column;
 }
 
+#modalCargo .modal-content {
+    width: 100%; 
+    max-width: 1011px;
+    height: auto;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: block;
+}
+
 #modalSenha .modal-content {
     width: 100%; 
     max-width: 1011px; 
@@ -269,14 +278,22 @@ body {
     display: block;
 }
 
+#modalNome .modal-content {
+    width: 100%; 
+    max-width: 1011px;
+    height: auto;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: block;
+}
+
 #modalApagar .modal-content {
     width: 100%;
     max-width: 1011px;
-    height: 437px;
+    height: auto;
     max-height: 90vh;
-    display: flex;
-    flex-direction: column;
     overflow-y: auto;
+    display: block;
 }
 
 #modalSenha .modal-body {
