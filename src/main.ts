@@ -12,7 +12,14 @@ import { IDataBase } from './db/IDataBase';
 import { CasoRepositoryPostgres } from './repository/CasoRepositoryPostgres';
 import { AnexoRepositorioPostgres } from './repository/AnexoRepositorioPostgres';
 import { CasoService } from './services/CasoService';
-
+// Imports do Módulo de Funcionários
+import { FuncionarioRepositoryPostgres } from './repository/FuncionarioRepositoryPostgres';
+import { FuncionarioService } from './services/FuncionarioService';
+import { ControladorFuncionario } from './controllers/FuncionarioController';
+// Imports do Módulo de Credenciais
+import { CredencialRepositoryPostgres } from './repository/CredencialRepositoryPostgres';
+import { CredencialService } from './services/CredencialService';
+import { ControladorCredencial } from './controllers/ControladorCredencial';
 
 
 
@@ -24,6 +31,8 @@ let casoRepository: CasoRepositoryPostgres;
 let anexoRepository: AnexoRepositorioPostgres;
 let assistidaController: AssistidaController;
 let casoController: CasoController;
+let funcionarioController: ControladorFuncionario;
+let credencialController: ControladorCredencial;
 
 // Repository para salvar casos no BD
 
@@ -54,12 +63,19 @@ async function bootstrap(): Promise<void> {
   casoRepository = new CasoRepositoryPostgres(postgresInitializer.pool());
   anexoRepository = new AnexoRepositorioPostgres(postgresInitializer.pool());
   Logger.info('Repositories inicializados com sucesso!');
+  const funcionarioRepository = new FuncionarioRepositoryPostgres(postgresInitializer.pool());
+  const credencialRepository = new CredencialRepositoryPostgres(postgresInitializer.pool());
+  Logger.info('Repository inicializado com sucesso!');
   
   // Inicializar controllers
   assistidaController = new AssistidaController(casoRepository);
+  const funcionarioService = new FuncionarioService(funcionarioRepository);
+  const credencialService = new CredencialService(credencialRepository);
 
   casoController = new CasoController(assistidaController.getAssistidaService(), casoRepository, anexoRepository);
-  
+  funcionarioController = new ControladorFuncionario(funcionarioService);
+  credencialController = new ControladorCredencial(credencialService);
+
   createMainWindow();
   Logger.info('Aplicação iniciada com sucesso!');
 }
@@ -776,6 +792,106 @@ ipcMain.handle('assistida:listarTodas', async () => {
       success: false,
       error: error instanceof Error ? error.message : 'Erro desconhecido'
     };
+  }
+});
+
+
+// ==========================================
+// IPC HANDLERS - MÓDULO FUNCIONÁRIO
+// ==========================================
+
+// 1. Criar Funcionário
+ipcMain.handle('create-funcionario', async (_event, data) => {
+  try {
+    Logger.info('Requisição para criar funcionário:', data.email);
+    return await funcionarioController.cadastrarFuncionario(data);
+  } catch (error) {
+    Logger.error('Erro no handler create-funcionario:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Erro desconhecido' };
+  }
+});
+
+// 2. Listar Todos
+ipcMain.handle('get-funcionarios', async () => {
+  try {
+    Logger.info('Requisição para listar funcionários');
+    const resultado = await funcionarioController.listarFuncionarios();
+    if (resultado.success) return resultado.lista;
+    throw new Error(resultado.error);
+  } catch (error) {
+    Logger.error('Erro no handler get-funcionarios:', error);
+    throw error;
+  }
+});
+
+// 3. Buscar por Email
+ipcMain.handle('get-funcionario-email', async (_event, email: string) => {
+  try {
+    Logger.info('Requisição para buscar funcionário por email:', email);
+    return await funcionarioController.buscarPorEmail(email);
+  } catch (error) {
+    Logger.error('Erro no handler get-funcionario-email:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Erro desconhecido' };
+  }
+});
+
+// 4. Atualizar
+ipcMain.handle('update-funcionario', async (_event, { email, dados }) => {
+  try {
+    Logger.info('Requisição para atualizar funcionário:', email);
+    return await funcionarioController.atualizarFuncionario(email, dados);
+  } catch (error) {
+    Logger.error('Erro no handler update-funcionario:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Erro desconhecido' };
+  }
+});
+
+// 5. Deletar
+ipcMain.handle('delete-funcionario', async (_event, email: string) => {
+  try {
+    Logger.info('Requisição para deletar funcionário:', email);
+    return await funcionarioController.deletarFuncionario(email);
+  } catch (error) {
+    Logger.error('Erro no handler delete-funcionario:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Erro desconhecido' };
+  }
+});
+
+// 6. Atualizar Perfil (Autoatendimento / Minha Conta)
+ipcMain.handle('user:update-profile', async (_event, data) => {
+  try {
+    Logger.info('Requisição de atualização de perfil para:', data.email);
+    // O front deve enviar: { email, nome, senhaAtual, novaSenha }
+    return await funcionarioController.atualizarMinhaConta(data.email, data);
+  } catch (error) {
+    Logger.error('Erro no handler user:update-profile:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Erro desconhecido' };
+  }
+});
+
+// ==========================================
+// IPC HANDLERS - MÓDULO CREDENCIAIS
+// ==========================================
+
+// 1. Salvar/Atualizar Credenciais
+ipcMain.handle('credencial:salvar', async (_event, data) => {
+  try {
+    Logger.info('Requisição para salvar credenciais de e-mail...');
+    return await credencialController.salvarCredenciais(data);
+  } catch (error) {
+    Logger.error('Erro no handler credencial:salvar:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Erro desconhecido' };
+  }
+});
+
+// 2. Obter Credenciais (para exibir na tela)
+ipcMain.handle('credencial:obter', async () => {
+  try {
+    Logger.info('Requisição para obter credenciais atuais...');
+    return await credencialController.obterCredenciais();
+  } catch (error) {
+    Logger.error('Erro no handler credencial:obter:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Erro desconhecido' };
   }
 });
 
