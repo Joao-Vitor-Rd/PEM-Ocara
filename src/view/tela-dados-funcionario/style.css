@@ -247,13 +247,6 @@ body {
     flex-direction: column;
 }
 
-#modalCargo .modal-content {
-    width: 100%;
-    max-width: 1011px;
-    height: 434px;
-    max-height: 90vh;
-}
-
 #modalSenha .modal-content {
     width: 70.2vw;
     max-width: 70.2vw;
@@ -353,7 +346,9 @@ body {
     color: #63468C;
 }
 
-.form-group input[type="text"] {
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group select {
     width: 100%;
     height: 64px;
     padding: 12px 20px;
@@ -364,36 +359,48 @@ body {
     font-weight: 500;
     color: #63468C;
     box-sizing: border-box;
-    background-color: #FFFFFF;
+    background-color: #FFFFFF;    
 }
 
-.form-group input:focus {
+.form-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%2363468C" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    cursor: pointer;
+}
+
+#senhaAtual,
+#novaSenha,
+#confirmarSenha {
+    padding-right: 60px;
+}
+
+.form-group input:read-only {
+    background-color: #F5F5F5;
+    color: #888888;
+}
+
+.form-group input:focus,
+.form-group select:focus {
     outline: 2px solid #63468C;
     outline-offset: -1px;
+}
+
+.form-group input[type="password"]::-ms-reveal,
+.form-group input[type="password"]::-ms-clear {
+    display: none;
+}
+
+.form-group select:invalid {
+    color: #888888;
 }
 
 .input-wrapper {
     position: relative;
     width: 100%;
-}
-
-.form-group input[type="password"] {
-    width: 100%;
-    height: 64px;
-    padding: 12px 60px 12px 20px;
-    border: 1px solid #63468C;
-    border-radius: 10px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 24px;
-    font-weight: 500;
-    color: #63468C;
-    box-sizing: border-box;
-    background-color: #FFFFFF;
-}
-
-.form-group input[type="password"]:focus {
-    outline: 2px solid #63468C;
-    outline-offset: -1px;
 }
 
 .password-toggle-icon {
@@ -405,11 +412,6 @@ body {
     color: #63468C;
     font-size: 28px;
     user-select: none;
-}
-
-.form-group input:read-only {
-    background-color: #F5F5F5;
-    color: #888888;
 }
 
 .btn-atualizar {
@@ -574,7 +576,8 @@ body {
     }
 
     .form-group input[type="text"],
-    .form-group input[type="password"] {
+    .form-group input[type="password"],
+    .form-group select {
         font-size: 20px;
         height: 56px;
     }
@@ -692,7 +695,8 @@ body {
     }
 
     .form-group input[type="text"],
-    .form-group input[type="password"] {
+    .form-group input[type="password"],
+    .form-group select {
         font-size: 16px;
         height: 48px;
     }
@@ -700,10 +704,7 @@ body {
     .btn-atualizar {
         margin-top: 0;
     }
-}
-
-
-@media (max-width: 768px) {
+    
     .popup-confirmacao-content {
         padding: 40px 30px;
         max-width: 90%;
