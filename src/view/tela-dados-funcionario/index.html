@@ -102,7 +102,7 @@
                 </div>
             </section>
 
-            <button class="logout-button">Apagar Funcionário</button>
+            <button class="logout-button" id="btnOpenApagar">Apagar Funcionário</button>        
         </main>
 
         <div id="modalNome" class="modal-overlay">
@@ -198,6 +198,26 @@
                         </div>
                         <p id="emailError" class="error-message"></p>
                         <button class="btn-atualizar">Atualizar Dados</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="modalApagar" class="modal-overlay">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Confirmar Operação</h3>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="senhaConfirmacao" style="text-align: center; width: 100%; display: block; margin-bottom: 20px;">Digite sua senha para confirmar a operação:</label>
+                            <div class="input-wrapper">
+                                <input type="password" id="senhaConfirmacao" placeholder="Digite sua senha aqui">
+                                <span class="password-toggle-icon" onclick="togglePassword(this)"></span>
+                            </div>
+                        </div>
+                        <p id="deleteError" class="error-message"></p>
+                        <button class="btn-confirmar">Confirmar</button>
                     </div>
                 </div>
             </div>

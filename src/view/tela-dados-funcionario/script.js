@@ -62,6 +62,7 @@ class JobValidator {
     }
 }
 
+/* --- FUNÇÕES UTILITÁRIAS --- */
 
 function togglePassword(iconElement) {
     const inputWrapper = iconElement.parentElement;
@@ -82,6 +83,8 @@ function initializePasswordIcons() {
         icon.classList.add('material-symbols-outlined');
     });
 }
+
+/* --- GERENCIADOR DE MODAIS --- */
 
 class ModalManager {
     constructor(modalId, triggerId) {
@@ -332,7 +335,6 @@ class JobController {
             this.showError(errorMessage);
         } else {
             if(cargoAtualInput) cargoAtualInput.value = novoCargo;
-
             this.showSuccess('Cargo atualizado com sucesso!');
         }
     }
@@ -354,6 +356,49 @@ class JobController {
     }
 }
 
+class DeleteController {
+    constructor(modalManager, successModalManager) {
+        this.modalManager = modalManager;
+        this.successModalManager = successModalManager;
+        this.btnConfirmar = document.querySelector('#modalApagar .btn-confirmar');
+        this.senhaInput = document.getElementById('senhaConfirmacao');
+        this.errorDisplay = document.getElementById('deleteError');
+
+        if (!this.btnConfirmar || !this.senhaInput) {
+            console.warn('Elementos do modal de apagar não encontrados.');
+            return;
+        }
+        this.setupListener();
+    }
+    setupListener() {
+        this.btnConfirmar.addEventListener('click', () => this.handleDelete());
+    }
+    handleDelete() {
+        const senha = this.senhaInput.value;
+        this.hideError();
+
+        if (!senha || senha.trim() === '') {
+            this.showError('Por favor, digite sua senha para confirmar.');
+            return;
+        }
+
+        this.showSuccess('Funcionário apagado com sucesso!');
+    }
+    showError(message) {
+        this.errorDisplay.textContent = message;
+        this.errorDisplay.style.display = 'block';
+    }
+    hideError() {
+        this.errorDisplay.textContent = '';
+        this.errorDisplay.style.display = 'none';
+    }
+    showSuccess(message) {
+        this.modalManager.close();
+        this.successModalManager.setMessage(message);
+        this.successModalManager.open();
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 
     const passwordValidator = new PasswordValidator();
@@ -365,11 +410,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const cargoModalManager = new ModalManager('modalCargo', 'itemCargo');
     const emailModalManager = new ModalManager('modalEmail', 'itemEmail');
     const passwordModalManager = new ModalManager('modalSenha', 'itemSenha');
-
+    const deleteModalManager = new ModalManager('modalApagar', 'btnOpenApagar');
     initializePasswordIcons();
     
     new PasswordController(passwordValidator, passwordModalManager, successModalManager);
     new EmailController(emailValidator, emailModalManager, successModalManager);
     new NameController(nameValidator, nameModalManager, successModalManager);
     new JobController(jobValidator, cargoModalManager, successModalManager);
+    new DeleteController(deleteModalManager, successModalManager);
 });

@@ -15,6 +15,7 @@ body {
     height: 100vh;
 }
 
+/* --- SIDEBAR --- */
 .sidebar {
     width: clamp(340px, 28vw, 480px);
     background-color: #63468C;
@@ -98,6 +99,7 @@ body {
     flex-shrink: 0;
 }
 
+/* --- MAIN CONTENT --- */
 .main-content {
     position: relative;
     flex-grow: 1;
@@ -178,6 +180,7 @@ body {
     flex-shrink: 0;
 }
 
+/* BOTÃO APAGAR (VERMELHO) */
 .logout-button {
     width: 363px;
     max-width: 100%;
@@ -203,17 +206,18 @@ body {
 }
 
 .logout-button:hover {
-    background-color: #CC5A45;
+    background-color: #CC5A45; /* Vermelho escuro */
     transform: translateY(-3px);
     box-shadow: 0px 14px 26px rgba(0, 0, 0, 0.22);
 }
 
 .logout-button:active {
-    background-color: #B34C3A;
+    background-color: #B34C3A; /* Vermelho mais escuro */
     transform: translateY(0);
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.18);
 }
 
+/* --- MODALS --- */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -414,6 +418,7 @@ body {
     user-select: none;
 }
 
+/* BOTÃO ATUALIZAR (ROXO) */
 .btn-atualizar {
     width: 363px;
     max-width: 100%;
@@ -452,6 +457,45 @@ body {
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.18);
 }
 
+/* BOTÃO CONFIRMAR (LARANJA) */
+.btn-confirmar {
+    width: 363px;
+    max-width: 100%;
+    height: 83px;
+    margin-top: 20px;
+    margin-bottom: 0;
+    padding: 0;
+    background-color: #F2AC6D;
+    color: #FFFFFF;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 32px;
+    letter-spacing: 0.02em;
+    line-height: normal;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    align-self: center;
+}
+
+.btn-confirmar:hover {
+    background-color: #E09555;
+    transform: translateY(-3px);
+    box-shadow: 0px 14px 26px rgba(0, 0, 0, 0.22);
+}
+
+.btn-confirmar:active {
+    background-color: #C67D3E;
+    transform: translateY(0);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.18);
+}
+
 .error-message {
     color: #C94A2C;
     font-size: 18px;
@@ -461,6 +505,7 @@ body {
     text-align: center;
 }
 
+/* --- POPUP CONFIRMAÇÃO --- */
 .popup-confirmacao {
     display: none;
     position: fixed;
@@ -525,6 +570,7 @@ body {
     transform: translateY(0);
 }
 
+/* --- MEDIA QUERIES --- */
 @media (max-width: 1024px) {
     .sidebar {
         width: clamp(280px, 30vw, 340px);
@@ -649,21 +695,11 @@ body {
     }
 
     .logout-button,
-    .btn-atualizar {
+    .btn-atualizar,
+    .btn-confirmar {
         font-size: 20px;
         height: 60px;
         width: 100%;
-    }
-
-    .modal-content,
-    #modalCargo .modal-content,
-    #modalSenha .modal-content,
-    #modalEmail .modal-content,
-    #modalNome .modal-content {
-        width: 95vw;
-        height: auto;
-        max-height: 85vh;
-        overflow-y: auto;
     }
 
     .modal-header {
@@ -704,8 +740,8 @@ body {
         height: 48px;
     }
 
-    .btn-atualizar {
-        margin-top: 0;
+    .btn-atualizar, .btn-confirmar {
+        margin-top: 20px;
     }
     
     .popup-confirmacao-content {
@@ -721,5 +757,17 @@ body {
     .popup-btn-ok {
         font-size: 20px;
         padding: 10px 40px;
+    }
+    
+    .modal-content,
+    #modalCargo .modal-content,
+    #modalSenha .modal-content,
+    #modalEmail .modal-content,
+    #modalNome .modal-content,
+    #modalApagar .modal-content {
+        width: 95vw;
+        height: auto;
+        max-height: 85vh;
+        overflow-y: auto;
     }
 }
