@@ -51,9 +51,12 @@ class EmailValidator {
 }
 
 class JobValidator {
-    validate(novoCargo) {
+    validate(novoCargo, cargoAtual) {
         if (!novoCargo || novoCargo === '') {
             return 'Por favor, selecione um cargo.';
+        }
+        if (novoCargo === cargoAtual) {
+            return 'O novo cargo deve ser diferente do atual.';
         }
         return null;
     }
@@ -320,14 +323,14 @@ class JobController {
 
     handleUpdateJob() {
         const novoCargo = this.novoCargoInput.value;
+        const cargoAtualInput = document.getElementById('cargoAtual');
+        const cargoAtual = cargoAtualInput ? cargoAtualInput.value : '';
         this.hideError();
-
-        const errorMessage = this.validator.validate(novoCargo);
+        const errorMessage = this.validator.validate(novoCargo, cargoAtual);
 
         if (errorMessage) {
             this.showError(errorMessage);
         } else {
-            const cargoAtualInput = document.getElementById('cargoAtual');
             if(cargoAtualInput) cargoAtualInput.value = novoCargo;
 
             this.showSuccess('Cargo atualizado com sucesso!');
