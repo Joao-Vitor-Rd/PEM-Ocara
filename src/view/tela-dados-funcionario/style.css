@@ -248,8 +248,8 @@ body {
 }
 
 #modalSenha .modal-content {
-    width: 70.2vw;
-    max-width: 70.2vw;
+    width: 100%; 
+    max-width: 1011px; 
     height: auto;
     max-height: 90vh;
     overflow-y: auto;
@@ -656,7 +656,10 @@ body {
     }
 
     .modal-content,
-    #modalCargo .modal-content {
+    #modalCargo .modal-content,
+    #modalSenha .modal-content,
+    #modalEmail .modal-content,
+    #modalNome .modal-content {
         width: 95vw;
         height: auto;
         max-height: 85vh;
