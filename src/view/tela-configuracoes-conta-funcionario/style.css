@@ -15,8 +15,9 @@ body {
     height: 100vh;
 }
 
+/* ============= SIDEBAR ==============*/
 .sidebar {
-    width: clamp(340px, 28vw, 480px);
+    width: clamp(280px, 25vw, 480px);
     background-color: #63468C;
     color: #FFFFFF;
     flex-shrink: 0;
@@ -30,10 +31,10 @@ body {
 
 .sidebar-header {
     text-align: center;
-    width: 90%;
-    max-width: 400px;
+    width: 84%;
     margin: 0 auto;
     flex-shrink: 0;
+    padding-top: 8px;
 }
 
 .sidebar-header h1 {
@@ -45,9 +46,12 @@ body {
 }
 
 .sidebar-divider {
-    border: 2px solid #FFFFFF;
+    border: none;
+    height: 4px;
+    background-color: #FFFFFF;
+    opacity: 1;
     width: 100%;
-    margin-top: 15px;
+    margin-top: 20px;
 }
 
 .sidebar-nav {
@@ -101,6 +105,8 @@ body {
 .icone-material {
     transform: scale(1.35);
 }
+
+/*========= MAIN ============*/
 
 .main-content {
     position: relative;
