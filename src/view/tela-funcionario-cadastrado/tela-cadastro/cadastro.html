@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>PEM Ocara</title>
-    <link rel="stylesheet" href="cadastro.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap"
       rel="stylesheet"
@@ -14,17 +14,20 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
 
-    <head>
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-      />
-    </head>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="cadastro.css" />
   </head>
   <body>
     <div class="app-container">
       <!--========== SIDEBAR =============== -->
-
       <aside class="sidebar">
         <header class="sidebar-header">
           <h1>PEM OCARA</h1>
@@ -132,15 +135,22 @@
           </ul>
         </nav>
       </aside>
+
+      <!--=============== MAIN ============-->
       <main class="conteudo-principal">
         <header class="conteudo-header">
           <h2 class="titulo-cadastro">CADASTRAR NOVO FUNCIONÁRIO</h2>
-          <a href="index.html" class="btn-fechar" aria-label="Fechar e voltar">
+          <a
+            href="../index.html"
+            class="btn-fechar"
+            aria-label="Fechar e voltar"
+          >
             <span class="material-symbols-outlined close-icon"> close </span>
           </a>
         </header>
 
-        <form class="formulario-cadastro" id="form-cadastro">
+        <form class="formulario-cadastro" id="form-cadastro" novalidate>
+          <!--campo nome-->
           <div class="campo-grupo">
             <label for="nome" class="label-campo">Nome do Funcionário</label>
             <input
@@ -152,6 +162,7 @@
             />
           </div>
 
+          <!--CAMPO FUNCIONARIO-->
           <div class="campo-grupo">
             <label for="email" class="label-campo">E-mail do Funcionário</label>
             <input
@@ -163,16 +174,12 @@
             />
           </div>
 
+          <!--CAMPO CARGO-->
           <div class="campo-grupo">
             <label for="cargo" class="label-campo">Cargo do Funcionário</label>
 
             <div class="input-select-wrapper">
-              <select
-                id="cargo"
-                name="cargo"
-                class="input-campo input-select"
-                required
-              >
+              <select id="cargo" name="cargo" class="input-campo input-select">
                 <option value="" disabled selected hidden>
                   Clique aqui para selecionar o cargo do funcionário
                 </option>
@@ -185,6 +192,7 @@
             </div>
           </div>
 
+          <!--Campo senha-->
           <div class="campo-grupo">
             <label for="senha" class="label-campo">Senha do Funcionário</label>
             <div class="input-com-icone">
@@ -201,6 +209,7 @@
             </div>
           </div>
 
+          <!--CAMPO CONFIRMAR SENHA-->
           <div class="campo-grupo">
             <label for="confirmar-senha" class="label-campo"
               >Confirmar Senha do Funcionário</label
@@ -225,5 +234,13 @@
         </form>
       </main>
     </div>
+    <!--MODAL DE CONFIRMAÇÃO-->
+    <div class="popup-confirmacao" id="popupConfirmacao">
+      <div class="popup-confirmacao-content">
+        <p id="popupMensagem">Funcionário Cadastrado com sucesso!</p>
+        <button class="popup-btn-ok" id="popupBtnOk">OK</button>
+      </div>
+    </div>
+    <script src="script.js"></script>
   </body>
 </html>

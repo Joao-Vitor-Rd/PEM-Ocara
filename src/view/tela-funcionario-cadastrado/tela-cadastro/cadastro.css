@@ -16,7 +16,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Cores e Variáveis (Ajuda a manter a consistência) */
 :root {
   --roxo-principal: #63468C;
   --laranja-destaque: #F2B872;
@@ -34,13 +33,12 @@ body {
 }
 
 /*=====================================*/
-/* 2. Menu Lateral                     */
+/* 2. SIDEBAR                   */
 /*=====================================*/
 
-
-/* --- Sidebar ============) --- */
 .sidebar {
-  width: clamp(340px, 28vw, 480px);
+  /* O clamp já ajuda muito aqui, mantive */
+  width: clamp(280px, 25vw, 480px);
   background-color: #63468C;
   color: #FFFFFF;
   flex-shrink: 0;
@@ -50,7 +48,6 @@ body {
   box-sizing: border-box;
   border-top-right-radius: 25px;
   border-bottom-right-radius: 25px;
-
 }
 
 .sidebar-header {
@@ -83,9 +80,7 @@ body {
   width: 100%;
   display: flex;
   align-items: center;
-  /* Centraliza a lista na horizontal */
   justify-content: center;
-  /* Centraliza a lista na vertical */
 }
 
 
@@ -156,7 +151,6 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 10px 40px;
-  /* Mantém o alinhamento com o form */
   min-height: 80px;
 }
 
@@ -165,7 +159,6 @@ body {
   font-size: 40px;
   letter-spacing: 0.1em;
   color: var(--roxo-principal);
-
 }
 
 .formulario-cadastro {
@@ -174,6 +167,7 @@ body {
   padding: 15px 40px;
   gap: 30px;
   width: 100%;
+  max-width: 1200px;
 }
 
 /*=====================================*/
@@ -182,7 +176,6 @@ body {
 
 .campo-grupo {
   width: 100%;
-
 }
 
 .label-campo {
@@ -193,7 +186,6 @@ body {
   color: var(--roxo-principal);
   margin-bottom: 15px;
   text-align: left;
-
 }
 
 .input-campo {
@@ -212,23 +204,15 @@ body {
 }
 
 .input-select {
-  /* 1. Remove o estilo padrão do navegador (tira a seta nativa feia e bordas 3D) */
   appearance: none;
   -webkit-appearance: none;
-  /* Para Safari/Chrome */
   -moz-appearance: none;
-  /* Para Firefox */
-
-  /* 2. Força o fundo branco */
   background-color: #FFFFFF;
-
-  /* 3. Garante que o fundo não cubra o ícone, mas seja clicável */
   cursor: pointer;
 }
 
 .input-select-wrapper {
   position: relative;
-  /* Cria o contexto para o ícone */
   width: 100%;
 }
 
@@ -239,12 +223,15 @@ body {
   transform: translateY(-50%);
   font-size: 35px !important;
   color: var(--cinza-placeholder);
-  pointer-events: none;
+  pointer-events: auto;
+  /* Garante clique */
   font-variation-settings: 'wght'700;
+  cursor: pointer;
 }
 
 .close-icon {
-  font-size: 40px !important;
+  font-size: 45px !important;
+  color: var(--roxo-principal);
 }
 
 /*=====================================*/
@@ -252,19 +239,15 @@ body {
 /*=====================================*/
 
 .btn-cadastro-funcionario {
-  width: 493px;
-  /* Largura fixa do botão */
+  width: 100%;
+  max-width: 493px;
   height: 83px;
   background: var(--laranja-destaque);
   border-radius: 20px;
   border: none;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   margin-top: 2px;
-
-  /* MUDANÇA 4: Centraliza APENAS o botão dentro do flex container */
   align-self: center;
-
-  /* Texto */
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
   font-size: 32px;
@@ -280,39 +263,173 @@ body {
   background: #e09f58;
 }
 
-/*
-================================ icone eye slash ====================
-*/
+/*================================ icone eye slash ====================*/
 
-/* Configurações para Input de Senha (com ícone) */
 .input-com-icone {
   position: relative;
-  /* Essencial para o ícone ficar preso aqui dentro */
   width: 100%;
   display: flex;
-  /* Garante que o input ocupe altura correta */
   align-items: center;
-  /* Ajuda no alinhamento */
 }
 
 .input-com-icone .input-campo {
-  /* Dá um espaço na direita pro texto não ficar embaixo do ícone */
   padding-right: 60px;
 }
 
 .icone-input-right {
   position: absolute;
-  /* Controla a distância da direita. Se quiser mais pra dentro, aumente pra 30px */
   right: 20px;
-
-  /* Centralização Vertical Perfeita */
   top: 50%;
   transform: translateY(-50%);
-
   font-size: 24px;
   color: var(--cinza-placeholder);
-  /* Ou a cor que você quiser */
   cursor: pointer;
   z-index: 10;
-  /* Garante que fique por cima do input */
+}
+
+/* ===== Popup de Confirmação ============ */
+
+.popup-confirmacao {
+  display: none !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  z-index: 10000 !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.popup-confirmacao.visible {
+  display: flex !important;
+}
+
+.popup-confirmacao-content {
+  background-color: #FFFFFF !important;
+  border-radius: 15px !important;
+  padding: 40px 50px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+  text-align: center !important;
+  max-width: 600px !important;
+  width: 90% !important;
+  transform: scale(0.9) !important;
+  transition: transform 0.3s ease-out !important;
+}
+
+.popup-confirmacao.visible .popup-confirmacao-content {
+  transform: scale(1) !important;
+}
+
+.popup-confirmacao-content p {
+  font-size: 22px !important;
+  color: #63468C !important;
+  font-weight: 500 !important;
+  margin: 0 0 30px 0 !important;
+  line-height: 1.4 !important;
+}
+
+.popup-btn-ok {
+  background-color: #63468C !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: 10px !important;
+  padding: 12px 50px !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s ease-in-out !important;
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.popup-btn-ok:hover {
+  background-color: #4d3670 !important;
+}
+
+/*=============== ERROR MESSAGEM ===============*/
+.error-message {
+  color: #E66953 !important;
+  font-size: 20px;
+  margin-top: 5px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  width: 100%;
+  text-align: left;
+  display: block;
+}
+
+/* ================================================================= */
+/* RESPONSIVIDADE PARA DESKTOP (Notebooks e Telas Menores)           */
+/* ================================================================= */
+
+@media screen and (max-width: 1440px),
+screen and (max-height: 850px) {
+
+  .sidebar {
+    padding: 20px 0;
+  }
+
+  .sidebar-header h1 {
+    font-size: 32px;
+  }
+
+  .sidebar-nav a {
+    font-size: 20px;
+    padding: 10px 25px;
+    gap: 15px;
+  }
+
+  .sidebar-nav svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .conteudo-header {
+    padding: 10px 30px;
+    min-height: 60px;
+  }
+
+  .titulo-cadastro {
+    font-size: 28px;
+  }
+
+  .close-icon {
+    font-size: 32px !important;
+  }
+
+  .formulario-cadastro {
+    padding: 10px 30px;
+    gap: 15px;
+  }
+
+  .label-campo {
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+
+  .input-campo {
+    height: 45px;
+    font-size: 16px;
+    padding: 10px 15px;
+  }
+
+  .input-campo::placeholder {
+    font-size: 16px;
+  }
+
+  .select-icone {
+    font-size: 24px !important;
+  }
+
+  .btn-cadastro-funcionario {
+    height: 60px;
+    font-size: 20px;
+    margin-top: 10px;
+    max-width: 350px;
+  }
+
+  .error-message {
+    font-size: 14px;
+  }
 }

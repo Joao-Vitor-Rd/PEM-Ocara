@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700;800&display=swap');
 
-html,
+/* --- 0. CONFIGURAÇÕES GLOBAIS --- */
 html,
 body {
     font-family: 'Poppins', sans-serif;
@@ -11,17 +11,16 @@ body {
     overflow-x: hidden;
 }
 
-
-/* --- Layout Principal do App --- */
 .app-container {
     display: flex;
     height: 100vh;
     overflow: hidden;
 }
 
-/* --- Sidebar ============) --- */
+/* --- 1. SIDEBAR --- */
 .sidebar {
-    width: clamp(340px, 28vw, 480px);
+    /* Ajustei para clamp(280px...) igual ao outro arquivo para ficar compacto */
+    width: clamp(280px, 25vw, 480px);
     background-color: #63468C;
     color: #FFFFFF;
     flex-shrink: 0;
@@ -31,7 +30,6 @@ body {
     box-sizing: border-box;
     border-top-right-radius: 25px;
     border-bottom-right-radius: 25px;
-
 }
 
 .sidebar-header {
@@ -48,7 +46,6 @@ body {
     letter-spacing: 0.2em;
     text-transform: uppercase;
     margin: 0;
-    /* line-height: 1; */
 }
 
 .sidebar-divider {
@@ -65,11 +62,8 @@ body {
     width: 100%;
     display: flex;
     align-items: center;
-    /* Centraliza a lista na horizontal */
     justify-content: center;
-    /* Centraliza a lista na vertical */
 }
-
 
 .sidebar-nav ul {
     list-style: none;
@@ -115,7 +109,7 @@ body {
     transform: scale(1.35);
 }
 
-/* ---================ Conteúdo Principal ===================== --- */
+/* --- 2. CONTEÚDO PRINCIPAL --- */
 .main-content {
     flex-grow: 1;
     overflow-y: auto;
@@ -128,36 +122,38 @@ body {
     margin: 0 auto;
 }
 
-
-/* --- =============== rodape ========================--- */
-.rodape {
-    margin-top: auto;
-    padding-top: 40px;
-    padding-bottom: 20px;
+/* --- 3. BARRA DE BUSCA --- */
+.barra-busca-full {
+    margin-left: -25px;
+    margin-right: -25px;
+    padding-left: 80px;
+    padding-right: 80px;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
 }
 
-.rodape p {
-    flex-grow: 1;
+.barra-busca-full .material-symbols-outlined {
+    color: #666666 !important;
+    font-size: 38px !important;
+    font-variation-settings: 'FILL'0, 'wght'400, 'GRAD'0, 'opsz'38;
+}
+
+.input-busca-prototipo {
+    font-weight: 300;
+    font-size: 20px !important;
+    line-height: 30px;
     text-align: center;
-    font-weight: 700;
-    font-size: 16px;
-    color: #63468C;
+    color: #666666;
+    border-color: #666666 !important;
+    border-bottom-width: 2px !important;
 }
 
-.logo-esquerda {
-    width: 112px;
-    height: 80px;
-    object-fit: contain;
+.input-busca-prototipo::placeholder {
+    color: #666666;
+    opacity: 1;
 }
 
-.logo-direita {
-    width: 133px;
-    height: 100px;
-    object-fit: contain;
-}
-
-/*============= card ==============*/
-
+/* --- 4. CARDS (PACIENTE E REDE) --- */
 .card-paciente {
     background-color: #CEB3F2;
     border: 1px solid #000;
@@ -189,7 +185,6 @@ body {
     text-align: center;
 }
 
-
 .card-rede-apoio {
     padding: 42px 40px !important;
     margin-top: 10px !important;
@@ -199,7 +194,7 @@ body {
     margin-bottom: 0 !important;
 }
 
-/* =========== botao Cadastrar nova rede de apoio =========== */
+/* --- 5. BOTÕES --- */
 .btn-assistida {
     width: 70%;
     padding: 39px 0;
@@ -226,48 +221,7 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/*===== BARRA busca =========*/
-
-.barra-busca-full {
-    margin-left: -25px;
-    margin-right: -25px;
-    padding-left: 80px;
-    padding-right: 80px;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-}
-
-
-.barra-busca-full .material-symbols-outlined {
-    color: #666666 !important;
-
-    font-size: 38px !important;
-    font-variation-settings:
-        'FILL'0,
-        'wght'400,
-        'GRAD'0,
-        'opsz'38;
-
-}
-
-.input-busca-prototipo {
-    font-weight: 300;
-    font-size: 20px !important;
-    line-height: 30px;
-    text-align: center;
-    color: #666666;
-    border-color: #666666 !important;
-    border-bottom-width: 2px !important;
-}
-
-
-.input-busca-prototipo::placeholder {
-    color: #666666;
-    opacity: 1;
-}
-
-/* --- ============= Modal Cadastrar Rede ============ --- */
-
+/* --- 6. MODAL (CADASTRAR/ATUALIZAR) --- */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -303,11 +257,9 @@ body {
 }
 
 .modal-header {
-
     padding: 10px 20px;
     height: 80px;
     box-sizing: border-box;
-    /* border-bottom: 1px solid #eee; */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -402,8 +354,7 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* ===== Popup de Confirmação ============ */
-
+/* --- 7. POPUP CONFIRMAÇÃO --- */
 .popup-confirmacao {
     display: none !important;
     position: fixed !important;
@@ -443,7 +394,6 @@ body {
     font-weight: 500 !important;
     margin: 0 0 30px 0 !important;
     line-height: 1.4 !important;
-
 }
 
 .popup-btn-ok {
@@ -463,7 +413,6 @@ body {
     background-color: #4d3670 !important;
 }
 
-/*  =========   erro message ======= */
 .error-message {
     color: #C94A2C;
     font-size: 18px;
@@ -471,4 +420,140 @@ body {
     margin: -15px 0 10px 0;
     display: none;
     text-align: center;
+}
+
+/* --- 8. RODAPÉ --- */
+.rodape {
+    margin-top: auto;
+    padding-top: 40px;
+    padding-bottom: 20px;
+}
+
+.rodape p {
+    flex-grow: 1;
+    text-align: center;
+    font-weight: 700;
+    font-size: 16px;
+    color: #63468C;
+}
+
+.logo-esquerda {
+    width: 112px;
+    height: 80px;
+    object-fit: contain;
+}
+
+.logo-direita {
+    width: 133px;
+    height: 100px;
+    object-fit: contain;
+}
+
+
+/* ================================================================= */
+/* RESPONSIVIDADE PARA DESKTOP (Notebooks e Telas Menores)           */
+/* ================================================================= */
+
+/* Ativa em telas menores que 1440px (Notebooks padrão) OU alturas menores */
+@media screen and (max-width: 1440px),
+screen and (max-height: 850px) {
+
+    /* --- Ajustes Sidebar --- */
+    .sidebar {
+        padding: 20px 0;
+    }
+
+    .sidebar-header h1 {
+        font-size: 32px;
+    }
+
+    .sidebar-nav a {
+        font-size: 20px;
+        padding: 10px 25px;
+        gap: 15px;
+    }
+
+    .sidebar-nav svg {
+        width: 28px;
+        height: 28px;
+    }
+
+
+    /* --- Ajustes Conteúdo e Barra de Busca --- */
+    .barra-busca-full {
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .barra-busca-full .material-symbols-outlined {
+        font-size: 28px !important;
+    }
+
+    .input-busca-prototipo {
+        font-size: 16px !important;
+    }
+
+    /* --- Ajustes Botões Grandes (Assistida/Cadastrar) --- */
+    .btn-assistida {
+        padding: 20px 0;
+        /* Padding enorme removido */
+        font-size: 20px;
+        width: 60%;
+    }
+
+    .card-rede-apoio {
+        padding: 20px !important;
+        /* Card mais enxuto */
+    }
+
+    /* --- Ajustes Modal e Formulários Internos --- */
+    .modal-content {
+        max-width: 95vw;
+    }
+
+    .modal-header {
+        height: 60px;
+    }
+
+    .modal-title {
+        font-size: 26px;
+    }
+
+    .modal-body {
+        padding: 20px;
+        gap: 15px;
+    }
+
+    .form-group label {
+        font-size: 18px;
+        line-height: 1.2;
+    }
+
+    .form-group input {
+        height: 45px;
+        /* Altura menor */
+        font-size: 16px;
+    }
+
+    .form-group input::placeholder {
+        font-size: 16px;
+    }
+
+    .btn-atualizar {
+        height: 60px;
+        font-size: 20px;
+        width: 60%;
+    }
+
+    /* --- Ajustes Cards Paciente --- */
+    .card-paciente h3 {
+        font-size: 24px;
+        margin-bottom: 10px !important;
+    }
+
+    .card-paciente p {
+        font-size: 18px;
+    }
 }
