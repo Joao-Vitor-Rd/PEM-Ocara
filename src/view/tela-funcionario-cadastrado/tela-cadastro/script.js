@@ -72,10 +72,26 @@ document.addEventListener("DOMContentLoaded", () => {
       setSucesso(campos.cargo);
     }
 
-    // Senha: Mínimo 6 chars
+    // --- NOVA VALIDAÇÃO DE SENHA (Implementada) ---
     const senhaValor = campos.senha.value.trim();
-    if (senhaValor.length < 6) {
-      setErro(campos.senha, "A senha deve ter no mínimo 6 caracteres.");
+    let erroSenha = null;
+
+    // Verifica regras sequencialmente
+    if (senhaValor.length < 8) {
+      erroSenha = "A senha deve ter pelo menos 8 caracteres.";
+    } else if (!/[A-Z]/.test(senhaValor)) {
+      erroSenha = "A senha deve conter pelo menos uma letra maiúscula.";
+    } else if (!/[a-z]/.test(senhaValor)) {
+      erroSenha = "A senha deve conter pelo menos uma letra minúscula.";
+    } else if (!/[^A-Za-z0-9]/.test(senhaValor)) {
+      // Regex busca qualquer coisa que NÃO seja letra ou número
+      erroSenha =
+        "A senha deve conter pelo menos um caractere especial (ex: !@#$%).";
+    }
+
+    // Aplica o resultado da validação da senha
+    if (erroSenha) {
+      setErro(campos.senha, erroSenha);
       formValido = false;
     } else {
       setSucesso(campos.senha);
@@ -84,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Confirmar Senha: Deve ser idêntica
     const confirmarValor = campos.confirmarSenha.value.trim();
     if (confirmarValor !== senhaValor || confirmarValor === "") {
-      setErro(campos.confirmarSenha, "As senhas não conferem.");
+      setErro(campos.confirmarSenha, "As senhas não coincidem.");
       formValido = false;
     } else {
       setSucesso(campos.confirmarSenha);
