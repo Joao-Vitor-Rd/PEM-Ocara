@@ -98,3 +98,62 @@ body {
     height: 40px;
     flex-shrink: 0;
 }
+
+/* --- MAIN CONTENT --- */
+.main-content {
+    position: relative;
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 50px 80px 0 80px;
+    box-sizing: border-box;
+}
+
+.icone-rede-apoio {
+    transform: scale(1.4);
+}
+
+.page-header {
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.page-header h1 {
+    font-weight: 800;
+    font-size: 48px;
+    color: #63468C;
+    margin: 0;
+    letter-spacing: 0.05em;
+}
+
+header .material-symbols-outlined {
+    font-size: 50px;
+    cursor: pointer;
+    color: #63468C;
+}
+
+#linha {
+    border: none;
+    background-color: #63468C;
+    height: 5px;
+    width: 100%;
+    margin: 30px auto 30px auto;
+    border-radius: 50px;
+}
+
+.title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.title h1 {
+    font-weight: 800;
+    font-size: 48px;
+    color: #63468C;
+    margin: 0;
+    letter-spacing: 0.05em;
+}
