@@ -128,6 +128,43 @@ body {
     letter-spacing: 0.05em;
 }
 
+header .material-symbols-outlined {
+    font-size: 50px;
+    cursor: pointer;
+    color: #63468C;
+}
+
+#linha {
+    border: none;
+    background-color: #63468C;
+    height: 5px;
+    width: 100%;
+    margin: 30px auto 30px auto;
+    border-radius: 50px;
+}
+
+.title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.title h1 {
+    font-weight: 800;
+    font-size: 48px;
+    color: #63468C;
+    margin: 0;
+    letter-spacing: 0.05em;
+}
+
+.btn-fechar-pagina {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+}
+
 .title-divider {
     border: none;
     border-top: 5px solid #63468C;
