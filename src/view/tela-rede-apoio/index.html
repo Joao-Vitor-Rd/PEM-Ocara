@@ -233,6 +233,56 @@
       </div>
     </div>
 
+    <!-- MODA EDITAR REDE APOIO-->
+    <div id="modalEditarRede" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Editar Rede de Apoio</h3>
+          <button class="modal-close" id="fecharModalEditar">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Atual nome da Rede</label>
+            <input type="text" value="CAPS (recebido do back)" readonly />
+          </div>
+
+          <div class="form-group">
+            <label for="novoNome">Novo nome da Rede</label>
+            <input
+              type="text"
+              id="novoNome"
+              placeholder="Digite aqui o novo nome"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Atual e-mail da Rede</label>
+            <input type="text" value="caps.ocara@gmail.com" readonly />
+          </div>
+
+          <div class="form-group">
+            <label for="novoEmail">Novo e-mail da Rede</label>
+            <input
+              type="text"
+              id="novoEmail"
+              placeholder="Digite aqui o novo e-mail"
+            />
+          </div>
+
+          <p id="redeErrorEdit" class="error-message"></p>
+
+          <div class="modal-footer-buttons">
+            <button class="btn-padrao btn-vermelho btn-apagar">
+              Apagar Rede
+            </button>
+            <button class="btn-padrao btn-laranja btn-salvar">
+              Salvar Alterações
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="script.js"></script>
   </body>
 </html>
