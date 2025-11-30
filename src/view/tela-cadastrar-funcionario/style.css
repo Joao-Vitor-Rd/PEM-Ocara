@@ -134,15 +134,6 @@ header .material-symbols-outlined {
     color: #63468C;
 }
 
-#linha {
-    border: none;
-    background-color: #63468C;
-    height: 5px;
-    width: 100%;
-    margin: 30px auto 30px auto;
-    border-radius: 50px;
-}
-
 .title {
     display: flex;
     justify-content: space-between;
