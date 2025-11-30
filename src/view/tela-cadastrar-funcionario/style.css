@@ -277,3 +277,67 @@ form select:focus {
     text-align: left;
     width: 100%;
 }
+
+.popup-confirmacao {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-confirmacao.visible {
+    display: flex;
+}
+
+.popup-confirmacao-content {
+    background-color: #FFFFFF;
+    border-radius: 15px;
+    padding: 60px 80px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 600px;
+    width: 90%;
+    transform: scale(0.9);
+    transition: transform 0.3s ease-out;
+}
+
+.popup-confirmacao.visible .popup-confirmacao-content {
+    transform: scale(1);
+}
+
+.popup-confirmacao-content p {
+    font-size: 32px;
+    color: #63468C;
+    font-weight: 600;
+    margin: 0 0 40px 0;
+    line-height: 1.4;
+}
+
+.popup-btn-ok {
+    background-color: #63468C;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 80px;
+    font-size: 28px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, transform 0.15s ease;
+    font-family: 'Poppins', sans-serif;
+}
+
+.popup-btn-ok:hover {
+    background-color: #4d3670;
+    transform: translateY(-2px);
+}
+
+.popup-btn-ok:active {
+    background-color: #3b2a57;
+    transform: translateY(0);
+}
