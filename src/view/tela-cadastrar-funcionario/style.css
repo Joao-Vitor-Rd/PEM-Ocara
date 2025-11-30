@@ -198,3 +198,40 @@ header .material-symbols-outlined {
     transform: translateY(0);
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.18);
 }
+
+.form-container {
+    width: 100%;
+    margin-top: 20px;
+}
+
+form label {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 32px;
+    color: #63468C;
+    letter-spacing: 0;
+    display: block;
+    margin-bottom: 10px;
+    margin-top: 15px;
+}
+
+form input:focus,
+form select:focus {
+    outline: 2px solid #63468C;
+    background-color: #FFFFFF;
+}
+
+.password-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.toggle-pass {
+    position: absolute;
+    right: 20px;
+    color: #838383;
+    cursor: pointer;
+    font-size: 30px;
+}
