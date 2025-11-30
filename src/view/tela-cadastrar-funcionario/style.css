@@ -267,3 +267,13 @@ form select:focus {
     pointer-events: none;
     fill: #838383;
 }
+
+.error-message {
+    color: #C94A2C;
+    font-size: 18px;
+    font-weight: 500;
+    margin: 5px 0 0 0; 
+    display: none;
+    text-align: center;
+    width: 100%;
+}

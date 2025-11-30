@@ -81,8 +81,10 @@
             <form>
                 <label for="nome">Nome do Funcionário</label>
                 <input type="text" id="nome" placeholder="Digite aqui o nome do Funcionário">
+                <p id="nomeError" class="error-message"></p> 
                 <label for="email">E-mail do Funcionário</label>
                 <input type="email" id="email" placeholder="Digite aqui o e-mail do funcionário">
+                <p id="emailError" class="error-message"></p>
                 <label for="cargo">Cargo do Funcionário</label>
                 <div class="input-wrapper">
                     <select id="cargo">
@@ -95,20 +97,24 @@
                         <path d="M480-360 280-560h400L480-360Z"/>
                     </svg>
                 </div>
+                <p id="cargoError" class="error-message"></p>
                 <label for="senha">Senha do Funcionário</label>
                 <div class="input-wrapper password-group">
                     <input type="password" id="senha" placeholder="Crie uma senha">
                     <span class="material-symbols-outlined toggle-pass" onclick="togglePassword(this)">visibility_off</span>
                 </div>
+                <p id="senhaError" class="error-message"></p>
                 <label for="confirmar">Confirmar Senha do Funcionário</label>
                 <div class="input-wrapper password-group">
                     <input type="password" id="confirmar" placeholder="Confirme a senha do funcionário">
                     <span class="material-symbols-outlined toggle-pass" onclick="togglePassword(this)">visibility_off</span>
                 </div>
+                <p id="confirmarError" class="error-message"></p>
                 <button type="button" class="botão-cadastrar">Cadastrar Funcionário</button>
             </form>
             </div>
         </main>
     </div>
+    <script src="script.js"></script>
 </body>
 </html>
