@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700;800&display=swap');
 
-html,
-body {
+html, body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
@@ -15,7 +14,7 @@ body {
     height: 100vh;
 }
 
-/* --- SIDEBAR --- */
+/* --- SIDEBAR (Mantida igual) --- */
 .sidebar {
     width: clamp(340px, 28vw, 480px);
     background-color: #63468C;
@@ -111,27 +110,9 @@ body {
     box-sizing: border-box;
 }
 
-.icone-rede-apoio {
-    transform: scale(1.4);
-}
-
 .page-header {
     width: 100%;
     margin-bottom: 40px;
-}
-
-.page-header h1 {
-    font-weight: 800;
-    font-size: 48px;
-    color: #63468C;
-    margin: 0;
-    letter-spacing: 0.05em;
-}
-
-header .material-symbols-outlined {
-    font-size: 50px;
-    cursor: pointer;
-    color: #63468C;
 }
 
 .title {
@@ -156,11 +137,10 @@ header .material-symbols-outlined {
     align-items: center;
 }
 
-.title-divider {
-    border: none;
-    border-top: 5px solid #63468C;
-    width: 100%;
-    margin: 12px 0 20px 0;
+header .material-symbols-outlined {
+    font-size: 50px;
+    cursor: pointer;
+    color: #63468C;
 }
 
 .botão-cadastrar {
@@ -215,11 +195,19 @@ form label {
     margin-top: 15px;
 }
 
+.input-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
 form input,
 form select {
     width: 100%;
     height: 64px;
     padding: 12px 20px;
+    padding-right: 60px; 
     background-color: #FFFFFF;
     border: 1px solid #63468C;
     border-radius: 10px;
@@ -228,11 +216,14 @@ form select {
     font-family: 'Poppins', sans-serif;
     font-weight: 500;
     font-size: 24px;
-    color: #63468C;
+    color: #838383;
 }
 
-form input[type="password"] {
-    padding: 12px 60px 12px 20px;
+form select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
 }
 
 form input::placeholder {
@@ -246,18 +237,25 @@ form select:focus {
     outline-offset: -1px;
 }
 
-.password-wrapper {
-    position: relative;
-    width: 100%;
-    display: flex;
-    align-items: center;
-}
-
-.toggle-pass {
+.input-wrapper .seta-dropdown,
+.input-wrapper .toggle-pass {
     position: absolute;
     right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
     color: #63468C;
+    z-index: 2;
+}
+
+.input-wrapper .toggle-pass {
     cursor: pointer;
-    font-size: 28px;
+    font-size: 30px;
     user-select: none;
+}
+
+.input-wrapper .seta-dropdown {
+    width: 24px;
+    height: 24px;
+    pointer-events: none;
+    fill: #63468C;
 }

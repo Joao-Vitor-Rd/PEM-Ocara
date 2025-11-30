@@ -69,43 +69,48 @@
             </nav>
         </aside>
         <main class="main-content">
-            <header>
-                <div class="title">
-                    <h1>Cadastrar Novo Funcionário</h1>
-                    <a href="#" class="btn-fechar-pagina">
-                        <span class="material-symbols-outlined">close</span>
-                    </a>
-                </div>
+        <header>
+            <div class="title">
+                <h1>Cadastrar Novo Funcionário</span></h1>
+                <a href="#" class="btn-fechar-pagina">
+                    <span class="material-symbols-outlined">close</span>
+                </a>
+            </div>
             </header>
             <div class="form-container">
-                <form>
-                    <label for="nome">Nome do Funcionário</label>
-                    <input type="text" id="nome" placeholder="Digite aqui o nome do Funcionário">
-                    <br>
-                    <label for="email">E-mail do Funcionário</label>
-                    <input type="email" id="email" placeholder="Digite aqui o e-mail do funcionário">
-                    <br>
-                    <label for="cargo">Cargo do Funcionário</label>
+            <form>
+                <label for="nome">Nome do Funcionário</label>
+                <input type="text" id="nome" placeholder="Digite aqui o nome do Funcionário">
+                <br>
+                <label for="email">E-mail do Funcionário</label>
+                <input type="email" id="email" placeholder="Digite aqui o e-mail do funcionário">
+                <br>
+                <label for="cargo">Cargo do Funcionário</label>
+                <div class="input-wrapper">
                     <select id="cargo">
-                        <option disabled selected>Clique aqui para selecionar o cargo do funcionário</option>
+                        <option disabled selected>Clique aqui para selecionar o cargo</option>
                         <option>Administrador</option>
                         <option>Assistente Social</option>
                         <option>Jurídico</option>
                     </select>
-                    <br>
-                    <label for="senha">Senha do Funcionário</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="senha" placeholder="Digite aqui a senha do funcionário">
-                        <span class="toggle-pass material-symbols-outlined">visibility_off</span>
-                    </div>
-                    <br>
-                    <label for="confirmar">Confirmar Senha do Funcionário</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="confirmar" placeholder="Confirme a senha do funcionário">
-                        <span class="toggle-pass material-symbols-outlined">visibility_off</span>
-                    </div>
-                    <button class="botão-cadastrar">Cadastrar Funcionário</button>
-                </form>
+                    <svg class="custom-icon seta-dropdown" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#63468C">
+                        <path d="M480-360 280-560h400L480-360Z"/>
+                    </svg>
+                </div>
+                <br>
+                <label for="senha">Senha do Funcionário</label>
+                <div class="input-wrapper password-group">
+                    <input type="password" id="senha" placeholder="Crie uma senha">
+                    <span class="material-symbols-outlined toggle-pass" onclick="togglePassword(this)">visibility_off</span>
+                </div>
+                <br>
+                <label for="confirmar">Confirmar Senha do Funcionário</label>
+                <div class="input-wrapper password-group">
+                    <input type="password" id="confirmar" placeholder="Confirme a senha do funcionário">
+                    <span class="material-symbols-outlined toggle-pass" onclick="togglePassword(this)">visibility_off</span>
+                </div>
+                <button type="button" class="botão-cadastrar">Cadastrar Funcionário</button>
+            </form>
             </div>
         </main>
     </div>
