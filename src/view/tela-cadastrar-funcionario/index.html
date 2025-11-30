@@ -68,17 +68,45 @@
                 </ul>
             </nav>
         </aside>
-    
         <main class="main-content">
-        <header>
-            <div class="title">
-                <h1>Cadastrar Novo Funcionário</h1>
-                <a href="#" class="btn-fechar-pagina">
-                    <span class="material-symbols-outlined">close</span>
-                </a>
+            <header>
+                <div class="title">
+                    <h1>Cadastrar Novo Funcionário</h1>
+                    <a href="#" class="btn-fechar-pagina">
+                        <span class="material-symbols-outlined">close</span>
+                    </a>
+                </div>
+                <hr id="linha">
+            </header>
+            <div class="form-container">
+                <form>
+                    <label for="nome">Nome do Funcionário</label>
+                    <input type="text" id="nome" placeholder="Digite aqui o nome do Funcionário">
+
+                    <label for="email">E-mail do Funcionário</label>
+                    <input type="email" id="email" placeholder="Digite aqui o e-mail do funcionário">
+
+                    <label for="cargo">Cargo do Funcionário</label>
+                    <select id="cargo">
+                        <option disabled selected>Clique aqui para selecionar o cargo do funcionário</option>
+                        <option>Administrador</option>
+                        <option>Assistente Social</option>
+                        <option>Jurídico</option>
+                    </select>
+                    <label for="senha">Senha do Funcionário</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="senha" placeholder="Digite aqui a senha do funcionário">
+                        <span class="toggle-pass material-symbols-outlined">visibility_off</span>
+                    </div>
+                    <label for="confirmar">Confirmar Senha do Funcionário</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="confirmar" placeholder="Confirme a senha do funcionário">
+                        <span class="toggle-pass material-symbols-outlined">visibility_off</span>
+                    </div>
+                    <button class="botão-cadastrar">Cadastrar Funcionário</button>
+                </form>
             </div>
-            <hr id="linha">
-        </header>
-        <button class="botão-cadastrar">Cadastrar Funcionário</button>       
+        </main>
+    </div>
 </body>
 </html>
