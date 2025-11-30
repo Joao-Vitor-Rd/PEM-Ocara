@@ -1,8 +1,11 @@
-/* --- VALIDATORS (Mantidos iguais) --- */
 class NameValidator {
     validate(nome) {
-        if (!nome || nome.trim() === '') return 'Por favor, preencha o campo de nome.';
-        if (nome.trim().length < 3) return 'O nome deve ter pelo menos 3 caracteres.';
+        if (!nome || nome.trim() === '') {
+            return 'Por favor, preencha o campo obrigatório.';
+        }
+        if (nome.trim().length < 3) {
+            return 'O nome deve ter pelo menos 3 caracteres.';
+        }
         return null;
     }
 }
@@ -10,33 +13,41 @@ class NameValidator {
 class EmailValidator {
     validate(email) {
         const emailLimpo = email.trim();
-        if (!emailLimpo || emailLimpo === '') return 'Por favor, preencha o campo de e-mail.';
+        if (!emailLimpo || emailLimpo === '') {
+            return 'Por favor, preencha o campo obrigatório.';
+        }
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(emailLimpo)) return 'Por favor, insira um formato de e-mail válido.';
+        if (!emailRegex.test(emailLimpo)) {
+            return 'Por favor, insira um formato de e-mail válido.';
+        }
         return null;
     }
 }
 
 class CargoValidator {
     validate(cargoElement) {
-        if (cargoElement.selectedIndex === 0 || cargoElement.value === "") return 'Por favor, selecione um cargo válido.';
+        if (cargoElement.selectedIndex === 0 || cargoElement.value === "") {
+            return 'Por favor, preencha o campo obrigatório.';
+        }
         return null;
     }
 }
 
 class PasswordValidator {
-    validate(senha, confirmarSenha) {
-        if (!senha || senha === '') return 'Por favor, crie uma senha.';
+    validate(senha) {
+        if (!senha || senha === '') {
+            return 'Por favor, preencha o campo obrigatório.';
+        }
+        
         if (senha.length < 8) return 'A senha deve ter pelo menos 8 caracteres.';
         if (!/[A-Z]/.test(senha)) return 'A senha deve conter pelo menos uma letra maiúscula.';
         if (!/[a-z]/.test(senha)) return 'A senha deve conter pelo menos uma letra minúscula.';
-        if (!/[^A-Za-z0-9]/.test(senha)) return 'A senha deve conter pelo menos um caractere especial (ex: !@#$%).';
-        if (senha !== confirmarSenha) return 'As senhas não coincidem.';
+        if (!/[^A-Za-z0-9]/.test(senha)) return 'A senha deve conter pelo menos um caractere especial.';
+        
         return null;
     }
 }
 
-/* --- UI Functions --- */
 window.togglePassword = function(iconElement) {
     const inputWrapper = iconElement.parentElement;
     const input = inputWrapper.querySelector('input');
@@ -55,17 +66,21 @@ class RegistrationController {
         this.emailValidator = new EmailValidator();
         this.cargoValidator = new CargoValidator();
         this.passwordValidator = new PasswordValidator();
+        
         this.nomeInput = document.getElementById('nome');
         this.emailInput = document.getElementById('email');
         this.cargoInput = document.getElementById('cargo');
         this.senhaInput = document.getElementById('senha');
         this.confirmarInput = document.getElementById('confirmar');
+        
         this.nomeError = document.getElementById('nomeError');
         this.emailError = document.getElementById('emailError');
         this.cargoError = document.getElementById('cargoError');
         this.senhaError = document.getElementById('senhaError');
         this.confirmarError = document.getElementById('confirmarError');
+        
         this.btnCadastrar = document.querySelector('.botão-cadastrar');
+        
         this.init();
     }
 
@@ -105,13 +120,20 @@ class RegistrationController {
             isValid = false;
         }
 
-        const senhaMsg = this.passwordValidator.validate(this.senhaInput.value, this.confirmarInput.value);
+        const senhaMsg = this.passwordValidator.validate(this.senhaInput.value);
         if (senhaMsg) {
-            if (senhaMsg.includes('coincidem')) {
-                this.showError(this.confirmarInput, this.confirmarError, senhaMsg);
-            } else {
-                this.showError(this.senhaInput, this.senhaError, senhaMsg);
-            }
+            this.showError(this.senhaInput, this.senhaError, senhaMsg);
+            isValid = false;
+        }
+
+        const confirmaValue = this.confirmarInput.value;
+        const senhaValue = this.senhaInput.value;
+
+        if (!confirmaValue || confirmaValue === '') {
+            this.showError(this.confirmarInput, this.confirmarError, 'Por favor, preencha o campo obrigatório.');
+            isValid = false;
+        } else if (senhaValue !== confirmaValue) {
+            this.showError(this.confirmarInput, this.confirmarError, 'As senhas não coincidem.');
             isValid = false;
         }
 
@@ -119,7 +141,7 @@ class RegistrationController {
             this.showSuccess();
         }
     }
-
+    
     showError(input, errorElement, message) {
         input.style.borderColor = "#C94A2C";
         input.style.borderWidth = "2px";
@@ -129,7 +151,7 @@ class RegistrationController {
 
     clearError(input, errorElement) {
         input.style.borderColor = "#63468C";
-        input.style.borderWidth = "1px";        
+        input.style.borderWidth = "1px";
         errorElement.textContent = '';
         errorElement.style.display = 'none';
     }

@@ -272,8 +272,8 @@ form select:focus {
     color: #C94A2C;
     font-size: 18px;
     font-weight: 500;
-    margin: 5px 0 0 0; 
+    margin: 5px 0 0 0;
     display: none;
-    text-align: center;
+    text-align: left;
     width: 100%;
 }
