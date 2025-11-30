@@ -19,9 +19,9 @@ body {
     overflow: hidden;
 }
 
-/* --- Sidebar ============) --- */
+/* ============= SIDEBAR ==============*/
 .sidebar {
-    width: clamp(340px, 28vw, 480px);
+    width: clamp(280px, 25vw, 480px);
     background-color: #63468C;
     color: #FFFFFF;
     flex-shrink: 0;
@@ -31,7 +31,6 @@ body {
     box-sizing: border-box;
     border-top-right-radius: 25px;
     border-bottom-right-radius: 25px;
-
 }
 
 .sidebar-header {
@@ -64,11 +63,8 @@ body {
     width: 100%;
     display: flex;
     align-items: center;
-    /* Centraliza a lista na horizontal */
     justify-content: center;
-    /* Centraliza a lista na vertical */
 }
-
 
 .sidebar-nav ul {
     list-style: none;
@@ -110,14 +106,10 @@ body {
     flex-shrink: 0;
 }
 
-.icone-rede {
-    width: 40px;
-    height: 40px;
-    font-size: 40px;
-    flex-shrink: 0;
+.icone-material {
     transform: scale(1.35);
-
 }
+
 
 /* ---================ Conteúdo Principal ===================== --- */
 .main-content {
@@ -475,7 +467,7 @@ body {
 
     height: auto !important;
     min-height: auto;
-    padding: 20pxz;
+    padding: 20px;
     padding-bottom: 60px;
     background-color: #FFFFFF;
     width: min(1011px, 95vw);
