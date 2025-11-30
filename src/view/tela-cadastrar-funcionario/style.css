@@ -106,7 +106,7 @@ html, body {
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
-    padding: 50px 80px 0 80px;
+    padding: 45px 80px 0 80px;    
     box-sizing: border-box;
 }
 
@@ -123,11 +123,11 @@ html, body {
 }
 
 .title h1 {
-    font-weight: 800;
-    font-size: 48px;
+    font-weight: 700;
+    font-size: 40px;
     color: #63468C;
     margin: 0;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.10em;
 }
 
 .btn-fechar-pagina {
@@ -143,12 +143,15 @@ header .material-symbols-outlined {
     color: #63468C;
 }
 
+.icone-rede-apoio {
+    transform: scale(1.4);
+}
+
 .botão-cadastrar {
     width: 493px;
     max-width: 100%;
     height: 83px;
-    margin: 41px auto 31px auto;
-    padding: 0;
+    margin: 25px auto 15px;
     background-color: #F2B872;
     color: #FFFFFF;
     font-family: 'Poppins', sans-serif;
@@ -181,7 +184,7 @@ header .material-symbols-outlined {
 
 .form-container {
     width: 100%;
-    margin-top: 20px;
+    margin-top: 15px; 
 }
 
 form label {
@@ -192,7 +195,7 @@ form label {
     letter-spacing: 0;
     display: block;
     margin-bottom: 10px;
-    margin-top: 15px;
+    margin-top: 44px;
 }
 
 .input-wrapper {
@@ -229,6 +232,11 @@ form select {
 form input::placeholder {
     color: #838383;
     opacity: 1;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    color: #838383;
+    letter-spacing: 0.10em;
 }
 
 form input:focus,
