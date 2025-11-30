@@ -20,7 +20,8 @@ import { ControladorFuncionario } from './controllers/FuncionarioController';
 import { CredencialRepositoryPostgres } from './repository/CredencialRepositoryPostgres';
 import { CredencialService } from './services/CredencialService';
 import { ControladorCredencial } from './controllers/ControladorCredencial';
-
+import { HistoricoController } from './controllers/HistoricoController';
+import { HistoricoRepositoryPostgres } from './repository/HistoricoRepositoryPostgres';
 
 
 const windowManager = new WindowManager();
@@ -33,6 +34,7 @@ let assistidaController: AssistidaController;
 let casoController: CasoController;
 let funcionarioController: ControladorFuncionario;
 let credencialController: ControladorCredencial;
+let historicoController: HistoricoController;
 
 // Repository para salvar casos no BD
 
@@ -75,6 +77,8 @@ async function bootstrap(): Promise<void> {
   casoController = new CasoController(assistidaController.getAssistidaService(), casoRepository, anexoRepository);
   funcionarioController = new ControladorFuncionario(funcionarioService);
   credencialController = new ControladorCredencial(credencialService);
+  const historicoPosgres = new HistoricoRepositoryPostgres(postgresInitializer.pool());
+  historicoController = new HistoricoController(historicoPosgres);
 
   createMainWindow();
   Logger.info('Aplicação iniciada com sucesso!');
@@ -284,6 +288,33 @@ ipcMain.handle('caso:getByProtocolo', async(_event, protocolo: number) => {
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Erro desconhecido'
+    };
+  }
+});
+
+ipcMain.handle('historico:salvar', async(_event, dados: any) => {  
+  try {
+    Logger.info('Requisição para salvar histórico do caso:', dados);
+    
+    // O objeto completo vem como dados
+    // dados = { caso: {...}, assistida: {...}, profissionalResponsavel: "...", data: ... }
+    
+    console.log('📝 DEBUG handler historico:salvar');
+    console.log('   dados.caso.idCaso:', dados?.caso?.idCaso);
+    
+    // Passar o objeto caso completo ao controller
+    // O controller.handlerSalvarHistorico espera receber o caso diretamente
+    const historicoId = await historicoController.handlerSalvarHistorico(dados.caso);
+    
+    return {
+      success: true,
+      historicoId
+    };
+  } catch (error) {
+    Logger.error('Erro ao salvar histórico do caso:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido ao salvar histórico do caso'
     };
   }
 });
@@ -511,12 +542,14 @@ ipcMain.handle('caso:salvarBD', async(_event, dados: {
     });
     
     // 3. Salvar no BD usando o repository
-    const idCasoSalvo = await casoRepository.salvar(casoCriado);
+    const resultado = await casoRepository.salvar(casoCriado);
     
-    Logger.info('Caso salvo com sucesso no BD com ID:', idCasoSalvo);
+    Logger.info('Caso salvo com sucesso no BD com ID:', resultado.idCaso);
+    Logger.info('Assistida salva com sucesso no BD com ID:', resultado.idAssistida);
     return {
       success: true,
-      idCaso: idCasoSalvo
+      idCaso: resultado.idCaso,
+      idAssistida: resultado.idAssistida
     };
   } catch (error) {
     Logger.error('Erro ao salvar caso no BD:', error);

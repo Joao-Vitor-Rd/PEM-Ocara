@@ -10,10 +10,10 @@ export interface ICasoRepository {
     /**
      * Salva um novo caso no banco de dados
      * @param caso - Objeto Caso a ser salvo com todas as suas relações
-     * @returns Promise<number> - ID do caso salvo
+     * @returns Promise<{idCaso: number, idAssistida: number}> - IDs do caso e assistida salvos
      * @throws Error - Se houver erro na persistência
      */
-    salvar(caso: Caso): Promise<number>;
+    salvar(caso: Caso): Promise<{ idCaso: number; idAssistida: number }>;
 
     /**
      * Recupera todas as assistidas do banco

@@ -22,7 +22,7 @@ export class CasoRepositoryPostgres implements ICasoRepository {
      * @param caso - Objeto Caso a ser salvo
      * @returns Promise<number> - ID do caso salvo (id_caso)
      */
-    async salvar(caso: Caso): Promise<number> {
+    async salvar(caso: Caso): Promise<{ idCaso: number; idAssistida: number }> {
         const client = await this.pool.connect();
         
         try {
@@ -124,7 +124,7 @@ export class CasoRepositoryPostgres implements ICasoRepository {
             }
 
             await client.query('COMMIT');
-            return idCaso;
+            return { idCaso, idAssistida };
 
         } catch (error) {
             await client.query('ROLLBACK');
@@ -343,24 +343,28 @@ export class CasoRepositoryPostgres implements ICasoRepository {
     ): Promise<void> {
         // Salvar ameaças familiares
         const tipos = historicoViolencia.getAmeacaFamiliar() || [];
+        const tiposUnicos = new Set(tipos); // Remove duplicatas no client
         
-        for (const tipo of tipos) {
+        for (const tipo of tiposUnicos) {
             const query = `
                 INSERT INTO TIPO_VIOLENCIA (
                     id_violencia, id_caso, id_assistida, tipo_violencia
                 ) VALUES ($1, $2, $3, $4)
+                ON CONFLICT DO NOTHING
             `;
             await client.query(query, [idViolencia, idCaso, idAssistida, tipo]);
         }
 
         // Salvar outras formas de violência
         const outrasFormas = historicoViolencia.getOutrasFormasViolencia() || [];
+        const outrasFormasUnicas = new Set(outrasFormas); // Remove duplicatas no client
         
-        for (const forma of outrasFormas) {
+        for (const forma of outrasFormasUnicas) {
             const query = `
                 INSERT INTO TIPO_VIOLENCIA (
                     id_violencia, id_caso, id_assistida, tipo_violencia
                 ) VALUES ($1, $2, $3, $4)
+                ON CONFLICT DO NOTHING
             `;
             await client.query(query, [idViolencia, idCaso, idAssistida, forma]);
         }

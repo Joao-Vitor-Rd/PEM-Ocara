@@ -227,6 +227,7 @@ export interface IElectronAPI {
   }) => Promise<{
     success: boolean;
     idCaso?: number;
+    idAssistida?: number;
     error?: string;
   }>;
 
@@ -241,6 +242,16 @@ export interface IElectronAPI {
       path?: string;
       error?: string;
     }>;
+  salvarHistoricoBD: (dados: {
+    caso: any;
+    assistida: any;
+    profissionalResponsavel: string;
+    data: Date;
+  }) => Promise<{
+    success: boolean;
+    historicoId?: number;
+    error?: string;
+  }>;
 }
 
 

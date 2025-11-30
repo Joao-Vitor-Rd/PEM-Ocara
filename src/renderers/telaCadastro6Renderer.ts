@@ -206,6 +206,48 @@ pxmBtn.addEventListener('click', async () => {
             throw new Error(result.error || 'Erro desconhecido ao salvar caso no banco de dados');
         }
 
+        console.log('Resultado salvarCasoBD:', result); // Debug
+        console.log('Propriedades do result:', Object.keys(result)); // Debug
+        console.log('result.success:', result?.success); // Debug
+        console.log('result.idCaso:', result?.idCaso); // Debug
+        console.log('result.idAssistida:', result?.idAssistida); // Debug
+        
+        // Construir objeto Caso com os IDs retornados e dados necessários
+        const idCasoRetornado = result?.idCaso || (result as any).caso?.id || (result as any).id || 0;
+        const idAssistidaRetornado = result?.idAssistida || (result as any).caso?.idAssistida || (result as any).idAssistida || 0;
+        console.log('idCasoRetornado após extração:', idCasoRetornado); // Debug
+        console.log('idAssistidaRetornado após extração:', idAssistidaRetornado); // Debug
+
+        // Serializar casoCriado para garantir que o IPC consegue passar os dados
+        // IPC do Electron tem limitações com certos tipos (Date, Symbols, etc)
+        const casoCriado = {
+            idCaso: Number(idCasoRetornado),
+            idAssistida: Number(idAssistidaRetornado),
+            emailFuncionario: 'assistente.social@pem-ocara.gov.br', // Mock de email do funcionário
+            nomeFuncionario: 'Assistente Social',
+            ...dadosCaso // Dados completos do caso
+        };
+
+        // Garantir que o objeto é JSON-serializable
+        const casoCriadoJSON = JSON.parse(JSON.stringify(casoCriado));
+
+        console.log('casoCriado para histórico:', casoCriadoJSON); // Debug
+        console.log('casoCriadoJSON.idCaso:', casoCriadoJSON.idCaso); // Debug
+
+        const resultHistorico = await window.api.salvarHistoricoBD({
+            caso: casoCriadoJSON,
+            assistida: dadosAssistida,
+            profissionalResponsavel: 'Assistente Social',
+            data: new Date()
+        });
+
+        console.log('Resultado salvarHistoricoBD:', resultHistorico); // Debug
+
+        if (!resultHistorico || !resultHistorico.success) {
+            console.warn('Aviso ao salvar histórico:', resultHistorico?.error || 'Sem erro específico');
+            // Não lançar erro, apenas avisar - o caso foi salvo com sucesso
+        }
+
         sessionStorage.removeItem('dadosCaso');
         sessionStorage.removeItem('dadosAssistida');
         sessionStorage.removeItem('cadastro_anexos');
