@@ -215,10 +215,35 @@ form label {
     margin-top: 15px;
 }
 
+form input,
+form select {
+    width: 100%;
+    height: 64px;
+    padding: 12px 20px;
+    background-color: #FFFFFF;
+    border: 1px solid #63468C;
+    border-radius: 10px;
+    box-sizing: border-box;
+    outline: none;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    color: #63468C;
+}
+
+form input[type="password"] {
+    padding: 12px 60px 12px 20px;
+}
+
+form input::placeholder {
+    color: #838383;
+    opacity: 1;
+}
+
 form input:focus,
 form select:focus {
     outline: 2px solid #63468C;
-    background-color: #FFFFFF;
+    outline-offset: -1px;
 }
 
 .password-wrapper {
@@ -231,7 +256,8 @@ form select:focus {
 .toggle-pass {
     position: absolute;
     right: 20px;
-    color: #838383;
+    color: #63468C;
     cursor: pointer;
-    font-size: 30px;
+    font-size: 28px;
+    user-select: none;
 }
