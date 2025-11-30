@@ -243,7 +243,7 @@ form select:focus {
     right: 20px;
     top: 50%;
     transform: translateY(-50%);
-    color: #63468C;
+    color: #838383;
     z-index: 2;
 }
 
@@ -257,5 +257,5 @@ form select:focus {
     width: 24px;
     height: 24px;
     pointer-events: none;
-    fill: #63468C;
+    fill: #838383;
 }
