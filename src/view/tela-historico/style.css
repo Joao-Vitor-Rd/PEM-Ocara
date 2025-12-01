@@ -61,7 +61,7 @@ html, body {
 
 .btn-fechar-pagina .material-symbols-outlined {
     font-size: 48px;
-    font-weight: bold; /* Ícones geralmente ficam melhor em bold, mas pode mudar para normal se preferir */
+    font-weight: bold;
 }
 
 .title-divider {

@@ -1,8 +1,8 @@
 const historicoDados = [];
-for (let i = 1; i <= 100; i++) {
+for (let i = 1; i <= 150; i++) { // Aumentei para 150 para testar bem a paginação
     historicoDados.push({
         id: i,
-        nome: i % 2 === 0 ? "Maria Silva" : "Ana Pereira", // Alterna nomes
+        nome: i % 2 === 0 ? "Maria Silva" : "Ana Pereira",
         caso: `Caso #${100 + i}`,
         acao: i % 3 === 0 ? "EXCLUIU" : "EDITOU",
         mudanca: "Alteração de dados cadastrais",
@@ -13,8 +13,6 @@ const ITENS_POR_PAGINA = 15;
 let paginaAtual = 1;
 
 function renderizarTela() {
-    document.querySelector('.main-content').scrollTop = 0; 
-
     const tbody = document.getElementById('tabela-corpo');
     tbody.innerHTML = '';
 
@@ -35,6 +33,11 @@ function renderizarTela() {
         tbody.appendChild(tr);
     });
     atualizarControlesPaginacao();
+    setTimeout(() => {
+        const container = document.querySelector('.main-content');
+        if (container) container.scrollTop = 0;
+        window.scrollTo(0, 0);
+    }, 50);
 }
 
 function atualizarControlesPaginacao() {
@@ -55,6 +58,7 @@ function atualizarControlesPaginacao() {
     container.appendChild(btnAnterior);
 
     let paginasParaMostrar = [];
+    const maxVizinhos = 2;
 
     if (totalPaginas <= 7) {
         for (let i = 1; i <= totalPaginas; i++) {
@@ -64,23 +68,27 @@ function atualizarControlesPaginacao() {
         
         paginasParaMostrar.push(1);
 
-        if (paginaAtual > 3) {
+        let inicioJanela = paginaAtual - maxVizinhos;
+        let fimJanela = paginaAtual + maxVizinhos;
+
+        if (inicioJanela <= 2) {
+            inicioJanela = 2;
+            fimJanela = 6; // Garante mostrar 5 itens no começo: 1 [2 3 4 5 6] ...
+        }
+        if (fimJanela >= totalPaginas - 1) {
+            fimJanela = totalPaginas - 1;
+            inicioJanela = totalPaginas - 5; // Garante mostrar 5 itens no fim: ... [5 6 7 8] 9
+        }
+
+        if (inicioJanela > 2) {
             paginasParaMostrar.push('...');
         }
 
-        let inicioVizinhos = Math.max(2, paginaAtual - 1);
-        let fimVizinhos = Math.min(totalPaginas - 1, paginaAtual + 1);
-
-        if (paginaAtual === 1) fimVizinhos = 3;
-        if (paginaAtual === totalPaginas) inicioVizinhos = totalPaginas - 2;
-
-        for (let i = inicioVizinhos; i <= fimVizinhos; i++) {
-            if (i > 1 && i < totalPaginas) {
-                paginasParaMostrar.push(i);
-            }
+        for (let i = inicioJanela; i <= fimJanela; i++) {
+            paginasParaMostrar.push(i);
         }
 
-        if (paginaAtual < totalPaginas - 2) {
+        if (fimJanela < totalPaginas - 1) {
             paginasParaMostrar.push('...');
         }
 
