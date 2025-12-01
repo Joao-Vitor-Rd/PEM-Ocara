@@ -1,5 +1,6 @@
 const historicoDados = [];
-for (let i = 1; i <= 150; i++) { // Aumentei para 150 para testar bem a paginação
+//TESTANDO DADOS
+for (let i = 1; i <= 100; i++) {
     historicoDados.push({
         id: i,
         nome: i % 2 === 0 ? "Maria Silva" : "Ana Pereira",
