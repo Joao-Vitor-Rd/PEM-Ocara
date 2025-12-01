@@ -526,3 +526,122 @@ body {
 .btn-vermelho {
     background: #E66953;
 }
+
+/* ============================================================
+   RESPONSIVIDADE PARA NOTEBOOKS E TELAS MENORES (ex: 1366x768)
+   ============================================================ */
+@media screen and (max-width: 1440px),
+screen and (max-height: 800px) {
+
+    #modalEditarRede .modal-content {
+        width: 60%;
+        max-width: 700px;
+        max-height: 95vh;
+    }
+
+    .modal-body {
+        padding: 1px 10px;
+        gap: 10px;
+        overflow-y: auto;
+    }
+
+    .modal-footer-buttons {
+        padding: 10px 20px;
+        gap: 15px;
+    }
+
+    .btn-padrao {
+        height: 50px;
+        font-size: 16px;
+        border-radius: 18px;
+        max-width: 100%;
+    }
+
+    .modal-body label {
+        font-size: 20px;
+        margin-bottom: 5px;
+    }
+
+    .modal-body input {
+        height: 45px;
+        font-size: 18px;
+        padding: 2px;
+        font-family: 'Poppins';
+        padding-left: 10px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin-bottom: 0;
+    }
+
+    .form-group input::placeholder {
+        font-size: 18px !important;
+        font-family: 'Poppins';
+    }
+
+    .modal-header {
+        padding: 15px 10px !important;
+        min-height: auto;
+    }
+
+    .modal-title {
+        font-size: 30px !important;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .modal-close {
+        font-size: 50px !important;
+
+    }
+
+
+
+
+}
+
+/* ======================================================= */
+/* === RESPONSIVIDADE PARA NOTEBOOKS SIDEBAR (1366px ou menor) === */
+/* ======================================================= */
+@media (max-width: 1400px) {
+
+    .sidebar {
+        width: 300px;
+        padding: 30px 0;
+
+    }
+
+    .sidebar-header h1 {
+        font-size: 32px !important;
+        margin-top: 30px;
+    }
+
+
+    .sidebar-nav a {
+        font-size: 25px;
+        gap: 15px;
+        padding: 12px 20px;
+        white-space: nowrap;
+    }
+
+    .sidebar-nav svg {
+        width: 28px;
+        height: 28px;
+    }
+
+
+    .sidebar-divider {
+        margin-top: 30px;
+    }
+}
+
+/*====================*/
+@media (max-width: 1700px) {
+    .sidebar-header h1 {
+        font-size: 34px;
+        white-space: nowrap;
+    }
+}
