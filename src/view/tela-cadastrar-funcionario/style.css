@@ -1,0 +1,343 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700;800&display=swap');
+
+html, body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #FFFFFF;
+    overflow-x: hidden;
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* --- SIDEBAR (Mantida igual) --- */
+.sidebar {
+    width: clamp(340px, 28vw, 480px);
+    background-color: #63468C;
+    color: #FFFFFF;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 50px 0;
+    box-sizing: border-box;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+
+.sidebar-header {
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    margin: 0 auto;
+    flex-shrink: 0;
+}
+
+.sidebar-header h1 {
+    font-weight: 300;
+    font-size: 48px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.sidebar-divider {
+    border: 2px solid #FFFFFF;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.sidebar-nav {
+    flex-grow: 1;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-around;
+}
+
+.sidebar-nav a {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+    text-decoration: none;
+    color: #FFFFFF;
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: 0.050em;
+    padding: 15px 40px;
+    border-radius: 50px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.sidebar-nav a.active {
+    background-color: #FFFFFF;
+    color: #63468C;
+}
+
+.sidebar-nav a:not(.active):hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-nav svg {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+/* --- MAIN CONTENT --- */
+.main-content {
+    position: relative;
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 45px 80px 0 80px;    
+    box-sizing: border-box;
+}
+
+.page-header {
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.title h1 {
+    font-weight: 700;
+    font-size: 40px;
+    color: #63468C;
+    margin: 0;
+    letter-spacing: 0.10em;
+}
+
+.btn-fechar-pagina {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+}
+
+header .material-symbols-outlined {
+    font-size: 50px;
+    cursor: pointer;
+    color: #63468C;
+}
+
+.icone-rede-apoio {
+    transform: scale(1.4);
+}
+
+.botão-cadastrar {
+    width: 493px;
+    max-width: 100%;
+    height: 83px;
+    margin: 25px auto 15px;
+    background-color: #F2B872;
+    color: #FFFFFF;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 32px;
+    letter-spacing: 0.02em;
+    line-height: normal;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.botão-cadastrar:hover {
+    background-color: #E8A660;
+    transform: translateY(-3px);
+    box-shadow: 0px 14px 26px rgba(0, 0, 0, 0.22);
+}
+
+.botão-cadastrar:active {
+    background-color: #D99450;
+    transform: translateY(0);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.18);
+}
+
+.form-container {
+    width: 100%;
+    margin-top: 15px; 
+}
+
+form label {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 32px;
+    color: #63468C;
+    letter-spacing: 0;
+    display: block;
+    margin-bottom: 10px;
+    margin-top: 44px;
+}
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+form input,
+form select {
+    width: 100%;
+    height: 64px;
+    padding: 12px 20px;
+    padding-right: 60px; 
+    background-color: #FFFFFF;
+    border: 1px solid #63468C;
+    border-radius: 10px;
+    box-sizing: border-box;
+    outline: none;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    color: #838383;
+}
+
+form select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+}
+
+form input::placeholder {
+    color: #838383;
+    opacity: 1;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    color: #838383;
+    letter-spacing: 0.10em;
+}
+
+form input:focus,
+form select:focus {
+    outline: 2px solid #63468C;
+    outline-offset: -1px;
+}
+
+.input-wrapper .seta-dropdown,
+.input-wrapper .toggle-pass {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #838383;
+    z-index: 2;
+}
+
+.input-wrapper .toggle-pass {
+    cursor: pointer;
+    font-size: 30px;
+    user-select: none;
+}
+
+.input-wrapper .seta-dropdown {
+    width: 24px;
+    height: 24px;
+    pointer-events: none;
+    fill: #838383;
+}
+
+.error-message {
+    color: #C94A2C;
+    font-size: 18px;
+    font-weight: 500;
+    margin: 5px 0 0 0;
+    display: none;
+    text-align: left;
+    width: 100%;
+}
+
+.popup-confirmacao {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-confirmacao.visible {
+    display: flex;
+}
+
+.popup-confirmacao-content {
+    background-color: #FFFFFF;
+    border-radius: 15px;
+    padding: 60px 80px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 600px;
+    width: 90%;
+    transform: scale(0.9);
+    transition: transform 0.3s ease-out;
+}
+
+.popup-confirmacao.visible .popup-confirmacao-content {
+    transform: scale(1);
+}
+
+.popup-confirmacao-content p {
+    font-size: 32px;
+    color: #63468C;
+    font-weight: 600;
+    margin: 0 0 40px 0;
+    line-height: 1.4;
+}
+
+.popup-btn-ok {
+    background-color: #63468C;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 80px;
+    font-size: 28px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, transform 0.15s ease;
+    font-family: 'Poppins', sans-serif;
+}
+
+.popup-btn-ok:hover {
+    background-color: #4d3670;
+    transform: translateY(-2px);
+}
+
+.popup-btn-ok:active {
+    background-color: #3b2a57;
+    transform: translateY(0);
+}
