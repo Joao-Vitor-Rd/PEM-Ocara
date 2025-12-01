@@ -1,6 +1,6 @@
 // 1. GERADOR DE DADOS
 const historicoDados = [];
-for (let i = 1; i <= 150; i++) {
+for (let i = 1; i <= 200; i++) {
     historicoDados.push({
         id: i,
         nome: i % 2 === 0 ? "Maria Silva" : "Ana Pereira",
@@ -11,22 +11,23 @@ for (let i = 1; i <= 150; i++) {
     });
 }
 
-let itensPorPagina = 10; 
+let itensPorPagina = 0; 
 let paginaAtual = 1;
 
-// Função para calcular quantos itens cabem na tela
 function recalcularItensPorTela() {
     const alturaJanela = window.innerHeight;
+    
     const headerElement = document.querySelector('.page-header');
     const alturaHeader = headerElement ? headerElement.offsetHeight : 100;
-    const alturaPaginacao = 60;
-    const paddingContainer = 40;    
+    const alturaPaginacao = 150; 
+    const paddingContainer = 40; 
     const alturaCabecalhoTabela = 65; 
     const alturaLinha = 60; 
-    const espacoDisponivel = alturaJanela - alturaHeader - alturaPaginacao - paddingContainer - alturaCabecalhoTabela;    
+    const espacoDisponivel = alturaJanela - alturaHeader - alturaPaginacao - paddingContainer - alturaCabecalhoTabela;
     let novosItens = Math.floor(espacoDisponivel / alturaLinha);
 
-    if (novosItens < 7) novosItens = 7;
+    if (novosItens < 10) novosItens = 10;
+    if (novosItens > 20) novosItens = 20;
 
     if (novosItens !== itensPorPagina) {
         itensPorPagina = novosItens;
@@ -42,9 +43,11 @@ function recalcularItensPorTela() {
 function renderizarTela() {
     const tbody = document.getElementById('tabela-corpo');
     tbody.innerHTML = '';
+
     const inicio = (paginaAtual - 1) * itensPorPagina;
     const fim = inicio + itensPorPagina;
     const dadosDaPagina = historicoDados.slice(inicio, fim);
+
     dadosDaPagina.forEach(dado => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -67,6 +70,7 @@ function renderizarTela() {
     }, 50);
 }
 
+// 4. LÓGICA DE PAGINAÇÃO
 function atualizarControlesPaginacao() {
     const container = document.getElementById('paginacao-container');
     container.innerHTML = '';
