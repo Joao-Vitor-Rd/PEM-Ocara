@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PEM Ocara</title>
+    <title>PEM Ocara - Histórico</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 </head>
@@ -12,10 +12,72 @@
 <body>
     <div class="app-container">
         <main class="main-content">
+            
             <header class="page-header">
-                <h1>Histórico de Mudanças</h1>
+                <div class="header-content">
+                    <h1>Histórico de Mudanças</h1>
+                    <a href="#" class="btn-fechar-pagina">
+                        <span class="material-symbols-outlined">close</span>
+                    </a>
+                </div>
                 <hr class="title-divider">
             </header>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Caso</th>
+                            <th>Alteração</th>
+                            <th>Mudança</th>
+                            <th>Campo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>3</td>
+                            <td>[nome funcionário]</td>
+                            <td>[id caso]</td>
+                            <td>[ação]</td>
+                            <td>joao' para 'joão'</td>
+                            <td>Nome do Agressor</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>[nome funcionário]</td>
+                            <td>[id caso]</td>
+                            <td>EXCLUIU</td>
+                            <td>joao' para 'joão'</td>
+                            <td>Nome do Agressor</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>[nome funcionário]</td>
+                            <td>[id caso]</td>
+                            <td>EDITOU</td>
+                            <td>joao' para 'joão'</td>
+                            <td>Nome do Agressor</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>[nome funcionário]</td>
+                            <td>[id caso]</td>
+                            <td>[ação]</td>
+                            <td>joao' para 'joão'</td>
+                            <td>Nome do Agressor</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <span class="material-symbols-outlined arrow">navigate_before</span>
+                <span class="page-number">1</span>
+                <span class="material-symbols-outlined arrow">navigate_next</span>
+            </div>
+
         </main>
     </div>
 </body>
