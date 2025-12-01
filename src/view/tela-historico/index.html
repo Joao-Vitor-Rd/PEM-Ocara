@@ -12,7 +12,6 @@
 <body>
     <div class="app-container">
         <main class="main-content">
-            
             <header class="page-header">
                 <div class="header-content">
                     <h1>Histórico de Mudanças</h1>
@@ -22,63 +21,26 @@
                 </div>
                 <hr class="title-divider">
             </header>
-
             <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nome</th>
-                            <th>Caso</th>
-                            <th>Alteração</th>
-                            <th>Mudança</th>
-                            <th>Campo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>3</td>
-                            <td>[nome funcionário]</td>
-                            <td>[id caso]</td>
-                            <td>[ação]</td>
-                            <td>joao' para 'joão'</td>
-                            <td>Nome do Agressor</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>[nome funcionário]</td>
-                            <td>[id caso]</td>
-                            <td>EXCLUIU</td>
-                            <td>joao' para 'joão'</td>
-                            <td>Nome do Agressor</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>[nome funcionário]</td>
-                            <td>[id caso]</td>
-                            <td>EDITOU</td>
-                            <td>joao' para 'joão'</td>
-                            <td>Nome do Agressor</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>[nome funcionário]</td>
-                            <td>[id caso]</td>
-                            <td>[ação]</td>
-                            <td>joao' para 'joão'</td>
-                            <td>Nome do Agressor</td>
-                        </tr>
-                    </tbody>
-                </table>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Caso</th>
+                                <th>Alteração</th>
+                                <th>Mudança</th>
+                                <th>Campo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-corpo">
+                            </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
             </div>
-
-            <div class="pagination">
-                <span class="material-symbols-outlined arrow">navigate_before</span>
-                <span class="page-number">1</span>
-                <span class="material-symbols-outlined arrow">navigate_next</span>
-            </div>
-
         </main>
-    </div>
+            </div>
+    <script src="script.js"></script>
 </body>
 </html>
