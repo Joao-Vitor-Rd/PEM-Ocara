@@ -99,7 +99,11 @@
                 <button><span class="material-symbols-outlined">close</span></button>
             </div>
 
-            <button id="acessar-form">ACESSAR FORMULÁRIO</button>
+            <div class="botoes-principais">
+                <button id="acessar-form">ACESSAR FORMULÁRIO</button>
+                <button id="editar-form">EDITAR FORMULÁRIO</button>
+                <button id="alterar-privacidade">ALTERAR PRIVACIDADE</button>
+            </div>
 
             <div class="infos">
                 <p>Assistida: <span id="Assistida"></span></p>
@@ -257,16 +261,120 @@
             
             <div class="opcoes-privacidade">
                 <label>
-                    <input type="radio" name="privacidade" value="publico" checked>
+                    <input type="radio" name="privacidade" value="publico">
                     Anexo público (disponível para assistente social e para jurídico)
                 </label>
                 <label>
-                    <input type="radio" name="privacidade" value="restrito">
+                    <input type="radio" name="privacidade" value="restrito" checked>
                     Anexo privado (disponível apenas para assistente social)
                 </label>
             </div>
 
             <button>Salvar Alterações</button>
+        </div>
+    </div>
+
+    <!-- Modal de Editar Formulário -->
+    <div class="modal-overlay" id="modalEditarFormulario">
+        <div class="modal-editar-formulario-content">
+            <span class="modal-close" id="fecharModalEditarFormulario">&times;</span>
+            
+            <h1>Selecione qual(is) etapa(s) você deseja editar</h1>
+            
+            <div class="opcoes">
+                <label>
+                    <input type="checkbox" name="etapa" value="dados-assistida">
+                    Dados da Assistida
+                </label>
+
+                <label>
+                    <input type="checkbox" name="etapa" value="dados-caso">
+                    Dados do Caso
+                </label>
+
+                <label>
+                    <input type="checkbox" name="etapa" value="outras-informacoes">
+                    Outras informações e encaminhamentos
+                </label>
+
+                <label>
+                    <input type="checkbox" name="etapa" value="observacoes">
+                    Campo de preenchimento profissional e violências encontradas
+                </label>
+            </div>
+
+            <button id="modal-editar-form">Editar Etapas Selecionadas</button>
+            
+        </div>
+    </div>
+
+    <!-- Modal de Privacidade do Formulário -->
+    <div class="modal-overlay" id="modalPrivacidadeFormulario">
+        <div class="modal-privacidade-formulario-content">
+            <div class="title">
+                <h1>Privacidade do Formulário</h1>
+                <button class="modal-close" id="fecharModalPrivacidadeFormulario">&times;</button>
+            </div>
+            
+            <div class="opcoes-padrao">
+                <h2>Visibilidade Padrão</h2>
+                <div opcao>
+                    <p>Definir todas as etapas como:</p>
+                    <div class="segmented-control">
+                        <input type="radio" name="visibilidade-padrao" id="privado-padrao" checked>
+                        <label for="privado-padrao">Privado</label>
+                        
+                        <input type="radio" name="visibilidade-padrao" id="publico-padrao">
+                        <label for="publico-padrao">Público</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="opcoes-padrao">
+                <h2>Visibilidade das Etapas Específicas</h2>
+                <div opcao>
+                    <p>Cadastro da Assistida:</p>
+                    <div class="segmented-control">
+                        <input type="radio" name="visibilidade-assistida" id="privado-assistida" class="visibilidade-etapa" checked>
+                        <label for="privado-assistida">Privado</label>
+
+                        <input type="radio" name="visibilidade-assistida" id="publico-assistida" class="visibilidade-etapa">
+                        <label for="publico-assistida">Público</label>
+                    </div>
+                </div>
+                <div opcao>
+                    <p>Cadastro do Caso:</p>
+                    <div class="segmented-control">
+                        <input type="radio" name="visibilidade-caso" id="privado-caso" class="visibilidade-etapa" checked>
+                        <label for="privado-caso">Privado</label>
+                        
+                        <input type="radio" name="visibilidade-caso" id="publico-caso" class="visibilidade-etapa">
+                        <label for="publico-caso">Público</label>
+                    </div>
+                </div>
+                <div opcao>
+                    <p>Outras Informações e Encaminhamentos:</p>
+                    <div class="segmented-control">
+                        <input type="radio" name="visibilidade-outras" id="privado-outras" class="visibilidade-etapa" checked>
+                        <label for="privado-outras">Privado</label>
+                        
+                        <input type="radio" name="visibilidade-outras" id="publico-outras" class="visibilidade-etapa">
+                        <label for="publico-outras">Público</label>
+                    </div>
+                </div>
+                <div opcao>
+                    <p>Campo para o preenchimento profissional e tipos de violência identificadas:</p>
+                    <div class="segmented-control">
+                        <input type="radio" name="visibilidade-profissional" id="privado-profissional" class="visibilidade-etapa" checked>
+                        <label for="privado-profissional">Privado</label>
+                        
+                        <input type="radio" name="visibilidade-profissional" id="publico-profissional" class="visibilidade-etapa">
+                        <label for="publico-profissional">Público</label>
+                    </div>
+                </div>
+            </div>
+
+            <button id="modal-privacidade-form">Salvar Alterações</button>
         </div>
     </div>
 
