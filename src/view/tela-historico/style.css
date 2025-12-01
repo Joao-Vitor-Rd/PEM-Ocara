@@ -109,17 +109,45 @@ td {
     justify-content: center;
     align-items: center;
     margin-top: 30px;
-    gap: 20px;
+    gap: 10px;
     color: #63468C;
 }
 
-.pagination .arrow {
-    font-size: 40px;
+.pagination button {
+    background: none;
+    border: none;
     cursor: pointer;
-    user-select: none;
+    font-family: 'Poppins', sans-serif;
+    color: #63468C;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: all 0.2s ease;
 }
 
-.pagination .page-number {
-    font-size: 24px;
-    font-weight: 700; /* Números de página costumam ser bold, mas se quiser medium, troque para 500 */
+.page-number {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.page-number.active {
+    background-color: #63468C;
+    color: #FFFFFF;
+    font-weight: 700;
+}
+
+.page-number:hover:not(.active) {
+    background-color: #f0ebf8;
+}
+
+.arrow-icon {
+    font-size: 32px !important;
+}
+
+.pagination button:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+    background-color: transparent;
 }
