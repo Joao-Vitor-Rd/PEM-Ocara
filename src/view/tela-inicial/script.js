@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (selecionado) {
         // SE HOUVER SELEÇÃO: Fecha modal e mostra popup de sucesso
         modalSelectOverlay.style.display = "none";
-        showPopup("Caso cadastrado com sucesso");
+        showPopup("Caso cadastrado com sucesso!");
       } else {
         // SE NÃO HOUVER SELEÇÃO: Mostra mensagem de erro
         if (msgErroSelecao) {
