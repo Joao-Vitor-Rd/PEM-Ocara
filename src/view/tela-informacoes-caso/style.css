@@ -1924,3 +1924,24 @@ body {
         height: 80px;
     }
 }
+
+/* Ajuste para conteúdo preencher espaço restante em telas menores */
+@media screen and (max-width: 1100px) {
+    .main-content {
+        width: 100%;
+        max-width: none;
+    }
+
+    .botoes-principais {
+        gap: 8px;
+    }
+
+    #acessar-form,
+    #editar-form,
+    #alterar-privacidade {
+        width: calc(33.333% - 6px);
+        min-width: 180px;
+        height: 65px;
+        font-size: 15px;
+    }
+}
