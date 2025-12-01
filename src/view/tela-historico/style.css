@@ -2,6 +2,7 @@
 
 html, body {
     font-family: 'Poppins', sans-serif;
+    font-weight: 500;
     margin: 0;
     padding: 0;
     height: 100%;
@@ -38,6 +39,7 @@ html, body {
 }
 
 .header-content h1 {
+    font-family: 'Poppins', sans-serif;
     font-weight: 800;
     font-size: 48px;
     color: #63468C;
@@ -59,7 +61,7 @@ html, body {
 
 .btn-fechar-pagina .material-symbols-outlined {
     font-size: 48px;
-    font-weight: bold;
+    font-weight: bold; /* Ícones geralmente ficam melhor em bold, mas pode mudar para normal se preferir */
 }
 
 .title-divider {
@@ -82,6 +84,7 @@ table {
     text-align: center;
     color: #7a7a7a;
 }
+
 thead tr {
     background-color: #9d8ec3;
     color: white;
@@ -118,5 +121,5 @@ td {
 
 .pagination .page-number {
     font-size: 24px;
-    font-weight: 700;
+    font-weight: 700; /* Números de página costumam ser bold, mas se quiser medium, troque para 500 */
 }
