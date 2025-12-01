@@ -198,7 +198,7 @@
         <!--informacoes pem ocara-->
         <section class="info-section">
           <h2>Informações da PEM Ocara</h2>
-          <div class="info-item">
+          <div class="info-item" id="itemProcuradoria">
             <span class="info-label">E-mail da Procuradoria</span>
             <svg
               class="info-arrow"
@@ -275,14 +275,14 @@
         <button class="logout-button">Sair da Conta</button>
       </main>
 
-      <!--============ COMECO MODAIS-->
+      <!--============ COMECO MODAIS =================================-->
 
-      <!--MODAL ATUALIZAR NOME-->
+      <!--MODAL ATUALIZAR NOME ===============================-->
       <div id="modalNome" class="modal-overlay">
         <div class="modal-content">
           <div class="modal-header">
             <h3 class="modal-title">Atualizar Nome</h3>
-            <button class="modal-close">&times;</button>
+            <button class="modal-close" id="fecharModalRede">&times;</button>
           </div>
           <div class="modal-body">
             <div class="form-group">
@@ -303,6 +303,55 @@
           </div>
         </div>
       </div>
+      <!--===================== MODAL PROCURADORIA ==================-->
+      <div id="modalCadastrarEmailProc" class="modal-overlay">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">Cadastrar E-mail da Procuradoria</h3>
+            <button class="modal-close fechar-proc">&times;</button>
+          </div>
+          <div class="modal-body center-content">
+            <div class="form-group full-width">
+              <label>E-mail da Procuradoria Especial da Mulher de Ocara</label>
+              <input
+                type="text"
+                id="inputCadastrarEmailProc"
+                placeholder="Digite o e-mail da procuradoria aqui"
+              />
+            </div>
+            <p id="procErrorCadastro" class="error-message"></p>
+            <button class="btn-proc-large">Cadastrar Dados</button>
+          </div>
+        </div>
+      </div>
+
+      <!--============ MODAL ATUALIZAR EMAIL PROCURADORIA ===========-->
+      <div id="modalAtualizarEmailProc" class="modal-overlay">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">Atualizar E-mail da Procuradoria</h3>
+            <button class="modal-close fechar-proc">&times;</button>
+          </div>
+          <div class="modal-body center-content">
+            <div class="form-group full-width">
+              <label>E-mail Atual</label>
+              <input
+                type="text"
+                id="inputEmailProcAtual"
+                value="mariadorosariosousa@gmail.com"
+                readonly
+              />
+            </div>
+            <div class="form-group full-width">
+              <label>Novo E-mail</label>
+              <input type="text" id="inputEmailProcNovo" placeholder="" />
+            </div>
+            <p id="procErrorAtualizacao" class="error-message"></p>
+            <button class="btn-proc-large">Atualizar Dados</button>
+          </div>
+        </div>
+      </div>
+      <!--modal cargo ====================================-->
 
       <div id="modalCargo" class="modal-overlay">
         <div class="modal-content">
@@ -349,11 +398,7 @@
                   id="senhaAtual"
                   placeholder="Digite sua senha atual"
                 />
-                <span
-                  class="password-toggle-icon"
-                  onclick="togglePassword(this)"
-                >
-                </span>
+                <span class="material-symbols-outlined"> visibility_off </span>
               </div>
             </div>
             <div class="form-group">
@@ -364,11 +409,7 @@
                   id="novaSenha"
                   placeholder="Digite a nova senha"
                 />
-                <span
-                  class="password-toggle-icon"
-                  onclick="togglePassword(this)"
-                >
-                </span>
+                <span class="material-symbols-outlined"> visibility_off </span>
               </div>
             </div>
             <div class="form-group">
@@ -379,11 +420,7 @@
                   id="confirmarSenha"
                   placeholder="Confirme a nova senha"
                 />
-                <span
-                  class="password-toggle-icon"
-                  onclick="togglePassword(this)"
-                >
-                </span>
+                <span class="material-symbols-outlined"> visibility_off </span>
               </div>
               <p id="senhaError" class="error-message"></p>
             </div>
@@ -405,8 +442,7 @@
               <input
                 type="text"
                 id="emailAtual"
-                value="mariadorosariosousa@gmail.com"
-                readonly
+                placeholder="mariadorosariosousa@gmail.com"
               />
             </div>
             <div class="form-group">

@@ -293,8 +293,8 @@ body {
 
 .modal-header {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: left;
+    align-items: start;
     padding-top: 30px;
     padding-bottom: 0;
     padding-left: 30px;
@@ -309,19 +309,17 @@ body {
     font-weight: 700;
     margin: 0;
     color: #63468C;
+
 }
 
 .modal-close {
     background: none;
     border: none;
     color: #63468C;
-    font-size: 36px;
-    font-weight: 300;
+    font-size: 70px;
+    font-weight: 295;
     cursor: pointer;
     padding: 0;
-    line-height: 1;
-    transition: opacity 0.2s ease;
-    width: 36px;
     height: 36px;
     display: flex;
     align-items: center;
@@ -331,13 +329,10 @@ body {
     top: 30px;
 }
 
-.modal-close:hover {
-    opacity: 0.7;
-}
 
 .modal-body {
     background-color: #FFFFFF;
-    padding: 40px 80px 16px 80px;
+    padding: 40px 35px 16px 30px;
     display: flex;
     flex-direction: column;
     gap: 25px;
@@ -372,7 +367,8 @@ body {
     font-family: 'Poppins', sans-serif;
     font-size: 24px;
     font-weight: 500;
-    color: #63468C;
+    color: #363535;
+    letter-spacing: 0.1em;
     box-sizing: border-box;
     background-color: #FFFFFF;
 }
@@ -385,6 +381,23 @@ body {
 .input-wrapper {
     position: relative;
     width: 100%;
+    align-items: center;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding-right: 45px;
+}
+
+.input-wrapper .material-symbols-outlined {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #838383;
+    font-size: 35px;
+    user-select: none;
 }
 
 .form-group input[type="password"] {
@@ -396,9 +409,10 @@ body {
     font-family: 'Poppins', sans-serif;
     font-size: 24px;
     font-weight: 500;
-    color: #63468C;
+    color: #363535;
     box-sizing: border-box;
     background-color: #FFFFFF;
+    letter-spacing: 0.1em;
 }
 
 .form-group input[type="password"]:focus {
@@ -418,8 +432,9 @@ body {
 }
 
 .form-group input:read-only {
-    background-color: #F5F5F5;
-    color: #888888;
+    background-color: #ffffff !important;
+    color: #838383 !important;
+    letter-spacing: 0.1em;
 }
 
 .btn-atualizar {
@@ -532,6 +547,87 @@ body {
     background-color: #3b2a57;
     transform: translateY(0);
 }
+
+/* ===========================================================
+   ESTILOS ESPECÍFICOS PARA OS MODAIS DA PROCURADORIA
+   =========================================================== */
+
+
+#modalCadastrarEmailProc .modal-content {
+    width: 1011px;
+    height: 394px;
+    max-width: 95vw;
+    display: flex;
+    flex-direction: column;
+}
+
+
+#modalAtualizarEmailProc .modal-content {
+    width: 1011px;
+    height: 557px;
+    max-width: 95vw;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+#modalCadastrarEmailProc .modal-header,
+#modalAtualizarEmailProc .modal-header {
+    padding-top: 15px;
+    padding-left: 40px;
+}
+
+#modalCadastrarEmailProc .modal-title,
+#modalAtualizarEmailProc .modal-title {
+    font-size: 40px;
+    width: 90%;
+}
+
+#modalCadastrarEmailProc .modal-body,
+#modalAtualizarEmailProc .modal-body {
+    align-items: center;
+    padding-left: 40px;
+    padding-right: 40px;
+    overflow: hidden;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.btn-proc-large {
+    width: 363px;
+    height: 83px;
+    background: #B291DE;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 48px;
+    color: #FFFFFF;
+    letter-spacing: 0.05em;
+    margin-top: 20px;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    transition: background 0.3s;
+}
+
+.btn-proc-large:hover {
+    background: #9a7cc4;
+}
+
+#modalCadastrarEmailProc .modal-close,
+#modalAtualizarEmailProc .modal-close {
+    top: 20px;
+    right: 40px;
+    font-size: 90px;
+
+}
+
+/*===================================================
+=============responsividde ============================*/
 
 @media (max-width: 1024px) {
     .sidebar {
