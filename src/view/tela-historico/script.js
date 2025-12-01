@@ -1,6 +1,6 @@
+// 1. GERADOR DE DADOS
 const historicoDados = [];
-//TESTANDO DADOS
-for (let i = 1; i <= 100; i++) {
+for (let i = 1; i <= 150; i++) {
     historicoDados.push({
         id: i,
         nome: i % 2 === 0 ? "Maria Silva" : "Ana Pereira",
@@ -10,17 +10,41 @@ for (let i = 1; i <= 100; i++) {
         campo: "Dados Pessoais"
     });
 }
-const ITENS_POR_PAGINA = 15;
+
+let itensPorPagina = 10; 
 let paginaAtual = 1;
+
+// Função para calcular quantos itens cabem na tela
+function recalcularItensPorTela() {
+    const alturaJanela = window.innerHeight;
+    const headerElement = document.querySelector('.page-header');
+    const alturaHeader = headerElement ? headerElement.offsetHeight : 100;
+    const alturaPaginacao = 60;
+    const paddingContainer = 40;    
+    const alturaCabecalhoTabela = 65; 
+    const alturaLinha = 60; 
+    const espacoDisponivel = alturaJanela - alturaHeader - alturaPaginacao - paddingContainer - alturaCabecalhoTabela;    
+    let novosItens = Math.floor(espacoDisponivel / alturaLinha);
+
+    if (novosItens < 7) novosItens = 7;
+
+    if (novosItens !== itensPorPagina) {
+        itensPorPagina = novosItens;
+        
+        const totalPaginas = Math.ceil(historicoDados.length / itensPorPagina);
+        if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
+        if (paginaAtual < 1) paginaAtual = 1;
+
+        renderizarTela();
+    }
+}
 
 function renderizarTela() {
     const tbody = document.getElementById('tabela-corpo');
     tbody.innerHTML = '';
-
-    const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
-    const fim = inicio + ITENS_POR_PAGINA;
+    const inicio = (paginaAtual - 1) * itensPorPagina;
+    const fim = inicio + itensPorPagina;
     const dadosDaPagina = historicoDados.slice(inicio, fim);
-
     dadosDaPagina.forEach(dado => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -33,7 +57,9 @@ function renderizarTela() {
         `;
         tbody.appendChild(tr);
     });
+
     atualizarControlesPaginacao();
+
     setTimeout(() => {
         const container = document.querySelector('.main-content');
         if (container) container.scrollTop = 0;
@@ -45,7 +71,7 @@ function atualizarControlesPaginacao() {
     const container = document.getElementById('paginacao-container');
     container.innerHTML = '';
 
-    const totalPaginas = Math.ceil(historicoDados.length / ITENS_POR_PAGINA);
+    const totalPaginas = Math.ceil(historicoDados.length / itensPorPagina);
     
     const btnAnterior = document.createElement('button');
     btnAnterior.innerHTML = '<span class="material-symbols-outlined arrow-icon">navigate_before</span>';
@@ -66,7 +92,6 @@ function atualizarControlesPaginacao() {
             paginasParaMostrar.push(i);
         }
     } else {
-        
         paginasParaMostrar.push(1);
 
         let inicioJanela = paginaAtual - maxVizinhos;
@@ -74,24 +99,20 @@ function atualizarControlesPaginacao() {
 
         if (inicioJanela <= 2) {
             inicioJanela = 2;
-            fimJanela = 6; // Garante mostrar 5 itens no começo: 1 [2 3 4 5 6] ...
+            fimJanela = 6;
         }
         if (fimJanela >= totalPaginas - 1) {
             fimJanela = totalPaginas - 1;
-            inicioJanela = totalPaginas - 5; // Garante mostrar 5 itens no fim: ... [5 6 7 8] 9
+            inicioJanela = totalPaginas - 5;
         }
 
-        if (inicioJanela > 2) {
-            paginasParaMostrar.push('...');
-        }
+        if (inicioJanela > 2) paginasParaMostrar.push('...');
 
         for (let i = inicioJanela; i <= fimJanela; i++) {
             paginasParaMostrar.push(i);
         }
 
-        if (fimJanela < totalPaginas - 1) {
-            paginasParaMostrar.push('...');
-        }
+        if (fimJanela < totalPaginas - 1) paginasParaMostrar.push('...');
 
         paginasParaMostrar.push(totalPaginas);
     }
@@ -126,4 +147,10 @@ function atualizarControlesPaginacao() {
     container.appendChild(btnProximo);
 }
 
-document.addEventListener('DOMContentLoaded', renderizarTela);
+document.addEventListener('DOMContentLoaded', () => {
+    recalcularItensPorTela(); 
+});
+
+window.addEventListener('resize', () => {
+    recalcularItensPorTela();
+});
