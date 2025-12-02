@@ -58,20 +58,22 @@ function togglePassword(iconElement) {
 
   if (input.type === "password") {
     input.type = "text";
-    iconElement.textContent = "visibility_off";
+    iconElement.textContent = "visibility";
   } else {
     input.type = "password";
-    iconElement.textContent = "visibility";
+    iconElement.textContent = "visibility_off";
   }
 }
 
 function initializePasswordIcons() {
-  document.querySelectorAll(".password-toggle-icon").forEach((icon) => {
-    icon.textContent = "visibility";
-    icon.classList.add("material-symbols-outlined");
-  });
+  document
+    .querySelectorAll(".input-wrapper .material-symbols-outlined")
+    .forEach((icon) => {
+      icon.textContent = "visibility_off";
+      icon.style.cursor = "pointer";
+      icon.addEventListener("click", () => togglePassword(icon));
+    });
 }
-
 class ModalManager {
   constructor(modalId, triggerId) {
     this.modal = document.getElementById(modalId);
@@ -530,18 +532,6 @@ class SenhaProcuradoriaController {
         this.handleAtualizacao()
       );
     }
-
-    // Ativar toggle de visibilidade nos inputs de senha
-    this.setupPasswordToggles();
-  }
-
-  setupPasswordToggles() {
-    const allPasswordIcons = document.querySelectorAll(
-      "#modalCadastrarSenhaProc .material-symbols-outlined, #modalAtualizarSenhaProc .material-symbols-outlined"
-    );
-    allPasswordIcons.forEach((icon) => {
-      icon.addEventListener("click", () => togglePassword(icon));
-    });
   }
 
   abrirModalCorreto() {
