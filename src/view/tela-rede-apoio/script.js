@@ -1,206 +1,239 @@
 /**
- * Gerenciamento de Modal para Cadastro de Rede de Apoio
+ * Gerenciamento de Modais (Cadastro e Edição) de Rede de Apoio
  *
  * Este script controla a abertura, fechamento, validação e submissão
- * do formulário de cadastro de rede de apoio, incluindo feedback visual
- * para o usuário através de modais e mensagens de erro.
+ * dos formulários, incluindo feedback visual e validação reutilizável.
  */
 
-// ===== SELEÇÃO DE ELEMENTOS DO DOM =====
-// Elementos principais da interface
+// ===== SELEÇÃO DE ELEMENTOS DO DOM (CADASTRO) =====
 const btnAbrir = document.getElementById("btnAbrirModalRede");
 const btnFechar = document.getElementById("fecharModalRede");
 const modal = document.getElementById("modalRedeApoio");
+const btnCadastrar = document.querySelector(".btn-atualizar");
+const redeError = document.getElementById("redeError"); // Erro do modal de cadastro
+
+// ===== SELEÇÃO DE ELEMENTOS DO DOM (EDIÇÃO - NOVO) =====
+const modalEditar = document.getElementById("modalEditarRede");
+const btnFecharEditar = document.getElementById("fecharModalEditar");
+const cardsRede = document.querySelectorAll(".card-rede-apoio"); // Todos os cards
+const btnSalvarEdit = document.querySelector(".btn-salvar");
+const btnApagarEdit = document.querySelector(".btn-apagar");
+const inputNovoNome = document.getElementById("novoNome");
+const inputNovoEmail = document.getElementById("novoEmail");
+// OBS: Adicione <p id="redeErrorEdit" class="error-message"></p> no HTML do novo modal
+const redeErrorEdit = document.getElementById("redeErrorEdit");
+
+// ===== SELEÇÃO DE ELEMENTOS DO DOM (POPUP GLOBAL) =====
 const popupConfirmacao = document.getElementById("popupConfirmacao");
 const popupBtnOk = document.getElementById("popupBtnOk");
 const popupMensagem = document.getElementById("popupMensagem");
-const btnCadastrar = document.querySelector(".btn-atualizar");
 
-// Elemento único para exibição de mensagens de erro
-const redeError = document.getElementById("redeError");
-
-// ===== CLASSES DE VALIDAÇÃO =====
+// ===== CLASSES DE VALIDAÇÃO (MANTIDAS) =====
 /**
  * Validador para campos de nome
- * Implementa regras de negócio específicas para nomes
  */
 class NameValidator {
   validate(novoNome) {
     const nomeTrimado = novoNome.trim();
-
-    // Validação de campo obrigatório
-    if (nomeTrimado === "") {
-      return "Por favor, preencha o campo de nome.";
-    }
-
-    // Validação de comprimento mínimo
-    if (nomeTrimado.length < 3) {
+    if (nomeTrimado === "") return "Por favor, preencha o campo de nome.";
+    if (nomeTrimado.length < 3)
       return "O nome deve ter pelo menos 3 caracteres.";
-    }
-
-    // Validação contra apenas números
-    if (/^\d+$/.test(nomeTrimado)) {
+    if (/^\d+$/.test(nomeTrimado))
       return "O nome não pode conter apenas números.";
-    }
-
-    // Validação de presença de letras
-    if (!/[a-zA-Z]/.test(nomeTrimado)) {
+    if (!/[a-zA-Z]/.test(nomeTrimado))
       return "O nome deve conter pelo menos uma letra.";
-    }
-
-    return null; // Retorna null quando a validação é bem-sucedida
+    return null;
   }
 }
 
 /**
  * Validador para campos de email
- * Verifica formato válido de endereço de email
  */
 class EmailValidator {
   validate(novoEmail) {
     const email = novoEmail.trim();
-
-    // Validação de campo obrigatório
-    if (email === "") {
-      return "Por favor, preencha o campo de e-mail.";
-    }
-
-    // Validação de formato usando regex
+    if (email === "") return "Por favor, preencha o campo de e-mail.";
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(email))
       return "Por favor, insira um formato de e-mail válido.";
-    }
-
-    return null; // Retorna null quando a validação é bem-sucedida
+    return null;
   }
 }
 
-// Instâncias dos validadores para reutilização
+// Instâncias dos validadores
 const nameValidator = new NameValidator();
 const emailValidator = new EmailValidator();
 
-// ===== GERENCIAMENTO DE ESTADO DO FORMULÁRIO =====
-/**
- * Limpa todos os campos do formulário e remove mensagens de erro
- * @returns {void}
- */
-const limparFormulario = () => {
+// ===== GERENCIAMENTO DE ESTADO =====
+
+// Limpa campos do cadastro
+const limparFormularioCadastro = () => {
   document.getElementById("nomeRede").value = "";
   document.getElementById("emailRede").value = "";
-  limparErro();
+  limparErro(redeError);
 };
 
-// ===== CONTROLE DE MODAL =====
-/**
- * Abre o modal de cadastro e prepara o ambiente para novo preenchimento
- * @returns {void}
- */
+// Limpa campos da edição
+const limparFormularioEdicao = () => {
+  if (inputNovoNome) inputNovoNome.value = "";
+  if (inputNovoEmail) inputNovoEmail.value = "";
+  limparErro(redeErrorEdit);
+};
+
+// Funções Genéricas de Erro
+const mostrarErro = (elemento, mensagem) => {
+  if (elemento) {
+    elemento.textContent = mensagem;
+    elemento.style.display = "block";
+  } else {
+    // Fallback caso esqueça de adicionar a tag <p> no HTML novo
+    alert(mensagem);
+  }
+};
+
+const limparErro = (elemento) => {
+  if (elemento) {
+    elemento.textContent = "";
+    elemento.style.display = "none";
+  }
+};
+
+// ===== CONTROLE DE MODAIS (ABRIR/FECHAR) =====
+
+// --- Modal Cadastro ---
 const abrirModal = () => {
   modal.classList.add("visible");
-  limparErro(); // Garante que erros anteriores sejam limpos
+  limparErro(redeError);
 };
 
-/**
- * Fecha o modal de cadastro e limpa o formulário
- * @returns {void}
- */
 const fecharModal = () => {
   modal.classList.remove("visible");
-  limparFormulario(); // Reseta o estado do formulário ao fechar
+  limparFormularioCadastro();
 };
 
-// ===== CONTROLE DE POPUP DE CONFIRMAÇÃO =====
-/**
- * Exibe popup de confirmação de sucesso
- * @returns {void}
- */
-const abrirPopup = () => {
+// --- Modal Edição (NOVO) ---
+const abrirModalEdicao = () => {
+  modalEditar.classList.add("visible");
+  limparErro(redeErrorEdit);
+  // Aqui você poderia carregar os dados do card clicado para os inputs "Atuais"
+};
+
+const fecharModalEdicao = () => {
+  modalEditar.classList.remove("visible");
+  limparFormularioEdicao();
+};
+
+// --- Popup Confirmação ---
+const abrirPopup = (mensagem) => {
+  popupMensagem.textContent = mensagem; // Mensagem dinâmica
   popupConfirmacao.classList.add("visible");
 };
 
-/**
- * Fecha o popup de confirmação
- * @returns {void}
- */
 const fecharPopup = () => {
   popupConfirmacao.classList.remove("visible");
 };
 
-// ===== GERENCIAMENTO DE MENSAGENS DE ERRO =====
-/**
- * Exibe mensagem de erro para o usuário
- * @param {string} mensagem - Texto da mensagem de erro a ser exibida
- * @returns {void}
- */
-const mostrarErro = (mensagem) => {
-  redeError.textContent = mensagem;
-  redeError.style.display = "block";
-};
+// ===== EVENT LISTENERS =====
 
-/**
- * Limpa mensagens de erro da interface
- * @returns {void}
- */
-const limparErro = () => {
-  redeError.textContent = "";
-  redeError.style.display = "none";
-};
+// Botoes do Modal Cadastro
+if (btnAbrir) btnAbrir.addEventListener("click", abrirModal);
+if (btnFechar) btnFechar.addEventListener("click", fecharModal);
 
-// ===== CONFIGURAÇÃO DE EVENT LISTENERS =====
-// Controle de abertura e fechamento de modais
-btnAbrir.addEventListener("click", abrirModal);
-btnFechar.addEventListener("click", fecharModal);
-popupBtnOk.addEventListener("click", fecharPopup);
+// Botoes do Modal Edição (NOVO)
+// Adiciona evento de click em CADA card existente
+cardsRede.forEach((card) => {
+  card.addEventListener("click", () => {
+    abrirModalEdicao();
+  });
+});
 
-// Fechar modais ao clicar fora do conteúdo
-modal.addEventListener("click", (e) => {
-  if (e.target === modal) {
+if (btnFecharEditar)
+  btnFecharEditar.addEventListener("click", fecharModalEdicao);
+
+// Botão OK do Popup
+if (popupBtnOk) popupBtnOk.addEventListener("click", fecharPopup);
+
+// Fechar ao clicar fora (Overlay)
+window.addEventListener("click", (e) => {
+  if (e.target === modal) fecharModal();
+  if (e.target === modalEditar) fecharModalEdicao();
+  if (e.target === popupConfirmacao) fecharPopup();
+});
+
+// Inputs: Limpar erro ao digitar
+if (inputNovoNome)
+  inputNovoNome.addEventListener("input", () => limparErro(redeErrorEdit));
+if (inputNovoEmail)
+  inputNovoEmail.addEventListener("input", () => limparErro(redeErrorEdit));
+document
+  .getElementById("nomeRede")
+  .addEventListener("input", () => limparErro(redeError));
+document
+  .getElementById("emailRede")
+  .addEventListener("input", () => limparErro(redeError));
+
+// ===== LÓGICA DE NEGÓCIO =====
+
+// 1. CADASTRAR NOVA REDE
+if (btnCadastrar) {
+  btnCadastrar.addEventListener("click", () => {
+    const nomeRede = document.getElementById("nomeRede").value;
+    const emailRede = document.getElementById("emailRede").value;
+
+    limparErro(redeError);
+
+    const erroNome = nameValidator.validate(nomeRede);
+    if (erroNome) {
+      mostrarErro(redeError, erroNome);
+      return;
+    }
+
+    const erroEmail = emailValidator.validate(emailRede);
+    if (erroEmail) {
+      mostrarErro(redeError, erroEmail);
+      return;
+    }
+
     fecharModal();
-  }
-});
+    abrirPopup("Rede cadastrada com sucesso!");
+  });
+}
 
-popupConfirmacao.addEventListener("click", (e) => {
-  if (e.target === popupConfirmacao) {
-    fecharPopup();
-  }
-});
+// 2. SALVAR EDIÇÃO (NOVO)
+if (btnSalvarEdit) {
+  btnSalvarEdit.addEventListener("click", () => {
+    const novoNome = inputNovoNome.value;
+    const novoEmail = inputNovoEmail.value;
 
-// ===== LÓGICA PRINCIPAL DE CADASTRO =====
-/**
- * Handler principal para o processo de cadastro
- * Executa validações em sequência e procede com cadastro se válido
- * @returns {void}
- */
-btnCadastrar.addEventListener("click", () => {
-  // Captura dos valores atuais dos campos
-  const nomeRede = document.getElementById("nomeRede").value;
-  const emailRede = document.getElementById("emailRede").value;
+    limparErro(redeErrorEdit);
 
-  // Limpa estado anterior de erro
-  limparErro();
+    // Valida Nome
+    const erroNome = nameValidator.validate(novoNome);
+    if (erroNome) {
+      mostrarErro(redeErrorEdit, erroNome);
+      return;
+    }
 
-  // Pipeline de validações - nome tem prioridade
-  const erroNome = nameValidator.validate(nomeRede);
-  if (erroNome) {
-    mostrarErro(erroNome);
-    return; // Interrompe execução se nome for inválido
-  }
+    // Valida Email
+    const erroEmail = emailValidator.validate(novoEmail);
+    if (erroEmail) {
+      mostrarErro(redeErrorEdit, erroEmail);
+      return;
+    }
 
-  // Validação de email só executa se nome for válido
-  const erroEmail = emailValidator.validate(emailRede);
-  if (erroEmail) {
-    mostrarErro(erroEmail);
-    return; // Interrompe execução se email for inválido
-  }
+    // Sucesso
+    fecharModalEdicao();
+    abrirPopup("Alterações salvas com sucesso!");
+  });
+}
 
-  // Fluxo de sucesso - todas as validações passaram
-  fecharModal();
-  popupMensagem.textContent = "Rede cadastrada com sucesso!";
-  abrirPopup();
-  limparFormulario(); // Limpeza adicional por segurança
-});
+// 3. APAGAR REDE (NOVO)
+if (btnApagarEdit) {
+  btnApagarEdit.addEventListener("click", () => {
+    // Aqui entraria lógica de confirmação "Tem certeza?"
+    // Mas para o protótipo, apaga direto:
 
-// ===== MELHORIA DE USABILIDADE =====
-// Limpa mensagens de erro durante a digitação para feedback imediato
-document.getElementById("nomeRede").addEventListener("input", limparErro);
-document.getElementById("emailRede").addEventListener("input", limparErro);
+    fecharModalEdicao();
+    abrirPopup("Rede de Apoio removida!");
+  });
+}
