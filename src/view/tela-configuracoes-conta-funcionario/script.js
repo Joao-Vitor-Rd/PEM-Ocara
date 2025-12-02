@@ -358,14 +358,6 @@ class ProcuradoriaController {
         this.handleAtualizacao()
       );
     }
-
-    // NOVO: Adiciona um listener para limpar os erros ao fechar
-    this.createModal.modal.addEventListener("transitionend", () =>
-      this.hideError(this.errorDisplayCadastro)
-    );
-    this.updateModal.modal.addEventListener("transitionend", () =>
-      this.hideError(this.errorDisplayAtualizacao)
-    );
   }
 
   abrirModalCorreto() {
@@ -388,9 +380,7 @@ class ProcuradoriaController {
     } else {
       this.emailArmazenado = email;
       this.createModal.close();
-      this.successModal.setMessage(
-        "E-mail da procuradoria cadastrado com sucesso!"
-      );
+      this.successModal.setMessage("E-mail cadastrado com sucesso!");
       this.successModal.open();
     }
   }
@@ -411,9 +401,7 @@ class ProcuradoriaController {
     } else {
       this.emailArmazenado = novoEmail;
       this.updateModal.close();
-      this.successModal.setMessage(
-        "E-mail da procuradoria atualizado com sucesso!"
-      );
+      this.successModal.setMessage("E-mail atualizado com sucesso!");
       this.successModal.open();
     }
   }
@@ -433,11 +421,197 @@ class ProcuradoriaController {
     }
   }
 }
+class SenhaProcuradoriaValidator {
+  validate(senha, confirmarSenha) {
+    if (senha.trim() === "" || confirmarSenha.trim() === "") {
+      return "Por favor, preencha todos os campos.";
+    }
+    if (senha.length < 8) {
+      return "A senha deve ter pelo menos 8 caracteres.";
+    }
+    if (!/[A-Z]/.test(senha)) {
+      return "A senha deve conter pelo menos uma letra maiúscula.";
+    }
+    if (!/[a-z]/.test(senha)) {
+      return "A senha deve conter pelo menos uma letra minúscula.";
+    }
+    if (!/[^A-Za-z0-9]/.test(senha)) {
+      return "A senha deve conter pelo menos um caractere especial (ex: !@#$%).";
+    }
+    if (senha !== confirmarSenha) {
+      return "As senhas não coincidem. Tente novamente.";
+    }
+    return null;
+  }
+
+  validateUpdate(senhaAtual, novaSenha, confirmarSenha) {
+    if (
+      senhaAtual.trim() === "" ||
+      novaSenha.trim() === "" ||
+      confirmarSenha.trim() === ""
+    ) {
+      return "Por favor, preencha todos os campos.";
+    }
+    if (novaSenha === senhaAtual) {
+      return "A nova senha não pode ser igual à senha atual.";
+    }
+    const basicValidation = this.validate(novaSenha, confirmarSenha);
+    return basicValidation;
+  }
+}
+
+class SenhaProcuradoriaController {
+  constructor(
+    senhaValidator,
+    createModalMgr,
+    updateModalMgr,
+    successModalMgr,
+    triggerId
+  ) {
+    this.validator = senhaValidator;
+    this.createModal = createModalMgr;
+    this.updateModal = updateModalMgr;
+    this.successModal = successModalMgr;
+
+    // Simulação de Banco de Dados
+    this.senhaArmazenada = null;
+
+    // Botão que abre
+    this.trigger = document.getElementById(triggerId);
+
+    // Elementos do Modal de Cadastro
+    this.inputSenhaCadastro = document.getElementById(
+      "inputCadastrarSenhaProc"
+    );
+    this.inputConfirmarCadastro = document.getElementById(
+      "inputConfirmarSenhaProc"
+    );
+    this.btnSalvarCadastro = document.querySelector(
+      "#modalCadastrarSenhaProc .btn-proc-large"
+    );
+    this.errorDisplayCadastro = document.getElementById(
+      "senhaErrorCadastroProc"
+    );
+
+    // Elementos do Modal de Atualização
+    this.inputSenhaAtual = document.getElementById("inputSenhaProcAtual");
+    this.inputNovaSenha = document.getElementById("inputNovaSenhaProc");
+    this.inputConfirmarNova = document.getElementById(
+      "inputConfirmarNovaSenhaProc"
+    );
+    this.btnSalvarAtualizacao = document.querySelector(
+      "#modalAtualizarSenhaProc .btn-proc-large"
+    );
+    this.errorDisplayAtualizacao = document.getElementById(
+      "senhaErrorAtualizacaoProc"
+    );
+
+    this.setupListeners();
+  }
+
+  setupListeners() {
+    if (this.trigger) {
+      this.trigger.addEventListener("click", (e) => {
+        e.preventDefault();
+        this.abrirModalCorreto();
+      });
+    } else {
+      console.warn("Trigger da Senha Procuradoria não encontrado.");
+    }
+
+    if (this.btnSalvarCadastro) {
+      this.btnSalvarCadastro.addEventListener("click", () =>
+        this.handleCadastro()
+      );
+    }
+
+    if (this.btnSalvarAtualizacao) {
+      this.btnSalvarAtualizacao.addEventListener("click", () =>
+        this.handleAtualizacao()
+      );
+    }
+
+    // Ativar toggle de visibilidade nos inputs de senha
+    this.setupPasswordToggles();
+  }
+
+  setupPasswordToggles() {
+    const allPasswordIcons = document.querySelectorAll(
+      "#modalCadastrarSenhaProc .material-symbols-outlined, #modalAtualizarSenhaProc .material-symbols-outlined"
+    );
+    allPasswordIcons.forEach((icon) => {
+      icon.addEventListener("click", () => togglePassword(icon));
+    });
+  }
+
+  abrirModalCorreto() {
+    if (!this.senhaArmazenada) {
+      this.createModal.open();
+    } else {
+      this.inputSenhaAtual.value = "••••••••••••";
+      this.updateModal.open();
+    }
+  }
+
+  handleCadastro() {
+    const senha = this.inputSenhaCadastro.value;
+    const confirmar = this.inputConfirmarCadastro.value;
+    this.hideError(this.errorDisplayCadastro);
+
+    const erro = this.validator.validate(senha, confirmar);
+
+    if (erro) {
+      this.showError(erro, this.errorDisplayCadastro);
+    } else {
+      this.senhaArmazenada = senha;
+      this.createModal.close();
+      this.successModal.setMessage("Senha cadastrada com sucesso!");
+      this.successModal.open();
+    }
+  }
+
+  handleAtualizacao() {
+    const senhaAtual = this.senhaArmazenada; // Pega a senha "real" do BD simulado
+    const novaSenha = this.inputNovaSenha.value;
+    const confirmarNova = this.inputConfirmarNova.value;
+    this.hideError(this.errorDisplayAtualizacao);
+
+    const erro = this.validator.validateUpdate(
+      senhaAtual,
+      novaSenha,
+      confirmarNova
+    );
+
+    if (erro) {
+      this.showError(erro, this.errorDisplayAtualizacao);
+    } else {
+      this.senhaArmazenada = novaSenha;
+      this.updateModal.close();
+      this.successModal.setMessage("Senha atualizada com sucesso!");
+      this.successModal.open();
+    }
+  }
+
+  showError(message, element) {
+    if (element) {
+      element.textContent = message;
+      element.style.display = "block";
+    }
+  }
+
+  hideError(element) {
+    if (element) {
+      element.textContent = "";
+      element.style.display = "none";
+    }
+  }
+}
 document.addEventListener("DOMContentLoaded", () => {
   // Validadores
   const passwordValidator = new PasswordValidator();
   const emailValidator = new EmailValidator();
   const nameValidator = new NameValidator();
+  const senhaProcValidator = new SenhaProcuradoriaValidator(); // ✅ NOVO
 
   // Gerenciador de Sucesso
   const successModalManager = new ModalManager("popupConfirmacao");
@@ -448,10 +622,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const emailModalManager = new ModalManager("modalEmail", "itemEmail");
   const passwordModalManager = new ModalManager("modalSenha", "itemSenha");
 
-  // --- NOVO: MODAIS DA PROCURADORIA ---
-  // Passamos null no segundo parametro (trigger) pois o Controller vai gerenciar o clique
+  // Modais da Procuradoria (E-mail)
   const procCreateModalMgr = new ModalManager("modalCadastrarEmailProc", null);
   const procUpdateModalMgr = new ModalManager("modalAtualizarEmailProc", null);
+
+  const senhaProcCreateModalMgr = new ModalManager(
+    "modalCadastrarSenhaProc",
+    null
+  );
+  const senhaProcUpdateModalMgr = new ModalManager(
+    "modalAtualizarSenhaProc",
+    null
+  );
 
   // Inicializa ícones
   initializePasswordIcons();
@@ -465,13 +647,20 @@ document.addEventListener("DOMContentLoaded", () => {
   new EmailController(emailValidator, emailModalManager, successModalManager);
   new NameController(nameValidator, nameModalManager, successModalManager);
 
-  // --- NOVO: CONTROLADOR DA PROCURADORIA ---
-  // Substitua 'itemProcuradoria' pelo ID real do botão no seu menu HTML
+  // Controlador E-mail Procuradoria
   new ProcuradoriaController(
     emailValidator,
     procCreateModalMgr,
     procUpdateModalMgr,
     successModalManager,
     "itemProcuradoria"
+  );
+
+  new SenhaProcuradoriaController(
+    senhaProcValidator,
+    senhaProcCreateModalMgr,
+    senhaProcUpdateModalMgr,
+    successModalManager,
+    "itemSenhaProcuradoria"
   );
 });

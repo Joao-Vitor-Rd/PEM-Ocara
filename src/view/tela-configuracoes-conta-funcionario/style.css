@@ -367,7 +367,7 @@ body {
     font-family: 'Poppins', sans-serif;
     font-size: 24px;
     font-weight: 500;
-    color: #363535;
+    color: #838383 !important;
     letter-spacing: 0.1em;
     box-sizing: border-box;
     background-color: #FFFFFF;
@@ -409,7 +409,7 @@ body {
     font-family: 'Poppins', sans-serif;
     font-size: 24px;
     font-weight: 500;
-    color: #363535;
+    color: #838383 !important;
     box-sizing: border-box;
     background-color: #FFFFFF;
     letter-spacing: 0.1em;
@@ -436,6 +436,13 @@ body {
     color: #838383 !important;
     letter-spacing: 0.1em;
 }
+
+.form-group input::placeholder {
+    background-color: #ffffff !important;
+    color: #838383 !important;
+    letter-spacing: 0.1em;
+}
+
 
 .btn-atualizar {
     width: 363px;
@@ -479,9 +486,11 @@ body {
     color: #C94A2C;
     font-size: 18px;
     font-weight: 500;
-    margin: -15px 0 10px 0;
+    margin: 0;
+    padding: 10px 0;
     display: none;
     text-align: center;
+    min-height: 24px;
 }
 
 .popup-confirmacao {
@@ -555,18 +564,18 @@ body {
 
 #modalCadastrarEmailProc .modal-content {
     width: 1011px;
-    height: 394px;
+    min-height: 394px;
+    height: auto;
     max-width: 95vw;
     display: flex;
     flex-direction: column;
 }
 
-
 #modalAtualizarEmailProc .modal-content {
     width: 1011px;
-    height: 557px;
+    min-height: 557px;
+    height: auto;
     max-width: 95vw;
-    border-radius: 20px;
     display: flex;
     flex-direction: column;
 }
@@ -589,7 +598,7 @@ body {
     align-items: center;
     padding-left: 40px;
     padding-right: 40px;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .full-width {
@@ -609,7 +618,7 @@ body {
     line-height: 48px;
     color: #FFFFFF;
     letter-spacing: 0.05em;
-    margin-top: 20px;
+    margin-top: 2px;
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
     transition: background 0.3s;
 }
@@ -626,8 +635,110 @@ body {
 
 }
 
+/* ===========================================================
+   ESTILOS PARA OS MODAIS DE SENHA DA PROCURADORIA
+   =========================================================== */
+
+#modalCadastrarSenhaProc .modal-content {
+    width: 1011px;
+    min-height: 562px;
+    height: auto;
+    max-width: 95vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#modalAtualizarSenhaProc .modal-content {
+    width: 1011px;
+    min-height: 736px;
+    height: auto;
+    max-width: 95vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.btn-proc-large {
+    width: 363px;
+    height: 83px;
+    background: #B291DE;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 48px;
+    color: #FFFFFF;
+    letter-spacing: 0.05em;
+    margin-top: 40px;
+    margin-bottom: 30px;
+    /* Adiciona espaço embaixo do botão */
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    transition: background 0.3s;
+    flex-shrink: 0;
+    /* Impede que o botão seja comprimido */
+}
+
+.btn .btn-proc-large:hover {
+    background: #9a7cc4;
+}
+
+
+#modalCadastrarSenhaProc .modal-header,
+#modalAtualizarSenhaProc .modal-header {
+    padding-top: 15px;
+    padding-left: 40px;
+    flex-shrink: 0;
+}
+
+#modalCadastrarSenhaProc .modal-title,
+#modalAtualizarSenhaProc .modal-title {
+    font-size: 40px;
+    width: 90%;
+}
+
+#modalCadastrarSenhaProc .modal-body,
+#modalAtualizarSenhaProc .modal-body {
+    align-items: center;
+    padding: 30px 80px;
+    overflow: visible;
+    gap: 30px;
+    overflow-y: auto;
+    flex: 1;
+
+}
+
+#modalCadastrarSenhaProc .modal-close,
+#modalAtualizarSenhaProc .modal-close {
+    top: 20px;
+    right: 40px;
+    font-size: 90px;
+}
+
+@media (max-height: 800px) {
+
+    #modalCadastrarSenhaProc .modal-content,
+    #modalAtualizarSenhaProc .modal-content {
+        min-height: auto;
+    }
+
+    #modalCadastrarSenhaProc .modal-body,
+    #modalAtualizarSenhaProc .modal-body {
+        padding: 20px 60px;
+        gap: 20px;
+    }
+
+    .btn-proc-large {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+}
+
 /*===================================================
-=============responsividde ============================*/
+=============responsividde ============================*
+ */
 
 @media (max-width: 1024px) {
     .sidebar {

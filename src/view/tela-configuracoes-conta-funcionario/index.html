@@ -215,7 +215,7 @@
               />
             </svg>
           </div>
-          <div class="info-item">
+          <div class="info-item" id="itemSenhaProcuradoria">
             <span class="info-label">Senha da Procuradoria</span>
             <svg
               class="info-arrow"
@@ -351,7 +351,91 @@
           </div>
         </div>
       </div>
-      <!--modal cargo ====================================-->
+
+      <!--============ MODAL CADASTRAR SENHA PROCURADORIA ===========-->
+      <div id="modalCadastrarSenhaProc" class="modal-overlay">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">Cadastrar Senha da Procuradoria</h3>
+            <button class="modal-close fechar-senha-proc">&times;</button>
+          </div>
+          <div class="modal-body center-content">
+            <div class="form-group full-width">
+              <label>Senha</label>
+              <div class="input-wrapper">
+                <input
+                  type="password"
+                  id="inputCadastrarSenhaProc"
+                  placeholder="Digite a senha aqui"
+                />
+                <span class="material-symbols-outlined">visibility_off</span>
+              </div>
+            </div>
+            <div class="form-group full-width">
+              <label>Confirmar Senha</label>
+              <div class="input-wrapper">
+                <input
+                  type="password"
+                  id="inputConfirmarSenhaProc"
+                  placeholder="Confirme a senha"
+                />
+                <span class="material-symbols-outlined">visibility_off</span>
+              </div>
+            </div>
+            <p id="senhaErrorCadastroProc" class="error-message"></p>
+            <button class="btn-proc-large">Cadastrar Dados</button>
+          </div>
+        </div>
+      </div>
+
+      <!--============ MODAL ATUALIZAR SENHA PROCURADORIA ===========-->
+      <div id="modalAtualizarSenhaProc" class="modal-overlay">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">Atualizar Senha da Procuradoria</h3>
+            <button class="modal-close fechar-senha-proc">&times;</button>
+          </div>
+          <div class="modal-body center-content">
+            <div class="form-group full-width">
+              <label>Senha Atual</label>
+              <div class="input-wrapper">
+                <input
+                  type="password"
+                  id="inputSenhaProcAtual"
+                  placeholder="Digite a senha atual"
+                  readonly
+                />
+                <span class="material-symbols-outlined">visibility_off</span>
+              </div>
+            </div>
+            <div class="form-group full-width">
+              <label>Nova Senha</label>
+              <div class="input-wrapper">
+                <input
+                  type="password"
+                  id="inputNovaSenhaProc"
+                  placeholder="Digite a nova senha"
+                />
+                <span class="material-symbols-outlined">visibility_off</span>
+              </div>
+            </div>
+            <div class="form-group full-width">
+              <label>Confirmar Senha</label>
+              <div class="input-wrapper">
+                <input
+                  type="password"
+                  id="inputConfirmarNovaSenhaProc"
+                  placeholder="Confirme a nova senha"
+                />
+                <span class="material-symbols-outlined">visibility_off</span>
+              </div>
+            </div>
+            <p id="senhaErrorAtualizacaoProc" class="error-message"></p>
+            <button class="btn-proc-large">Atualizar Dados</button>
+          </div>
+        </div>
+      </div>
+      <!--================== modal cargo ====================================-->
 
       <div id="modalCargo" class="modal-overlay">
         <div class="modal-content">
