@@ -107,6 +107,13 @@ contextBridge.exposeInMainWorld('api', {
       temDependentes,
     }),
 
+
+  criarOrgaoRedeApoio: (nome: string, email: string) =>
+    ipcRenderer.invoke('orgao:create', { nome, email }),
+
+  listarOrgaosRedeApoio: () =>
+    ipcRenderer.invoke('orgao:listarTodos'),
+
   recuperarAnexosDoCaso: (idCaso: number) =>
     ipcRenderer.invoke('caso:recuperarAnexos', { idCaso }),
 

@@ -3,26 +3,40 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { WindowManager } from './utils/WindowManeger';
 import { Logger } from './utils/Logger';
-import { UserController } from './controllers/UserController';
-import { PdfService } from './services/PDFService';
+// Imports Unificados (Core)
+import { UserController } from './controllers/userController';
 import { AssistidaController } from './controllers/AssistidaController';
 import { CasoController } from './controllers/CasoController';
+
+// --- Módulo Rede de Apoio (Seus Imports) ---
+import { ControladorOrgao } from './controllers/ControladorOrgao';
+import { PostgresOrgaoRepository } from './repository/PostgresOrgaoRepository';
+import './database/db'; // Sua conexão para a Rede de Apoio
+
+// --- Módulos da Branch backend-dev ---
+import { PdfService } from './services/PDFService';
 import { PostgresInitializer } from './db/PostgresInitializer';
 import { IDataBase } from './db/IDataBase';
+import { CasoService } from './services/CasoService';
+
+// Repositórios do Core
 import { CasoRepositoryPostgres } from './repository/CasoRepositoryPostgres';
 import { AnexoRepositorioPostgres } from './repository/AnexoRepositorioPostgres';
-import { CasoService } from './services/CasoService';
-// Imports do Módulo de Funcionários
+
+// Módulo de Funcionários
 import { FuncionarioRepositoryPostgres } from './repository/FuncionarioRepositoryPostgres';
 import { FuncionarioService } from './services/FuncionarioService';
 import { ControladorFuncionario } from './controllers/FuncionarioController';
-// Imports do Módulo de Credenciais
+
+// Módulo de Credenciais
 import { CredencialRepositoryPostgres } from './repository/CredencialRepositoryPostgres';
 import { CredencialService } from './services/CredencialService';
 import { ControladorCredencial } from './controllers/ControladorCredencial';
+
+// Módulo de Histórico
 import { HistoricoController } from './controllers/HistoricoController';
 import { HistoricoRepositoryPostgres } from './repository/HistoricoRepositoryPostgres';
-
+import { Pool } from 'pg';
 
 const windowManager = new WindowManager();
 const userController = new UserController();
@@ -35,6 +49,7 @@ let casoController: CasoController;
 let funcionarioController: ControladorFuncionario;
 let credencialController: ControladorCredencial;
 let historicoController: HistoricoController;
+let orgaoController: ControladorOrgao;
 
 // Repository para salvar casos no BD
 
@@ -56,20 +71,28 @@ function createMainWindow(): void {
 async function bootstrap(): Promise<void> {
   Logger.info('Iniciando aplicação...');
   
-  // Inicializar banco de dados
+  // 1. Inicializar banco de dados
   const dbInitializer: IDataBase = new PostgresInitializer();
   await dbInitializer.initialize();
   
-  // Inicializar repository com a pool existente do PostgreSQL
+  // 2. Preparar o Pool de Conexão
   const postgresInitializer = dbInitializer as PostgresInitializer;
-  casoRepository = new CasoRepositoryPostgres(postgresInitializer.pool());
-  anexoRepository = new AnexoRepositorioPostgres(postgresInitializer.pool());
-  Logger.info('Repositories inicializados com sucesso!');
-  const funcionarioRepository = new FuncionarioRepositoryPostgres(postgresInitializer.pool());
-  const credencialRepository = new CredencialRepositoryPostgres(postgresInitializer.pool());
-  Logger.info('Repository inicializado com sucesso!');
+  const dbPool = postgresInitializer.pool(); // Pegamos o pool uma vez para usar em todos
+
+  // 3. Inicializar Repositórios (Injeção de Dependência)
+  casoRepository = new CasoRepositoryPostgres(dbPool);
+  anexoRepository = new AnexoRepositorioPostgres(dbPool);
   
-  // Inicializar controllers
+  const funcionarioRepository = new FuncionarioRepositoryPostgres(dbPool);
+  const credencialRepository = new CredencialRepositoryPostgres(dbPool);
+  const historicoPosgres = new HistoricoRepositoryPostgres(dbPool);
+  
+  // --- AQUI ESTÁ A CORREÇÃO ---
+  // Criamos o repositório de Órgão passando o pool, igual aos outros
+  const orgaoRepository = new PostgresOrgaoRepository(dbPool); 
+  Logger.info('Repositories inicializados com sucesso!');
+  
+  // 4. Inicializar Controllers
   assistidaController = new AssistidaController(casoRepository);
   const funcionarioService = new FuncionarioService(funcionarioRepository);
   const credencialService = new CredencialService(credencialRepository);
@@ -77,8 +100,10 @@ async function bootstrap(): Promise<void> {
   casoController = new CasoController(assistidaController.getAssistidaService(), casoRepository, anexoRepository);
   funcionarioController = new ControladorFuncionario(funcionarioService);
   credencialController = new ControladorCredencial(credencialService);
-  const historicoPosgres = new HistoricoRepositoryPostgres(postgresInitializer.pool());
   historicoController = new HistoricoController(historicoPosgres);
+
+  // Instanciamos o Controlador de Órgão passando o repositório criado acima
+  orgaoController = new ControladorOrgao(orgaoRepository);
 
   createMainWindow();
   Logger.info('Aplicação iniciada com sucesso!');
@@ -826,6 +851,60 @@ ipcMain.handle('user:getById', async (_event, id: string) => {
   }
 });
 
+ipcMain.handle('orgao:create', async (_event, data: { nome: string; email: string }) => {
+  try {
+    Logger.info('Requisição para criar órgão da rede de apoio:', data);
+    const result = await orgaoController.cadastrarOrgao(data.nome, data.email);
+
+    if (!result.success || !result.orgao) {
+      return {
+        success: false,
+        error: result.error ?? 'Erro ao cadastrar órgão da rede de apoio',
+      };
+    }
+    
+    const orgao = result.orgao;
+    return {
+      success: true,
+      orgao: {
+        nome: orgao.getNome(),
+        email: orgao.getEmail(),
+      },
+    };
+  } catch (error) {
+    Logger.error('Erro ao criar órgão da rede de apoio:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido',
+    };
+  }
+});
+
+ipcMain.handle('orgao:listarTodos', async () => {
+  try {
+    Logger.info('Requisição para listar órgãos da rede de apoio');
+    const orgaos = await orgaoController.listarOrgaos();
+
+    return {
+      success: true,
+      orgaos: orgaos.map(orgao => ({
+          nome: orgao.getNome(),
+          email: orgao.getEmail(),
+        })
+      ),
+    };
+  } catch (error) {
+    Logger.error('Erro ao listar órgãos da rede de apoio:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido',
+      orgaos: [],
+    };
+  }
+});
+
+// --- HANDLER DA OUTRA BRANCH (Assistida) ---
+
 ipcMain.handle('assistida:listarTodas', async () => {
   try {
     Logger.info('Requisição para listar todas as assistidas');
@@ -943,7 +1022,6 @@ ipcMain.handle('credencial:obter', async () => {
     return { success: false, error: error instanceof Error ? error.message : 'Erro desconhecido' };
   }
 });
-
 // ==========================================
 // WINDOW MANAGEMENT
 // ==========================================
@@ -985,6 +1063,10 @@ ipcMain.on('window:open', (_event, windowName: string) => {
     case 'telaCasosRegistrados':
       windowManager.loadContent('main', 'tela-casos-registrados/index.html');
       break;
+    case 'telaRedeApoio':
+      windowManager.loadContent('main', 'tela-rede-apoio/index.html');
+      break;
+
     case 'telaVisualizarCasosBD':
       windowManager.loadContent('main', 'tela-visualizar-casos-bd/index.html');
       break;

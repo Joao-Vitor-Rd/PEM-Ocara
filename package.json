@@ -19,9 +19,10 @@
   "license": "MIT",
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
+    "@types/dotenv": "^6.1.1",
     "@types/electron": "^1.4.38",
     "@types/jest": "^30.0.0",
-    "@types/node": "^20.19.24",
+    "@types/node": "^20.19.25",
     "@types/nodemailer": "^7.0.4",
     "@types/pdfmake": "^0.2.12",
     "@types/pg": "^8.15.6",
@@ -35,6 +36,7 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "chart.js": "^4.5.1",
+    "dotenv": "^17.2.3",
     "nodemailer": "^7.0.10",
     "pdfmake": "^0.2.20",
     "pg": "^8.16.3"

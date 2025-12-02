@@ -278,3 +278,23 @@ body {
     height: 100px;
     object-fit: contain;
 }
+/* Configuração base para os ícones Material Symbols */
+.material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;        /* tamanho padrão, pode ser sobrescrito */
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+}
+/* Ícone "Rede de Apoio" na sidebar da TELA INICIAL */
+.material-symbols-outlined.icone-rede {
+    font-size: 36px;      /* pode ajustar aqui o tamanho */
+    margin-right: 12px;   /* espaço entre o ícone e o texto */
+    vertical-align: middle;
+}
