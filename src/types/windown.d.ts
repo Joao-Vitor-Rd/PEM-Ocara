@@ -276,6 +276,24 @@ export interface IElectronAPI {
     error?: string;
   }>;
 
+  autenticar: (email: string, senha: string) => Promise<{
+    success: boolean;
+    funcionario?: any;
+    error?: string;
+  }>;
+
+  atualizarPerfil: (dados: {
+    email: string;
+    nome: string;
+    senhaAtual: string;
+    novaSenha?: string;
+    novoEmail?: string;
+  }) => Promise<{
+    success: boolean;
+    funcionario?: any;
+    error?: string;
+  }>;
+
 }
 declare global {
   interface Window {

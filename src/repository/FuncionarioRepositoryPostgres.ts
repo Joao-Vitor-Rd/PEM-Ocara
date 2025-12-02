@@ -84,7 +84,8 @@ export class FuncionarioRepositoryPostgres implements IFuncionarioRepository {
             UPDATE FUNCIONARIO 
             SET nome = COALESCE($2, nome),
                 cargo = COALESCE($3, cargo),
-                senha = COALESCE($4, senha)
+                senha = COALESCE($4, senha),
+                email = COALESCE($5, email)
             WHERE email = $1
             RETURNING *
         `;
@@ -93,7 +94,8 @@ export class FuncionarioRepositoryPostgres implements IFuncionarioRepository {
             email,
             dados.nome,   // Pode ser undefined
             dados.cargo,  // Pode ser undefined
-            dados.senha   // Pode ser undefined
+            dados.senha,  // Pode ser undefined
+            dados.email   // Novo email (opcional)
         ];
 
         try {

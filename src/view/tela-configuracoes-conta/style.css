@@ -171,6 +171,18 @@ body {
     letter-spacing: 0.05em;
 }
 
+.info-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.info-value {
+    font-size: 20px;
+    font-weight: 500;
+    color: #8C73B3;
+}
+
 .info-arrow {
     width: 12px;
     height: 20px;
@@ -407,6 +419,13 @@ body {
     user-select: none;
 }
 
+.modal-hint {
+    font-size: 20px;
+    color: #C94A2C;
+    font-weight: 500;
+    margin: 0;
+}
+
 .form-group input:read-only {
     background-color: #F5F5F5;
     color: #888888;
@@ -448,6 +467,11 @@ body {
     background-color: #9478B6;
     transform: translateY(0);
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.18);
+}
+
+.btn-atualizar.loading {
+    opacity: 0.7;
+    pointer-events: none;
 }
 
 .error-message {

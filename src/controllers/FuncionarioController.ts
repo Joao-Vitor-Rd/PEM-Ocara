@@ -71,6 +71,18 @@ export class ControladorFuncionario {
     }
   }
 
+  public async autenticarFuncionario(email: string, senha: string): Promise<ResultadoOperacao> {
+    if (!email) return { success: false, error: "E-mail é obrigatório." };
+    if (!senha) return { success: false, error: "Senha é obrigatória." };
+
+    try {
+      const funcionario = await this.funcionarioService.autenticar(email, senha);
+      return { success: true, funcionario };
+    } catch (err: any) {
+      return { success: false, error: err.message || "Falha na autenticação." };
+    }
+  }
+
   // 4. ATUALIZAR (Update)
   public async atualizarFuncionario(email: string, dados: any): Promise<ResultadoOperacao> {
     if (!email) return { success: false, error: "Email é obrigatório para atualização." };
@@ -102,18 +114,27 @@ export class ControladorFuncionario {
     const nome = dados.nome;
     const senhaAtual = dados.senhaAtual;
     const novaSenha = dados.novaSenha; // Pode ser vazio se ele só quiser mudar o nome
+    const novoEmail = dados.novoEmail;
 
     // Validação
     if (!email) return { success: false, error: "Sessão inválida (email ausente)." };
     if (!nome) return { success: false, error: "O nome não pode ficar vazio." };
     if (!senhaAtual) return { success: false, error: "É necessário informar a senha atual para salvar alterações." };
 
+    if (novoEmail) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(novoEmail)) {
+        return { success: false, error: "Informe um e-mail válido." };
+      }
+    }
+
     try {
       const atualizado = await this.funcionarioService.atualizarPerfil(
         email,
         nome,
         senhaAtual,
-        novaSenha
+        novaSenha,
+        novoEmail
       );
       return { success: true, funcionario: atualizado };
     } catch (err: any) {

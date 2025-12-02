@@ -187,10 +187,30 @@ body {
   font-size: 32px;
   font-weight: 500;
   cursor: pointer;
+  transition: opacity 0.2s ease;
 }
 
 .button button:active {
   transform: translateY(1px);
+}
+
+.button button.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.login-error {
+  min-height: 24px;
+  margin: 12px 30px 0 30px;
+  font-size: 18px;
+  color: #ffdddd;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.login-error.visible {
+  opacity: 1;
 }
 
 .card-2 footer {

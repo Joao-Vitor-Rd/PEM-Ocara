@@ -1,4 +1,3 @@
-import bcrypt from 'bcrypt';
 import { Funcionario, PerfilUsuario } from '../models/Funcionario';
 import { IFuncionarioRepository } from '../repository/IFuncionarioRepository';
 
@@ -9,7 +8,6 @@ import { IFuncionarioRepository } from '../repository/IFuncionarioRepository';
  */
 export class FuncionarioService {
     private repository: IFuncionarioRepository;
-    private readonly SALT_ROUNDS = 10; // Custo do processamento do hash
 
     constructor(repository: IFuncionarioRepository) {
         this.repository = repository;
@@ -18,7 +16,7 @@ export class FuncionarioService {
     /**
      * Cria um novo funcionário.
      * - Verifica duplicidade de e-mail.
-     * - Criptografa a senha antes de salvar.
+        * - Armazena a senha exatamente como foi informada.
      */
     async create(dados: Funcionario): Promise<any> {
         // 1. Verificar se o funcionário já existe
@@ -32,13 +30,7 @@ export class FuncionarioService {
             throw new Error('Cargo inválido.');
         }
 
-        // 3. Criptografar a senha (RNF-01)
-        const senhaHash = await bcrypt.hash(dados.senha, this.SALT_ROUNDS);
-        
-        // Atualiza a senha no objeto antes de passar pro repositório
-        dados.senha = senhaHash;
-
-        // 4. Salvar
+        // 3. Salvar diretamente (sem hash)
         const criado = await this.repository.create(dados);
 
         // 5. Retornar sem a senha (Segurança)
@@ -67,8 +59,8 @@ export class FuncionarioService {
 
     /**
      * Atualiza dados do funcionário.
-     * - Se a senha for informada, faz o hash novamente.
-     * - Se não for, mantém a antiga.
+        * - Se a senha for informada, substitui diretamente pelo novo valor.
+        * - Se não for, mantém a antiga.
      */
     async update(email: string, dados: Partial<Funcionario>): Promise<any> {
         const funcionarioAtual = await this.repository.findByEmail(email);
@@ -76,11 +68,8 @@ export class FuncionarioService {
             throw new Error('Funcionário não encontrado.');
         }
 
-        // Se estiver atualizando a senha, precisamos fazer o hash novamente
-        // Verificamos se 'dados.senha' existe e não é vazio
-        if (dados.senha && dados.senha.trim() !== '') {
-            dados.senha = await bcrypt.hash(dados.senha, this.SALT_ROUNDS);
-        } else {
+        // Se estiver atualizando a senha, aceita o novo valor diretamente
+        if (!dados.senha || dados.senha.trim() === '') {
             // Se não enviou senha nova, remove do objeto de atualização para não sobrepor com vazio/null
             delete dados.senha; 
         }
@@ -116,7 +105,8 @@ export class FuncionarioService {
         email: string, 
         nome: string, 
         senhaAtual: string, 
-        novaSenha?: string
+        novaSenha?: string,
+        novoEmail?: string
     ): Promise<any> {
         // 1. Buscar usuário no banco
         const funcionario = await this.repository.findByEmail(email);
@@ -125,8 +115,7 @@ export class FuncionarioService {
         }
 
         // 2. VERIFICAÇÃO DE SEGURANÇA (Obrigatória)
-        // Compara a senha informada com o hash salvo no banco
-        const senhaValida = await bcrypt.compare(senhaAtual, funcionario.senha);
+        const senhaValida = senhaAtual === funcionario.senha;
         if (!senhaValida) {
             throw new Error('A senha atual está incorreta.');
         }
@@ -137,15 +126,46 @@ export class FuncionarioService {
             nome: nome
         };
 
+        if (novoEmail && novoEmail.trim() !== '' && novoEmail !== email) {
+            const existente = await this.repository.findByEmail(novoEmail);
+            if (existente) {
+                throw new Error('Já existe um usuário com este e-mail.');
+            }
+            dadosAtualizacao.email = novoEmail.trim();
+        }
+
         // 4. Se o usuário quiser trocar a senha
         if (novaSenha && novaSenha.trim() !== '') {
-            const novaSenhaHash = await bcrypt.hash(novaSenha, this.SALT_ROUNDS);
-            dadosAtualizacao.senha = novaSenhaHash;
+            dadosAtualizacao.senha = novaSenha;
         }
 
         // 5. Salvar alterações
         const atualizado = await this.repository.update(email, dadosAtualizacao);
 
         return this.removerSenha(atualizado);
+    }
+
+    /**
+     * Realiza a autenticação básica de um funcionário.
+     * - Busca o usuário pelo e-mail
+        * - Compara a senha informada com o valor salvo
+     * - Retorna os dados sanitizados (sem senha) quando válido
+     */
+    async autenticar(email: string, senha: string): Promise<any> {
+        if (!email || !senha) {
+            throw new Error('Informe e-mail e senha.');
+        }
+
+        const funcionario = await this.repository.findByEmail(email);
+        if (!funcionario) {
+            throw new Error('Usuário não encontrado.');
+        }
+
+        const senhaValida = senha === funcionario.senha;
+        if (!senhaValida) {
+            throw new Error('Senha inválida.');
+        }
+
+        return this.removerSenha(funcionario);
     }
 }

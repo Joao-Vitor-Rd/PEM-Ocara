@@ -5,6 +5,7 @@ const cadastroAssistidaBtn = document.getElementById('telaCadastroAssistida') as
 const assistidasBtn = document.getElementById('listarAssistidas') as HTMLLIElement;
 const redeApoioBtn = document.getElementById('telaRedeApoio') as HTMLLIElement;
 const estatisticasBtn = document.getElementById('telaEstatisticas') as HTMLLIElement;
+const contaBtn = document.getElementById('telaConta') as HTMLLIElement;
 
 // 2. Lógica do Botão Estatísticas (Da outra branch)
 if (estatisticasBtn) {
@@ -34,5 +35,12 @@ if (cadastroAssistidaBtn) {
     cadastroAssistidaBtn.addEventListener('click', async (event) => {
         event.preventDefault(); 
         await window.api.openWindow('telaCadastroAssistida');
+    });
+}
+
+if (contaBtn) {
+    contaBtn.addEventListener('click', async (event) => {
+        event.preventDefault();
+        await window.api.openWindow('telaConfiguracoesConta');
     });
 }

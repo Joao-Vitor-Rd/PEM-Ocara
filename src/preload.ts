@@ -134,5 +134,11 @@ contextBridge.exposeInMainWorld('api', {
   removeUserCreatedListener: () => {
     ipcRenderer.removeAllListeners('user:created');
   },
+
+  autenticar: (email: string, senha: string) =>
+    ipcRenderer.invoke('auth:login', { email, senha }),
+
+  atualizarPerfil: (dados: { email: string; nome: string; senhaAtual: string; novaSenha?: string; novoEmail?: string }) =>
+    ipcRenderer.invoke('user:update-profile', dados),
 });
 

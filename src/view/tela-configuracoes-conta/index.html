@@ -19,7 +19,7 @@
             </header>
             <nav class="sidebar-nav">
                 <ul>
-                    <li><a href="#">
+                    <li id="navAssistidas"><a href="#">
                             <svg viewBox="0 0 34 34" xmlns="http://www.w3.org/2000/svg" role="img"
                                 aria-label="Assistidas">
                                 <path fill="currentColor"
@@ -28,7 +28,7 @@
                             <span>Assistidas</span></a>
                     </li>
 
-                    <li><a href="#">
+                    <li id="navRede"><a href="#">
                             <svg class="icone-rede-apoio" viewBox="0 0 50 25" xmlns="http://www.w3.org/2000/svg"
                                 role="img" aria-label="Rede de Apoio">
                                 <path fill="currentColor"
@@ -37,7 +37,7 @@
                             <span>Rede de Apoio</span></a>
                     </li>
 
-                    <li><a href="#">
+                    <li id="navInicial"><a href="#">
                             <svg viewBox="0 0 34 38" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Inicial">
                                 <path fill="currentColor"
                                     d="M4.16667 33.3333H10.4167V20.8333H22.9167V33.3333H29.1667V14.5833L16.6667 5.20833L4.16667 14.5833V33.3333ZM0 37.5V12.5L16.6667 0L33.3333 12.5V37.5H18.75V25H14.5833V37.5H0Z" />
@@ -45,7 +45,7 @@
                             <span>Inicial</span></a>
                     </li>
 
-                    <li><a href="#">
+                    <li id="navEstatisticas"><a href="#">
                             <svg viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" role="img"
                                 aria-label="Estatísticas">
                                 <path fill="currentColor"
@@ -74,13 +74,19 @@
             <section class="info-section">
                 <h2>Informações Básicas</h2>
                 <div class="info-item" id="itemNome">
-                    <span class="info-label">Nome</span>
+                    <div class="info-text">
+                        <span class="info-label">Nome</span>
+                        <span class="info-value" id="infoNome"></span>
+                    </div>
                     <svg class="info-arrow" viewBox="0 0 10 18" xmlns="http://www.w3.org/2000/svg">
                         <path d="M1 1L9 9L1 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                     </svg>
                 </div>
                     <div class="info-item" id="itemCargo">
-                        <span class="info-label">Cargo</span>
+                        <div class="info-text">
+                            <span class="info-label">Cargo</span>
+                            <span class="info-value" id="infoCargo"></span>
+                        </div>
                         <svg class="info-arrow" viewBox="0 0 10 18" xmlns="http://www.w3.org/2000/svg">
                             <path d="M1 1L9 9L1 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                         </svg>
@@ -90,7 +96,10 @@
             <section class="info-section">
                 <h2>Informações da Conta</h2>
                 <div class="info-item" id="itemEmail">
-                    <span class="info-label">E-mail</span>
+                    <div class="info-text">
+                        <span class="info-label">E-mail</span>
+                        <span class="info-value" id="infoEmail"></span>
+                    </div>
                     <svg class="info-arrow" viewBox="0 0 10 18" xmlns="http://www.w3.org/2000/svg">
                         <path d="M1 1L9 9L1 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                     </svg>
@@ -118,7 +127,7 @@
                     </svg>
                 </div>
             </section>
-                <button class="logout-button">Sair da Conta</button>
+                <button class="logout-button" id="logoutButton">Sair da Conta</button>
         </main>
 
         <div id="modalNome" class="modal-overlay">
@@ -130,11 +139,18 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="nomeAtual">Nome Atual</label>
-                        <input type="text" id="nomeAtual" value="Maria do Rosário Sousa" readonly>
+                        <input type="text" id="nomeAtual" value="" readonly>
                     </div>
                     <div class="form-group">
                         <label for="novoNome">Novo Nome</label>
                         <input type="text" id="novoNome" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="senhaConfirmacaoNome">Senha Atual</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="senhaConfirmacaoNome" placeholder="Digite sua senha para confirmar">
+                            <span class="password-toggle-icon"></span>
+                        </div>
                     </div>
                     <p id="nomeError" class="error-message"></p>
                     <button class="btn-atualizar">Atualizar Dados</button>
@@ -151,7 +167,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="cargoAtual">Cargo Atual</label>
-                        <input type="text" id="cargoAtual" value="Assistente Social" readonly>
+                        <input type="text" id="cargoAtual" value="" readonly>
                     </div>
                     <div class="form-group">
                         <label for="novoCargo">Novo Cargo</label>
@@ -207,14 +223,21 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="emailAtual">E-mail Atual</label>
-                            <input type="text" id="emailAtual" value="mariadorosariosousa@gmail.com" readonly>
+                            <input type="text" id="emailAtual" value="" readonly>
                         </div>
                         <div class="form-group">
                             <label for="novoEmail">Novo E-mail</label>
                             <input type="text" id="novoEmail" placeholder="">
                         </div>
+                        <div class="form-group">
+                            <label for="senhaConfirmacaoEmail">Senha Atual</label>
+                            <div class="input-wrapper">
+                                <input type="password" id="senhaConfirmacaoEmail" placeholder="Digite sua senha para confirmar">
+                                <span class="password-toggle-icon"></span>
+                            </div>
+                        </div>
                         <p id="emailError" class="error-message"></p>
-                        <button class="btn-atualizar">Atualizar Dados</button>
+                        <button class="btn-atualizar" id="solicitarEmailBtn">Atualizar E-mail</button>
                     </div>
                 </div>
             </div>
