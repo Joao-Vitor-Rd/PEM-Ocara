@@ -104,21 +104,17 @@ body {
     flex-shrink: 0;
 }
 
-/*MAIN =================*/
+/*=======================MAIN =================*/
 .main-content {
     flex-grow: 1;
     overflow-y: auto;
     overflow-x: hidden;
-
     display: flex;
     flex-direction: column;
     padding: 50px 80px;
     box-sizing: border-box;
-
     max-width: 1920px;
-
     margin: 0 auto;
-
 }
 
 .icone-material {
@@ -221,9 +217,6 @@ body {
     width: 100%;
 }
 
-
-
-
 .informacoes h2 {
     font-weight: 600;
     font-size: 36px;
@@ -293,7 +286,7 @@ body {
 
 .modal-select-container {
     width: 1166px;
-    height: 504px;
+    height: 540spx;
     background: #FFFFFF;
     border-radius: 0;
     display: flex;
@@ -351,6 +344,9 @@ body {
     flex-direction: column;
     gap: 10px;
     padding-right: 10px;
+    padding-top: 20px;
+    min-height: 0;
+
 }
 
 .assistida-item {
@@ -392,7 +388,6 @@ body {
     transform: translate(-50%, -50%);
 }
 
-
 .item-text {
     font-family: 'Poppins', sans-serif;
     font-weight: 500;
@@ -419,6 +414,7 @@ body {
     color: #FFFFFF;
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
     transition: transform 0.1s;
+    margin-top: 15px;
 }
 
 .btn-adicionar-caso:active {
@@ -431,67 +427,6 @@ body {
     font-variation-settings: 'FILL'0, 'wght'400, 'GRAD'0, 'opsz'38;
 }
 
-/*=========== POP CONFIRMACAO ============*/
-
-.popup-confirmacao {
-    display: none !important;
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    z-index: 10000 !important;
-    justify-content: center !important;
-    align-items: center !important;
-}
-
-.popup-confirmacao.visible {
-    display: flex !important;
-}
-
-.popup-confirmacao-content {
-    background-color: #FFFFFF !important;
-    border-radius: 15px !important;
-    padding: 40px 50px !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
-    text-align: center !important;
-    max-width: 600px !important;
-    width: 90% !important;
-    transform: scale(0.9) !important;
-    transition: transform 0.3s ease-out !important;
-}
-
-
-.popup-confirmacao.visible .popup-confirmacao-content {
-    transform: scale(1) !important;
-}
-
-.popup-confirmacao-content p {
-    font-size: 22px !important;
-    color: #63468C !important;
-    font-weight: 500 !important;
-    margin: 0 0 30px 0 !important;
-    line-height: 1.4 !important;
-}
-
-.popup-btn-ok {
-    background-color: #63468C !important;
-    color: #FFFFFF !important;
-    border: none !important;
-    border-radius: 10px !important;
-    padding: 12px 50px !important;
-    font-size: 18px !important;
-    font-weight: 600 !important;
-    cursor: pointer !important;
-    transition: background-color 0.2s ease-in-out !important;
-    font-family: 'Poppins', sans-serif !important;
-}
-
-.popup-btn-ok:hover {
-    background-color: #4d3670 !important;
-}
-
 /* ======= ERRO MESSAGE =======*/
 .error-message {
     color: #C94A2C;
@@ -500,11 +435,19 @@ body {
     font-family: 'Poppins', sans-serif;
     width: 100%;
     text-align: left;
-    display: none;
+    visibility: hidden;
+    height: 0;
+    overflow: hidden;
     margin: 0;
-    margin-bottom: 10px;
     padding-left: 5px;
+    transition: height 0.2s ease, visibility 0.2s ease;
+}
+
+.error-message.show {
+    visibility: visible;
+    height: auto;
     min-height: 24px;
+    margin-bottom: 10px;
 }
 
 /* ======================================================= */

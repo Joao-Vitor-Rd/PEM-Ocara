@@ -1,4 +1,3 @@
-// Espera o HTML carregar antes de executar
 document.addEventListener("DOMContentLoaded", () => {
   // --- ELEMENTOS DO MODAL DE SELEÇÃO ---
   const btnOpenSelect = document.querySelector(".btn-existente"); // Botão que abre o modal
@@ -7,10 +6,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnConfirmar = document.getElementById("btnAdicionarCaso"); // Botão "Adicionar Caso"
   const msgErroSelecao = document.getElementById("msgErroSelecao"); // Mensagem de erro
 
-  // --- ELEMENTOS DO POPUP DE CONFIRMAÇÃO ---
-  const popupConfirmacao = document.getElementById("popupConfirmacao"); // Popup de sucesso
-  const popupBtnOk = document.getElementById("popupBtnOk"); // Botão OK do popup
-  const popupMensagem = document.getElementById("popupMensagem"); // Texto do popup
+  // === FUNÇÃO PARA ESCONDER ERRO ===
+  const esconderErro = () => {
+    if (msgErroSelecao) {
+      msgErroSelecao.classList.remove("show");
+      msgErroSelecao.textContent = "";
+    }
+  };
+
+  // === FUNÇÃO PARA MOSTRAR ERRO ===
+  const mostrarErro = (mensagem) => {
+    if (msgErroSelecao) {
+      msgErroSelecao.textContent = mensagem;
+      msgErroSelecao.classList.add("show");
+    }
+  };
 
   // === 1. ABRIR MODAL DE SELEÇÃO ===
   if (btnOpenSelect) {
@@ -23,17 +33,18 @@ document.addEventListener("DOMContentLoaded", () => {
       );
       radios.forEach((radio) => {
         radio.checked = false;
+
         // Adiciona evento para esconder erro quando clicar em qualquer opção
-        radio.addEventListener("change", () => {
-          msgErroSelecao.style.display = "none";
-        });
+        radio.addEventListener("change", esconderErro);
       });
 
       // Esconde mensagem de erro anterior
-      if (msgErroSelecao) msgErroSelecao.style.display = "none";
+      esconderErro();
 
       // Mostra o modal
-      modalSelectOverlay.style.display = "flex";
+      if (modalSelectOverlay) {
+        modalSelectOverlay.style.display = "flex";
+      }
     });
   }
 
@@ -41,7 +52,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // Fecha ao clicar no X
   if (btnCloseSelect) {
     btnCloseSelect.addEventListener("click", () => {
-      modalSelectOverlay.style.display = "none";
+      if (modalSelectOverlay) {
+        modalSelectOverlay.style.display = "none";
+      }
+      esconderErro();
     });
   }
 
@@ -49,32 +63,11 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("click", (e) => {
     if (e.target === modalSelectOverlay) {
       modalSelectOverlay.style.display = "none";
+      esconderErro();
     }
   });
 
-  // === 3. FUNÇÕES DO POPUP DE CONFIRMAÇÃO ===
-  function showPopup(mensagem) {
-    if (popupMensagem) popupMensagem.innerText = mensagem; // Define texto
-    popupConfirmacao.classList.add("visible"); // Mostra popup
-  }
-
-  function hidePopup() {
-    popupConfirmacao.classList.remove("visible"); // Esconde popup
-  }
-
-  // Fecha popup ao clicar no OK
-  if (popupBtnOk) {
-    popupBtnOk.addEventListener("click", hidePopup);
-  }
-
-  // Fecha popup ao clicar fora dele
-  window.addEventListener("click", (e) => {
-    if (e.target === popupConfirmacao) {
-      hidePopup();
-    }
-  });
-
-  // === 4. LÓGICA DO BOTÃO "ADICIONAR CASO" ===
+  // === 3. LÓGICA DO BOTÃO "ADICIONAR CASO" ===
   if (btnConfirmar) {
     btnConfirmar.addEventListener("click", () => {
       // Verifica se alguma opção foi selecionada
@@ -84,13 +77,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (selecionado) {
         // SE HOUVER SELEÇÃO: Fecha modal e mostra popup de sucesso
-        modalSelectOverlay.style.display = "none";
+        if (modalSelectOverlay) {
+          modalSelectOverlay.style.display = "none";
+        }
+        esconderErro();
         showPopup("Caso cadastrado com sucesso!");
       } else {
         // SE NÃO HOUVER SELEÇÃO: Mostra mensagem de erro
-        if (msgErroSelecao) {
-          msgErroSelecao.style.display = "block";
-        }
+        mostrarErro("Por favor, selecione uma assistida antes de continuar.");
       }
     });
   }
