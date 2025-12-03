@@ -518,7 +518,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordModalManager = new ModalManager('modalSenha', 'itemSenha');
 
     initializePasswordIcons();
-    registrarNavegacao();
 
     const logoutButton = document.getElementById('logoutButton');
     if (logoutButton) {
@@ -535,20 +534,3 @@ document.addEventListener('DOMContentLoaded', () => {
     atualizarResumo();
 });
 
-function registrarNavegacao() {
-    const rotas = [
-        { id: 'navAssistidas', janela: 'telaListarAssistidas' },
-        { id: 'navRede', janela: 'telaRedeApoio' },
-        { id: 'navInicial', janela: 'telaInicial' },
-        { id: 'navEstatisticas', janela: 'telaEstatisticas' }
-    ];
-
-    rotas.forEach(({ id, janela }) => {
-        const elemento = document.getElementById(id);
-        if (!elemento) return;
-        elemento.addEventListener('click', async (event) => {
-            event.preventDefault();
-            await window.api.openWindow(janela);
-        });
-    });
-}

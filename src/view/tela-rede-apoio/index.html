@@ -36,7 +36,7 @@
         <nav class="sidebar-nav">
           <ul>
             <!-- assistidas -->
-            <li id="menuAssistidas">
+            <li id="menuAssistidas" data-window-target="telaListarAssistidas">
               <a href="#">
                 <svg
                   viewBox="0 0 34 34"
@@ -55,7 +55,7 @@
             </li>
 
             <!-- rede de apoio -->
-            <li id="telaRedeApoio">
+            <li id="telaRedeApoio" data-window-target="telaRedeApoio">
               <a href="#" class="active">
                 <span class="material-symbols-outlined icone-rede">groups</span>
                 <span>Rede de Apoio</span>
@@ -63,7 +63,7 @@
             </li>
 
             <!-- inicial -->
-            <li id="menuInicial">
+            <li id="menuInicial" data-window-target="telaInicial">
               <a href="#">
                 <svg
                   viewBox="0 0 34 38"
@@ -83,7 +83,7 @@
 
             <!-- estatisticas -->
 
-            <li>
+            <li id="telaEstatisticas" data-window-target="telaEstatisticas">
               <a href="#">
                 <svg
                   viewBox="0 0 38 38"
@@ -103,7 +103,7 @@
 
             <!-- conta -->
 
-            <li>
+            <li id="telaConta" data-window-target="telaConfiguracoesConta">
               <a href="#">
                 <svg
                   viewBox="0 0 42 36"
@@ -226,6 +226,7 @@
       </div>
     </div>
 
+    <script src="../../../dist/utils/sidebarNavigation.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

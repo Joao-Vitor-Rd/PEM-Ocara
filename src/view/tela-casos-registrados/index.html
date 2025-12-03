@@ -38,7 +38,7 @@
           <ul>
             <!-- assistidas -->
 
-            <li id="listarAssistidas">
+            <li id="listarAssistidas" data-window-target="telaListarAssistidas">
               <a href="#" class="active">
                 <svg
                   viewBox="0 0 34 34"
@@ -58,7 +58,7 @@
 
             <!-- rede de apoio -->
 
-            <li>
+            <li id="telaRedeApoio" data-window-target="telaRedeApoio">
               <a href="#">
                 <svg
                   class="icone-rede-apoio"
@@ -79,7 +79,7 @@
 
             <!-- inicial -->
 
-            <li id="telaInicial">
+            <li id="telaInicial" data-window-target="telaInicial">
               <a href="#">
                 <svg
                   viewBox="0 0 34 38"
@@ -99,7 +99,7 @@
 
             <!-- estatisticas -->
 
-            <li>
+            <li id="telaEstatisticas" data-window-target="telaEstatisticas">
               <a href="#">
                 <svg
                   viewBox="0 0 38 38"
@@ -119,7 +119,7 @@
 
             <!-- conta -->
 
-            <li>
+            <li id="telaConta" data-window-target="telaConfiguracoesConta">
               <a href="#">
                 <svg
                   viewBox="0 0 42 36"
@@ -218,6 +218,7 @@
         </footer>
       </main>
     </div>
+    <script src="../../../dist/utils/sidebarNavigation.js"></script>
     <script type="module" src="../../../dist/renderers/telaCasosRegistradosRenderer.js"></script>
   </body>
 </html>

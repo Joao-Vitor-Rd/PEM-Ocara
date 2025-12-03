@@ -20,7 +20,7 @@
             <nav class="sidebar-nav">
                 <ul>
                     <!-- assistidas -->
-                    <li id="listarAssistidas">
+                    <li id="listarAssistidas" data-window-target="telaListarAssistidas">
                         <a href="#" class="active">
                             <svg viewBox="0 0 34 34" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Assistidas">
                                 <path
@@ -34,7 +34,7 @@
                     </li>
 
                     <!-- rede de apoio -->
-                    <li>
+                    <li id="telaRedeApoio" data-window-target="telaRedeApoio">
                         <a href="#">
                             <svg class="icone-rede-apoio" viewBox="0 0 50 25" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Rede de Apoio">
                                 <path
@@ -48,7 +48,7 @@
                     </li>
 
                     <!-- inicial -->
-                    <li id="telaInicial">
+                    <li id="telaInicial" data-window-target="telaInicial">
                         <a href="#">
                             <svg viewBox="0 0 34 38" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Inicial">
                                 <path
@@ -62,7 +62,7 @@
                     </li>
 
                     <!-- estatisticas -->
-                    <li>
+                    <li id="telaEstatisticas" data-window-target="telaEstatisticas">
                         <a href="#">
                             <svg viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Estatísticas">
                                 <path
@@ -76,7 +76,7 @@
                     </li>
 
                     <!-- conta -->
-                    <li>
+                    <li id="telaConta" data-window-target="telaConfiguracoesConta">
                         <a href="#">
                             <svg viewBox="0 0 42 36" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Conta">
                                 <path
@@ -245,6 +245,7 @@
         </div> 
     </div>
 
+    <script src="../../../dist/utils/sidebarNavigation.js"></script>
     <script src="script.js"></script>
     <script type="module" src="../../../dist/renderers/informacoesCasoRenderer.js"></script>
 </body>
