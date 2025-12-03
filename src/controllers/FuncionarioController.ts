@@ -1,5 +1,6 @@
 import { FuncionarioService } from "../services/FuncionarioService";
 import { Funcionario, PerfilUsuario } from "../models/Funcionario";
+import { IFuncionarioRepository } from "../repository/IFuncionarioRepository";
 
 interface ResultadoOperacao {
     success: boolean;
@@ -95,6 +96,32 @@ export class ControladorFuncionario {
                 success: false, 
                 error: err.message || "Erro ao atualizar perfil." 
             };
+        }
+    }
+
+    public async atualizarFuncionario(email: string, dados: any): Promise<ResultadoOperacao> {
+        if (!email) return { success: false, error: "Email é obrigatório para atualização." };
+
+        try {
+            const atualizado = await this.funcionarioService.update(email, dados);
+            return { success: true, funcionario: atualizado };
+        } catch (err: any) {
+            return { success: false, error: err.message || "Erro ao atualizar funcionário." };
+        }
+    }
+
+    public async buscarPorEmail(email: string): Promise<ResultadoOperacao> {
+        if (!email) return { success: false, error: "Email não informado." };
+
+        try {
+            const func = await this.funcionarioService.buscarPorEmail(email); 
+            
+            if (!func) {
+                return { success: false, error: "Funcionário não encontrado." };
+            }
+            return { success: true, funcionario: func };
+        } catch (err: any) {
+            return { success: false, error: err.message };
         }
     }
     

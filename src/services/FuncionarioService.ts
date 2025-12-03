@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { Funcionario, PerfilUsuario } from "../models/Funcionario";
+import { Funcionario } from "../models/Funcionario";
 import { IFuncionarioRepository } from "../repository/IFuncionarioRepository";
 
 export class FuncionarioService {
@@ -7,6 +7,13 @@ export class FuncionarioService {
 
     constructor(funcionarioRepository: IFuncionarioRepository) {
         this.funcionarioRepository = funcionarioRepository;
+    }
+
+    public async buscarPorEmail(email: string): Promise<any | null> {
+        const funcionario = await this.funcionarioRepository.findByEmail(email);
+
+        if (!funcionario) return null;
+        return this.sanitizarFuncionario(funcionario);
     }
 
     public async autenticar(email: string, senhaPura: string): Promise<Omit<Funcionario, 'senha'>> {
@@ -43,6 +50,21 @@ export class FuncionarioService {
         const novoFuncionario = await this.funcionarioRepository.create(dados);
 
         return this.sanitizarFuncionario(novoFuncionario);
+    }
+
+    public async update(email: string, dados: Partial<Funcionario>): Promise<any> {
+        const funcionario = await this.funcionarioRepository.findByEmail(email);
+        if (!funcionario) {
+            throw new Error('Funcionário não encontrado.');
+        }
+        if (dados.senha && dados.senha.trim() !== '') {
+            dados.senha = await bcrypt.hash(dados.senha, 10);
+        } else {
+            delete dados.senha;
+        }
+
+        const atualizado = await this.funcionarioRepository.update(email, dados);
+        return this.sanitizarFuncionario(atualizado);
     }
 
     public async atualizarPerfil(
@@ -87,8 +109,8 @@ export class FuncionarioService {
     }
 
     public async findAll(): Promise<Omit<Funcionario, 'senha'>[]> {
-        const funcionarios = await this.funcionarioRepository.findAll();
-        return funcionarios.map(f => this.sanitizarFuncionario(f));
+        const lista = await this.funcionarioRepository.findAll();
+        return lista.map(f => this.sanitizarFuncionario(f));
     }
 
     public async delete(email: string): Promise<void> {

@@ -952,7 +952,6 @@ ipcMain.handle('get-funcionarios', async () => {
   }
 });
 
-// 3. Buscar por Email
 ipcMain.handle('get-funcionario-email', async (_event, email: string) => {
   try {
     Logger.info('Requisição para buscar funcionário por email:', email);
@@ -963,7 +962,6 @@ ipcMain.handle('get-funcionario-email', async (_event, email: string) => {
   }
 });
 
-// 4. Atualizar
 ipcMain.handle('update-funcionario', async (_event, { email, dados }) => {
   try {
     Logger.info('Requisição para atualizar funcionário:', email);
@@ -974,7 +972,6 @@ ipcMain.handle('update-funcionario', async (_event, { email, dados }) => {
   }
 });
 
-// 5. Deletar
 ipcMain.handle('delete-funcionario', async (_event, email: string) => {
   try {
     Logger.info('Requisição para deletar funcionário:', email);
@@ -985,11 +982,9 @@ ipcMain.handle('delete-funcionario', async (_event, email: string) => {
   }
 });
 
-// 6. Atualizar Perfil (Autoatendimento / Minha Conta)
 ipcMain.handle('user:update-profile', async (_event, data) => {
   try {
     Logger.info('Requisição de atualização de perfil para:', data.email);
-    // O front deve enviar: { email, nome, senhaAtual, novaSenha }
     return await funcionarioController.atualizarMinhaConta(data.email, data);
   } catch (error) {
     Logger.error('Erro no handler user:update-profile:', error);
