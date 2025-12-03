@@ -1,0 +1,301 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap');
+
+/* Estrutura Base da Página */
+body {
+    font-family: sans-serif;
+    background-color: #63468C;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.titulo {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 500;
+    width: 95%;
+    max-width: 1800px;
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: 15px;
+    color: #63468C;
+    width: 95%;
+    max-width: 1800px;
+    margin: 0 auto 25px auto;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 100px - 97px - 25px);
+    overflow: hidden;
+}
+
+.etapas {
+    display: flex;
+    justify-content: center;
+    background-color: #CEB3F2;
+    border-radius: 15px 15px 0px 0px;
+    padding: 20px 0;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.etapas::before {
+    content: '';
+    position: absolute;
+    border-radius: 15px 50px 50px 0px;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: calc(5% + 45% * 0.9 / 5 + 30px);
+    background-color: #F2B872;
+    z-index: 0;
+}
+
+.lista-etapas {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    list-style: none;
+    padding: 0 20px;
+    margin: 0;
+    width: 90%;
+    position: relative;
+    z-index: 1;
+}
+
+.etapa,
+.etapa-ativa {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #CEB3F2;
+    background-color: #B291DE;
+    flex-shrink: 0;
+}
+
+.etapa-ativa {
+    background-color: #ffffff;
+    color: #F2B872;
+}
+
+.numero {
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.form {
+    padding-top: 20px;
+    overflow-y: auto;
+    flex: 1;
+    border-radius: 0 0 25px 0;
+}
+
+.form::-webkit-scrollbar-track {
+    border-radius: 0 0 25px 0;
+}
+
+/* Conteúdo do Card (Apagar e Substituir) */
+.titulo-sessao {
+    text-align: center;
+}
+
+.titulo-sessao h6 {
+    font-size: 24px;
+    font-weight: 300;
+    color: #B291DE;
+    margin: 0;
+}
+
+.titulo-sessao h4 {
+    font-size: 32px;
+    font-weight: 400;
+    color: #63468C;
+    margin: 0;
+}
+
+.perguntas {
+    padding: 20px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 19px;
+    border-radius: 25px;
+}
+
+.pergunta {
+    display: flex;
+    flex-direction: column;
+}
+
+.pergunta label {
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 8px;
+}
+
+.pergunta input {
+    height: 60px;
+    border-radius: 10px;
+    border: 1px solid #63468C;
+    padding: 0 12px;
+    font-size: 24px;
+    width: 100%;
+    color: #838383;
+}
+
+.pergunta input:focus {
+    outline: none;
+    border-color: #838383;
+    color: black;
+}
+
+.pergunta-conjunta {
+    display: flex;
+    flex-direction: row;
+    gap: 19px;
+    width: 100%;
+}
+
+.pergunta-conjunta .pergunta {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.pergunta-conjunta #pergunta-marcar {
+    flex: 1;
+}
+
+#pergunta-marcar {
+    display: flex;
+    flex-direction: column;
+}
+
+#pergunta-marcar > label {
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 24px;
+}
+
+#pergunta-marcar .opções {
+    display: flex;
+    flex-direction: row;
+    font-size: 24px;
+}
+
+#pergunta-marcar .opções .opção {
+    display: flex;
+    flex-direction: row;
+    gap: 19px;
+    width: 100%;
+}
+
+#pergunta-marcar .opções input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 2px solid #63468C;
+    border-radius: 50%;
+    outline: none;
+    cursor: pointer;
+}
+
+#pergunta-marcar .opções input[type="radio"]:checked {
+    background-color: #63468C;
+    border: 2px solid #63468C;
+    box-shadow: inset 0 0 0 3px white;
+}
+
+.pergunta span {
+    font-size: 24px;
+    color: #a20202;
+    margin-left: 10px;
+    font-weight: 200;
+}
+
+#pergunta-marcar span {
+    font-size: 24px;
+    color: #a20202;
+    margin-left: 10px;
+    font-weight: 200;
+}
+
+.obs {
+    font-size: 18px;
+    color: #838383;
+    text-align: center;
+}
+
+.obs span {
+    color: #a20202;
+    font-weight: 600;
+}
+
+/* Estrutura Base do Footer com Botões */
+footer {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    width: 95%;
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+#proximo {
+    background-color: #F2B872;
+    color: #ffffff;
+    border-radius: 10px;
+    height: 57px;
+    width: 295px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: medium;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.3s ease;
+}
+
+#proximo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#proximo:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#voltar {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: medium;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: text-decoration 0.2s ease;
+}
+
+#voltar:hover {
+    text-decoration: underline;
+}

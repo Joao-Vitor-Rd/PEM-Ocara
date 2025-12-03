@@ -1,0 +1,227 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap');
+
+/* Estrutura Base da Página */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #63468C;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.titulo {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    width: 95%;
+    max-width: 1800px;
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: 15px;
+    color: #63468C;
+    width: 95%;
+    max-width: 1800px;
+    margin: 0 auto 25px auto;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 100px - 97px - 25px);
+    overflow: hidden;
+}
+
+.form {
+    padding-top: 20px;
+    overflow-y: auto;
+    flex: 1;
+    border-radius: 0 0 25px 0;
+}
+
+.form::-webkit-scrollbar-track {
+    border-radius: 0 0 25px 0;
+}
+
+.pdf-viewer-container {
+    padding: 20px 40px 40px 40px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.titulo-sessao h4 {
+    font-size: 32px;
+    font-weight: 400;
+    font-family: 'Poppins', sans-serif;
+    color: #63468C;
+    margin: 0;
+}
+
+.pdf-placeholder {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff; 
+    border: none;
+    border-radius: 0; 
+    color: #838383;
+    font-size: 24px;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    min-height: 400px;
+}
+
+footer {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    width: 95%;
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+.imprimirPDF {
+    background-color: #B291DE;
+    color: #ffffff;
+    border-radius: 10px;
+    height: 57px;
+    padding: 0 30px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.imprimirPDF:hover {
+    background-color: #63468C;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#voltar {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: text-decoration 0.2s ease;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#voltar:hover {
+    text-decoration: underline;
+}
+
+/* Estilos Responsivos */
+@media (max-width: 1024px) {
+    .titulo {
+        font-size: 28px;
+    }
+
+    .pdf-viewer-container {
+        padding: 20px;
+    }
+
+    .pdf-placeholder {
+        font-size: 20px;
+        min-height: 300px;
+    }
+
+    .imprimirPDF, #voltar {
+        font-size: 20px;
+        padding: 0 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .titulo {
+        font-size: 24px;
+    }
+
+    .card {
+        height: auto;
+        min-height: 70vh;
+    }
+
+    footer {
+        flex-direction: column;
+        gap: 10px;
+        position: static;
+        transform: none;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .imprimirPDF {
+        width: 100%;
+        height: 55px;
+    }
+
+    #voltar {
+        font-size: 20px;
+    }
+
+    .pdf-viewer-container {
+        padding: 15px;
+    }
+
+    .pdf-placeholder {
+        font-size: 18px;
+        min-height: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        gap: 5px;
+    }
+
+    .titulo {
+        font-size: 20px;
+    }
+
+    .titulo-sessao h4 {
+        font-size: 22px;
+    }
+
+    .pdf-placeholder {
+        font-size: 16px;
+        min-height: 200px;
+    }
+
+    .imprimirPDF,
+    #voltar {
+        font-size: 18px;
+        padding: 0 15px;
+        height: 50px;
+    }
+
+    footer {
+        padding: 5px;
+    }
+}

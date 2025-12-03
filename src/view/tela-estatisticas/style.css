@@ -1,0 +1,568 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700;800&display=swap');
+
+html,
+html,
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #FFFFFF;
+    overflow-x: hidden;
+}
+
+
+/* --- Layout Principal do App --- */
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* --- Barra Lateral / Sidebar ============) --- */
+
+/* --- / Sidebar ============) --- */
+.sidebar {
+    width: clamp(340px, 28vw, 480px);
+    background-color: #63468C;
+    color: #FFFFFF;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 50px 0;
+    box-sizing: border-box;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+
+}
+
+.sidebar-header {
+    text-align: center;
+    width: 84%;
+    margin: 0 auto;
+    flex-shrink: 0;
+    padding-top: 8px;
+}
+
+.sidebar-header h1 {
+    font-weight: 300;
+    font-size: 48px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+
+.sidebar-divider {
+    border: none;
+    height: 4px;
+    background-color: #FFFFFF;
+    opacity: 1;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.sidebar-nav {
+    flex-grow: 1;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-around;
+}
+
+.sidebar-nav a {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+    text-decoration: none;
+    color: #FFFFFF;
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: 0.050em;
+    padding: 15px 40px;
+    border-radius: 50px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.sidebar-nav a.active {
+    background-color: #FFFFFF;
+    color: #63468C;
+}
+
+.sidebar-nav a:not(.active):hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-nav svg {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+
+.main-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    display: flex;
+    flex-direction: column;
+    padding: 50px 80px;
+    box-sizing: border-box;
+
+    max-width: 1920px;
+
+    margin: 0 auto;
+
+}
+
+.icone-rede {
+    width: 40px;
+    height: 40px;
+    font-size: 40px;
+    flex-shrink: 0;
+    transform: scale(1.35);
+
+}
+
+
+/*============ COMECA A TELA INICIAL ==========*/
+
+.cabecalho {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+
+/* TITULO**/
+.titulo {
+    width: 100%;
+    text-align: left;
+}
+
+
+/* TITULO PEM OCARA*/
+.titulo h1 {
+    font-weight: 800;
+    font-size: 64px;
+    color: #63468C;
+    text-shadow: 0px 5px 10px rgba(178, 145, 222, 0.6);
+    margin: -25px 0 0 0;
+    letter-spacing: 0.05em;
+}
+
+
+.linha-purple {
+    border: none;
+    height: 5px;
+    background-color: #63468C;
+    opacity: 1;
+    margin: 30px 0;
+
+}
+
+.title-divider {
+    border: none;
+    border-top: 5px solid #63468C;
+    width: 100%;
+    opacity: 1;
+    margin: 12px 0 20px 0;
+}
+
+.summary-box-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.summary-box {
+    width: 100%;
+    max-width: 660px;
+    min-height: 160px;
+    background: #F2B872;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    gap: 20px;
+}
+
+.summary-box p {
+    margin: 0;
+    font-family: 'Poppins';
+    color: #FFFFFF;
+    font-size: 36px;
+    line-height: 54px;
+    font-weight: 500;
+}
+
+
+.summary-box p strong {
+    font-weight: 700;
+}
+
+.summary-labels {
+    font-weight: 500;
+    text-align: right;
+}
+
+.graph-section {
+    margin-bottom: 30px;
+}
+
+.summary-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.graph-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+}
+
+.btn-filtro {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    background: none;
+    border: none;
+    color: #63468C;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-filtro .material-symbols-outlined {
+    font-size: 38px;
+}
+
+.graph-placeholder {
+    width: 100%;
+    max-width: 860px;
+    height: 532px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #f8f8f8;
+    border: 2px dashed #ddd;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #aaa;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+}
+
+/*===== rodape ======== */
+
+.rodape {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-top: 70px;
+}
+
+.rodape p {
+    flex-grow: 1;
+    text-align: center;
+    font-weight: 700;
+    font-size: 16px;
+    color: #63468C;
+}
+
+.logo-esquerda {
+    width: 112px;
+    height: 80px;
+    object-fit: contain;
+}
+
+.logo-direita {
+    width: 133px;
+    height: 100px;
+    object-fit: contain;
+}
+
+/* ---==============  Modal de Filtros (Estatísticas) ========= --- */
+
+.modal-filtro-content {
+    width: 90%;
+    max-width: 382px !important;
+    height: auto;
+    border-radius: 15px !important;
+    background-color: #fff;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    justify-content: flex-end;
+    align-items: flex-start;
+    z-index: 9999;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 8px 8px 0 0;
+    box-sizing: border-box;
+}
+
+.modal-overlay.visible {
+    display: flex;
+}
+
+.modal-body-filtro {
+    /* Padding e espaçamento interno */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    padding: 20px;
+}
+
+.filter-title {
+    /* Filtrar por Região / Filtrar por Tempo */
+    font-family: 'Poppins';
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 30px;
+    color: #63468C;
+    margin: 1;
+}
+
+/* --- Chips de Seleção (Regiões) --- */
+.chip-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+}
+
+.chip {
+    height: 26px;
+    border-radius: 10px;
+    padding: 0 10px;
+    cursor: pointer;
+    font-family: 'Poppins';
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    background: #FFFFFF;
+    border: 1px solid #838383;
+    color: #838383;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.chip-active {
+    border: 1px solid #63468C;
+    color: #63468C;
+}
+
+/* --- Estilos para o Ícone de Check nos Chips --- */
+.chip .material-symbols-outlined {
+    display: none;
+    /* Escondido por padrão */
+    font-size: 18px;
+    /* Tamanho do ícone */
+    font-weight: bold;
+}
+
+.chip.chip-active .material-symbols-outlined {
+    display: inline-block;
+    /* Mostra apenas quando selecionado */
+}
+
+/* --- Input de Data (Tempo) --- */
+.date-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+
+.date-input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    width: 100%;
+}
+
+.date-input-group label {
+    font-family: 'Poppins';
+    font-weight: 400;
+    font-size: 16px;
+    color: #63468C;
+    width: 50px;
+}
+
+.date-input-group input[type="date"] {
+    flex-grow: 1;
+    height: 30px;
+    padding: 0 10px;
+    border: 1px solid #63468C;
+    border-radius: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins';
+    font-weight: 500;
+    font-size: 15px;
+    color: #838383;
+    width: 100%;
+}
+
+.modal-filtro-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.btn-clear-filtro {
+    background: none;
+    border: none;
+    font-family: 'Poppins';
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    color: #E66953;
+    text-align: left;
+    cursor: pointer;
+}
+
+.action-buttons-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+}
+
+.btn-cancelar,
+.btn-aplicar {
+    background: none;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-family: 'Poppins';
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.btn-cancelar {
+    font-weight: 400;
+    color: #838383;
+}
+
+.btn-aplicar {
+    font-weight: 600;
+    color: #63468C;
+}
+
+/* ===== Popup de Confirmação ============ */
+
+.popup-confirmacao {
+    display: none !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    z-index: 10000 !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.popup-confirmacao.visible {
+    display: flex !important;
+}
+
+.popup-confirmacao-content {
+    background-color: #FFFFFF !important;
+    border-radius: 15px !important;
+    padding: 40px 50px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+    text-align: center !important;
+    max-width: 600px !important;
+    width: 90% !important;
+    transform: scale(0.9) !important;
+    transition: transform 0.3s ease-out !important;
+}
+
+.popup-confirmacao.visible .popup-confirmacao-content {
+    transform: scale(1) !important;
+}
+
+.popup-confirmacao-content p {
+    font-size: 22px !important;
+    color: #63468C !important;
+    font-weight: 500 !important;
+    margin: 0 0 30px 0 !important;
+    line-height: 1.4 !important;
+
+}
+
+.popup-btn-ok {
+    background-color: #63468C !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 12px 50px !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s ease-in-out !important;
+    font-family: 'Poppins', sans-serif !important;
+}
+
+.popup-btn-ok:hover {
+    background-color: #4d3670 !important;
+}
+
+.error-message {
+    color: #E66953;
+    font-size: 14px;
+    margin-top: 5px;
+    font-family: 'Poppins';
+    font-weight: 400;
+    width: 100%;
+    text-align: left;
+}
+
+#grafico-evolucao {
+  width: 100%;
+  max-width: 1200px;
+  height: 400px;
+}

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizar Casos - BD</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+
+        <!-- sidebar -->
+        <aside class="sidebar">
+            <header class="sidebar-header">
+                <h1>PEM OCARA</h1>
+                <hr class="sidebar-divider">
+            </header>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li id="voltar-inicio"><a href="#">
+                            <svg viewBox="0 0 34 38" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Voltar">
+                                <path fill="currentColor"
+                                    d="M4.16667 33.3333H10.4167V20.8333H22.9167V33.3333H29.1667V14.5833L16.6667 5.20833L4.16667 14.5833V33.3333ZM0 37.5V12.5L16.6667 0L33.3333 12.5V37.5H18.75V25H14.5833V37.5H0Z" />
+                            </svg>
+                            <span>Voltar</span></a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+
+            <section class="cabecalho">
+                <div class="titulo">
+                    <h2>Casos Salvos no</h2>
+                    <h1>Banco de Dados</h1>
+                </div>
+                <hr class="linha">
+            </section>
+
+            <section class="conteudo-casos">
+                <div class="filtros">
+                    <input type="text" id="buscar-caso" placeholder="Buscar por nome da assistida, protocolo ou agressor...">
+                    <button id="recarregar-dados" class="btn-recarregar">🔄 Recarregar</button>
+                </div>
+
+                <div id="casos-container" class="casos-grid">
+                    <div class="loading">
+                        <p>Carregando casos do banco de dados...</p>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="rodape">
+                <p>Integração com PostgreSQL - Casos Salvos no BD</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Modal para exibir detalhes do caso -->
+    <div id="modal-detalhes" class="modal">
+        <div class="modal-conteudo">
+            <button class="modal-fechar">&times;</button>
+            <div id="detalhes-caso-conteudo" class="detalhes-conteudo">
+                <!-- Será preenchido dinamicamente -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../../../dist/renderers/visualizarCasosBDRenderer.js"></script>
+</body>
+
+</html>

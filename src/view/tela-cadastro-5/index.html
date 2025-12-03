@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>Formulário de Atendimento</title>
+</head>
+<body>
+    <!-- TÍTULO E ETAPAS (ESTRUTURA BASE) -->
+    <div class="titulo">
+        <p>ANEXOS</p>
+    </div>
+
+    <div class="card">
+        <nav class="etapas">
+            <ol class="lista-etapas">
+                <li class="etapa">
+                    <span class="numero">1</span>
+                </li>
+                <li class="etapa">
+                    <span class="numero">2</span>
+                </li>
+                <li class="etapa">
+                    <span class="numero">3</span>
+                </li>
+                <li class="etapa">
+                    <span class="numero">4</span>
+                </li>
+                <li class="etapa-ativa">
+                    <span class="numero">5</span>
+                </li>
+                <li class="etapa">
+                    <span class="numero">6</span>
+                </li>
+            </ol>
+        </nav>
+
+        <div class="form">
+        <!-- CONTEÚDO DENTRO DO CARD (APAGAR E SUBSTITUIR) -->
+            <div class="upload-container">
+                <div class="upload-area" id="areaUpload">
+                    <div class="upload-icon">
+                        <svg width="120" height="120" viewBox="0 -960 960 960" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="#63468C" d="M440-200h80v-167l64 64 56-57-160-160-160 160 57 56 63-63v167ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z"/>
+                        </svg>
+                    </div>
+                <h3>Arraste e Solte os Arquivos Aqui</h3>
+                <p>Arquivos Suportados: PDF, DOCX, TXT, JPEG, PNG, MP3, MP4, M4A, ZIP</p>
+                <button type="button" class="escolher-arquivo">Escolher Arquivo</button>
+                    <input type="file" id="fileInput" accept=".pdf,.docx,.txt,.jpeg,.jpg,.png,.mp3,.mp4,.m4a,.zip" multiple hidden>
+                    <p style="font-size: 14px; margin-top: 15px;">Tamanho Máximo para arquivo: 100MB</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER COM BOTÕES DE NAVEGAÇÃO (ESTRUTURA BASE) -->
+    <footer>
+        <button id="voltar">< Voltar</button>
+        <!-- é aqui -->
+        <button id="proximo">Próximo ></button>
+    </footer>
+    <script type="module" src="../../../dist/renderers/telaCadastro5Renderer.js"></script>
+</body>
+</html>
