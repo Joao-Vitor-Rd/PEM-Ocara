@@ -11,7 +11,6 @@ import { CasoController } from './controllers/CasoController';
 // --- Módulo Rede de Apoio (Seus Imports) ---
 import { ControladorOrgao } from './controllers/ControladorOrgao';
 import { PostgresOrgaoRepository } from './repository/PostgresOrgaoRepository';
-import './database/db'; // Sua conexão para a Rede de Apoio
 
 // --- Módulos da Branch backend-dev ---
 import { PdfService } from './services/PDFService';

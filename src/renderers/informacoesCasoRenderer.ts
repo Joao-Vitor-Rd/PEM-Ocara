@@ -205,13 +205,16 @@ class UIManager {
                 `;
             } else {
                 const nomeExibicao = Formatters.truncarNome(arquivo.nome);
+                const iconeVisibilidade = (arquivo.visibilidade && arquivo.visibilidade === 'publico') ? 'visibility' : 'visibility_lock';
+                console.log('Renderizando arquivo:', arquivo.nome, 'visibilidade:', arquivo.visibilidade, 'ícone:', iconeVisibilidade);
                 li.innerHTML = `
                     <div class="icone-arquivo"><img src="${icone}" alt="file"></div>
                     <div class="info-arquivo">
-                        <span class="nome-arquivo" title="${arquivo.nome}" data-action="download" style="cursor: pointer;">${nomeExibicao}</span>
+                        <span class="nome-arquivo" title="${arquivo.nome}">${nomeExibicao}</span>
                         <span class="tamanho-arquivo">${arquivo.tamanho}</span>
                     </div>
-                    <button class="btn-apagar" id="deletar-anexo" type="button" data-action="delete"><span class="material-symbols-outlined">delete_forever</span></button>
+                    <button class="btn-visibilidade" type="button" data-action="visibility"><span class="material-symbols-outlined">${iconeVisibilidade}</span></button>
+                    <button class="btn-apagar" type="button" data-action="delete"><span class="material-symbols-outlined">delete_forever</span></button>
                 `;
             }
             container.appendChild(li);
@@ -269,6 +272,8 @@ class UIManager {
                     await callbacks.onCancel(arquivoId);
                 } else if (action === 'delete' && callbacks.onDelete) {
                     await callbacks.onDelete(arquivoId);
+                } else if (action === 'visibility' && callbacks.onVisibility) {
+                    await callbacks.onVisibility(arquivoId);
                 }
             };
             
@@ -366,6 +371,19 @@ class UIManager {
             }
         }
     }
+
+    toggleModalPrivacidade(mostrar: any) {
+        const modal = document.getElementById('modalPrivacidade');
+        if (modal) {
+            if (mostrar) {
+                modal.classList.add('visible');
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.classList.remove('visible');
+                document.body.style.overflow = '';
+            }
+        }
+    }
 }
 
 // Inicialização da página
@@ -414,7 +432,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         tamanho: Formatters.tamanhoArquivo(anexo.tamanho),
                         status: 'upado',
                         progresso: 100,
-                        tipo: anexo.tipo
+                        tipo: anexo.tipo,
+                        visibilidade: anexo.visibilidade || 'privado'
                         // Dados NÃO são enviados - será baixado quando clicado
                     };
                     
@@ -430,6 +449,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
+
+    let arquivoPrivacidadeAtual: any = null;
 
     const acoesArquivo = {
         onDelete: async (id: any) => {
@@ -458,6 +479,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 fileManager.remover(id);
                 atualizarTela();
             }
+        },
+        onVisibility: async (id: any) => {
+            arquivoPrivacidadeAtual = fileManager.buscarPorId(id);
+            uiManager.toggleModalPrivacidade(true);
         }
     };
 
@@ -499,6 +524,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 status: 'upando',
                 progresso: 0,
                 tipo: file.type,
+                visibilidade: 'privado',
                 rawFile: file
             };
 
@@ -557,6 +583,105 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
+
+    // Botão Acessar Formulário
+    const btnAcessarForm = document.getElementById('acessar-form');
+    if (btnAcessarForm) {
+        btnAcessarForm.addEventListener('click', () => {
+            console.log('Acessar formulário clicado');
+            window.api.openWindow("telaInformacoesCaso");
+        });
+    }
+
+    // Botão Editar Formulário
+    const btnEditarForm = document.getElementById('editar-form');
+    if (btnEditarForm) {
+        btnEditarForm.addEventListener('click', () => {
+            const modalEditarFormulario = document.getElementById('modalEditarFormulario');
+            if (modalEditarFormulario) {
+                modalEditarFormulario.classList.add('visible');
+            }
+        });
+    }
+
+    // Botão Alterar Privacidade
+    const btnAlterarPrivacidade = document.getElementById('alterar-privacidade');
+    if (btnAlterarPrivacidade) {
+        btnAlterarPrivacidade.addEventListener('click', () => {
+            const modalPrivacidadeFormulario = document.getElementById('modalPrivacidadeFormulario');
+            if (modalPrivacidadeFormulario) {
+                modalPrivacidadeFormulario.classList.add('visible');
+            }
+        });
+    }
+
+    // Fechar modals ao clicar no X
+    const btnFecharModalEditarFormulario = document.getElementById('fecharModalEditarFormulario');
+    if (btnFecharModalEditarFormulario) {
+        btnFecharModalEditarFormulario.addEventListener('click', () => {
+            const modalEditarFormulario = document.getElementById('modalEditarFormulario');
+            if (modalEditarFormulario) {
+                modalEditarFormulario.classList.remove('visible');
+            }
+        });
+    }
+
+    const btnFecharModalPrivacidadeFormulario = document.getElementById('fecharModalPrivacidadeFormulario');
+    if (btnFecharModalPrivacidadeFormulario) {
+        btnFecharModalPrivacidadeFormulario.addEventListener('click', () => {
+            const modalPrivacidadeFormulario = document.getElementById('modalPrivacidadeFormulario');
+            if (modalPrivacidadeFormulario) {
+                modalPrivacidadeFormulario.classList.remove('visible');
+            }
+        });
+    }
+
+    // Fechar modals ao clicar fora do conteúdo
+    const modalEditarFormulario = document.getElementById('modalEditarFormulario');
+    if (modalEditarFormulario) {
+        modalEditarFormulario.addEventListener('click', (e: any) => {
+            if (e.target === modalEditarFormulario) {
+                modalEditarFormulario.classList.remove('visible');
+            }
+        });
+    }
+
+    const modalPrivacidadeFormulario = document.getElementById('modalPrivacidadeFormulario');
+    if (modalPrivacidadeFormulario) {
+        modalPrivacidadeFormulario.addEventListener('click', (e: any) => {
+            if (e.target === modalPrivacidadeFormulario) {
+                modalPrivacidadeFormulario.classList.remove('visible');
+            }
+        });
+    }
+
+    const btnSalvarPrivacidade = document.querySelector('#modalPrivacidade button');
+    if (btnSalvarPrivacidade) {
+        (btnSalvarPrivacidade as HTMLElement).onclick = async () => {
+            console.log('🔒 btnSalvarPrivacidade clicado');
+            console.log('arquivoPrivacidadeAtual:', arquivoPrivacidadeAtual);
+            
+            const radioSelecionado = document.querySelector('input[name="privacidade"]:checked') as HTMLInputElement;
+            console.log('radioSelecionado:', radioSelecionado?.value);
+            
+            if (radioSelecionado && arquivoPrivacidadeAtual) {
+                const tipoPrivacidade = radioSelecionado.value === 'publico' ? 'público' : 'privado';
+                
+                // Atualiza o estado do arquivo
+                console.log('ANTES:', arquivoPrivacidadeAtual.visibilidade);
+                arquivoPrivacidadeAtual.visibilidade = radioSelecionado.value;
+                console.log('DEPOIS:', arquivoPrivacidadeAtual.visibilidade);
+                
+                // Re-renderiza para mudar o ícone
+                atualizarTela();
+                
+                uiManager.toggleModalPrivacidade(false);
+                uiManager.mostrarPopup(`Anexo definido como ${tipoPrivacidade} com sucesso!`);
+            } else {
+                console.warn('❌ Não conseguiu atualizar - radioSelecionado:', !!radioSelecionado, 'arquivoPrivacidadeAtual:', !!arquivoPrivacidadeAtual);
+            }
+        };
+    }
 
     // Botões de anexar
     const btnAnexarProva = document.getElementById('anexar-prova');
@@ -620,6 +745,38 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const btnFecharEncaminhamento = document.getElementById('fecharModalEncaminhamento');
     if (btnFecharEncaminhamento) btnFecharEncaminhamento.onclick = () => uiManager.toggleModalEncaminhamento(false);
+
+    const btnFecharPrivacidade = document.getElementById('fecharModalPrivacidade');
+    if (btnFecharPrivacidade) btnFecharPrivacidade.onclick = () => uiManager.toggleModalPrivacidade(false);
+
+    // Botão Salvar Alterações do Modal de Privacidade do Formulário
+    const btnSalvarPrivacidadeForm = document.getElementById('modal-privacidade-form');
+    if (btnSalvarPrivacidadeForm) {
+        btnSalvarPrivacidadeForm.addEventListener('click', () => {
+            // Captura todas as configurações selecionadas
+            const configuracao = {
+                padrao: (document.querySelector('input[name="visibilidade-padrao"]:checked') as HTMLInputElement)?.id || 'privado-padrao',
+                assistida: (document.querySelector('input[name="visibilidade-assistida"]:checked') as HTMLInputElement)?.id || 'privado-assistida',
+                caso: (document.querySelector('input[name="visibilidade-caso"]:checked') as HTMLInputElement)?.id || 'privado-caso',
+                outras: (document.querySelector('input[name="visibilidade-outras"]:checked') as HTMLInputElement)?.id || 'privado-outras',
+                profissional: (document.querySelector('input[name="visibilidade-profissional"]:checked') as HTMLInputElement)?.id || 'privado-profissional'
+            };
+
+            // Salva no localStorage
+            localStorage.setItem('configuracaoPrivacidadeFormulario', JSON.stringify(configuracao));
+
+            console.log('Configurações de privacidade salvas:', configuracao);
+
+            // Fecha o modal
+            const modalPrivacidadeFormulario = document.getElementById('modalPrivacidadeFormulario');
+            if (modalPrivacidadeFormulario) {
+                modalPrivacidadeFormulario.classList.remove('visible');
+            }
+
+            // Mostra mensagem de sucesso
+            uiManager.mostrarPopup('Configurações de privacidade salvas com sucesso!');
+        });
+    }
 
     // Dropdown de anexos no modal
     const botaoDropdownAnexo = document.getElementById('botaoAnexo');
@@ -725,6 +882,65 @@ document.addEventListener('DOMContentLoaded', async () => {
     const redesContatadas = document.getElementById('redes-contatadas');
     if (redesContatadas && !redesContatadas.textContent.trim()) {
         redesContatadas.textContent = 'Nenhuma rede de apoio foi contatada até o momento';
+    }
+
+    // Controle de Visibilidade Padrão e Etapas Específicas
+    const radiosPadrao = document.querySelectorAll('input[name="visibilidade-padrao"]');
+    const radiosEtapas = document.querySelectorAll('.visibilidade-etapa');
+
+    // Quando clicar em qualquer opção da Visibilidade Padrão, ativa/desativa todas as etapas
+    radiosPadrao.forEach((radio: any) => {
+        radio.addEventListener('change', (e: any) => {
+            const isPublico = (e.target as HTMLInputElement).id === 'publico-padrao';
+            
+            // Atualiza todas as etapas específicas
+            radiosEtapas.forEach((etapa: any) => {
+                if (isPublico && (etapa as HTMLInputElement).id.includes('publico')) {
+                    (etapa as HTMLInputElement).checked = true;
+                } else if (!isPublico && (etapa as HTMLInputElement).id.includes('privado')) {
+                    (etapa as HTMLInputElement).checked = true;
+                }
+            });
+        });
+    });
+
+    // Carregar configurações salvas ao abrir o modal de privacidade do formulário
+    if (btnAlterarPrivacidade) {
+        btnAlterarPrivacidade.addEventListener('click', () => {
+            // Carrega as configurações salvas do localStorage
+            const configSalva = localStorage.getItem('configuracaoPrivacidadeFormulario');
+            if (configSalva) {
+                try {
+                    const config = JSON.parse(configSalva);
+                    
+                    // Restaura visibilidade padrão
+                    if (config.padrao) {
+                        const radioPadrao = document.getElementById(config.padrao) as HTMLInputElement;
+                        if (radioPadrao) radioPadrao.checked = true;
+                    }
+                    
+                    // Restaura cada etapa específica
+                    if (config.assistida) {
+                        const radioAssistida = document.getElementById(config.assistida) as HTMLInputElement;
+                        if (radioAssistida) radioAssistida.checked = true;
+                    }
+                    if (config.caso) {
+                        const radioCaso = document.getElementById(config.caso) as HTMLInputElement;
+                        if (radioCaso) radioCaso.checked = true;
+                    }
+                    if (config.outras) {
+                        const radioOutras = document.getElementById(config.outras) as HTMLInputElement;
+                        if (radioOutras) radioOutras.checked = true;
+                    }
+                    if (config.profissional) {
+                        const radioProfissional = document.getElementById(config.profissional) as HTMLInputElement;
+                        if (radioProfissional) radioProfissional.checked = true;
+                    }
+                } catch (error) {
+                    console.error('Erro ao carregar configurações:', error);
+                }
+            }
+        });
     }
     
     // 🔄 CARREGAR ANEXOS DO BANCO QUANDO A PÁGINA INICIA

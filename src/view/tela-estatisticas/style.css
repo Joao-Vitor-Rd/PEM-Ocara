@@ -566,3 +566,8 @@ body {
   max-width: 1200px;
   height: 400px;
 }
+
+/* Esconder apenas os graph-header dentro dos graph-section */
+.graph-section .graph-header {
+  display: none;
+}
