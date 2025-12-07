@@ -17,4 +17,12 @@ export class HistoricoService {
         }
     }
 
+    async listarHistorico(pagina: number = 1, itensPorPagina: number = 10): Promise<any> {
+        try {
+            return await this.historicoRepository.listar(pagina, itensPorPagina);
+        } catch (error) {
+            throw new Error(`Erro ao listar histórico: ${error}`);
+        }
+    }
+
 }

@@ -23,4 +23,17 @@ export interface IHistoricoRepository {
      */
     atualizar(caso: Caso): Promise<number>;
 
+    /**
+     * Lista todos os registros de histórico com paginação
+     * @param pagina - Número da página (começa em 1)
+     * @param itensPorPagina - Quantidade de itens por página (padrão: 10)
+     * @returns Promise com array de registros e informações de paginação
+     */
+    listar(pagina: number, itensPorPagina: number): Promise<{
+        registros: any[];
+        totalRegistros: number;
+        totalPaginas: number;
+        paginaAtual: number;
+    }>;
+
 }

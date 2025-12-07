@@ -343,6 +343,25 @@ ipcMain.handle('historico:salvar', async(_event, dados: any) => {
   }
 });
 
+ipcMain.handle('historico:listar', async(_event, pagina: number = 1, itensPorPagina: number = 10) => {
+  try {
+    Logger.info(`Requisição para listar histórico - Página: ${pagina}, Itens por página: ${itensPorPagina}`);
+    
+    const resultado = await historicoController.handlerListarHistorico(pagina, itensPorPagina);
+    
+    return {
+      success: true,
+      data: resultado
+    };
+  } catch (error) {
+    Logger.error('Erro ao listar histórico:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido ao listar histórico'
+    };
+  }
+});
+
 ipcMain.handle('caso:obterPorProtocoloAssistida', async(_event, protocoloAssistida: number) => {
   try {
     Logger.info('Requisição para buscar casos por protocolo da assistida:', protocoloAssistida);
@@ -1164,6 +1183,9 @@ ipcMain.on('window:open', (_event, windowName: string) => {
       break;
     case 'telaLogin':
       windowManager.loadContent('main', 'tela-login/index.html');
+      break;
+    case 'historicoMudancas':
+      windowManager.loadContent('main', 'tela-historico/index.html');
       break;
     default:
       console.log('tela desconhecida:', windowName);

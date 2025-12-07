@@ -14,4 +14,8 @@ export class HistoricoController {
         // caso já contém todos os campos necessários (idCaso, idAssistida, emailFuncionario, etc)
         return this.historicoService.salvarHistorico(caso);
     }
+
+    handlerListarHistorico(pagina: number = 1, itensPorPagina: number = 10): Promise<any> {
+        return this.historicoService.listarHistorico(pagina, itensPorPagina);
+    }
 }

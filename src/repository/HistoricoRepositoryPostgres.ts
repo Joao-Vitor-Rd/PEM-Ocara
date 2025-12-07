@@ -197,4 +197,59 @@ export class HistoricoRepositoryPostgres implements IHistoricoRepository {
         throw new Error("Método não implementado.");
     }
 
+    async listar(pagina: number = 1, itensPorPagina: number = 10): Promise<{
+        registros: any[];
+        totalRegistros: number;
+        totalPaginas: number;
+        paginaAtual: number;
+    }> {
+        try {
+            // Validar parâmetros
+            pagina = Math.max(1, pagina || 1);
+            itensPorPagina = Math.max(1, itensPorPagina || 10);
+
+            // Calcular offset
+            const offset = (pagina - 1) * itensPorPagina;
+
+            // Contar total de registros
+            const countQuery = 'SELECT COUNT(*) as total FROM HISTORICO';
+            const countResult = await this.pool.query(countQuery);
+            const totalRegistros = parseInt(countResult.rows[0].total, 10);
+            const totalPaginas = Math.ceil(totalRegistros / itensPorPagina);
+
+            // Validar página
+            if (pagina > totalPaginas && totalRegistros > 0) {
+                throw new Error(`Página ${pagina} não existe. Total de páginas: ${totalPaginas}`);
+            }
+
+            // Buscar registros com JOIN para obter nomes e dados
+            const query = `
+                SELECT 
+                    h.id,
+                    h.id_caso,
+                    h.id_assistida,
+                    h.id_func,
+                    h.tipo,
+                    h.campo,
+                    h.mudanca,
+                    f.nome
+                FROM HISTORICO h
+                LEFT JOIN FUNCIONARIO f ON h.id_func = f.email
+                ORDER BY h.id DESC
+                LIMIT $1 OFFSET $2
+            `;
+            const result = await this.pool.query(query, [itensPorPagina, offset]);
+
+            return {
+                registros: result.rows,
+                totalRegistros,
+                totalPaginas,
+                paginaAtual: pagina
+            };
+        } catch (erro) {
+            console.error('❌ Erro ao listar histórico:', erro);
+            throw erro;
+        }
+    }
+
 }

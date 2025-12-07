@@ -1,18 +1,8 @@
-// 1. GERADOR DE DADOS
-const historicoDados = [];
-for (let i = 1; i <= 200; i++) {
-    historicoDados.push({
-        id: i,
-        nome: i % 2 === 0 ? "Maria Silva" : "Ana Pereira",
-        caso: `Caso #${100 + i}`,
-        acao: i % 3 === 0 ? "EXCLUIU" : "EDITOU",
-        mudanca: "Alteração de dados cadastrais",
-        campo: "Dados Pessoais"
-    });
-}
-
+// Variáveis globais
+let historicoDados = [];
 let itensPorPagina = 0; 
 let paginaAtual = 1;
+let totalPaginas = 1;
 
 function recalcularItensPorTela() {
     const alturaJanela = window.innerHeight;
@@ -31,35 +21,53 @@ function recalcularItensPorTela() {
 
     if (novosItens !== itensPorPagina) {
         itensPorPagina = novosItens;
-        
-        const totalPaginas = Math.ceil(historicoDados.length / itensPorPagina);
-        if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
-        if (paginaAtual < 1) paginaAtual = 1;
-
-        renderizarTela();
+        paginaAtual = 1;
+        carregarDadosHistorico();
     }
 }
 
+// Carregar dados do histórico do backend
+async function carregarDadosHistorico() {
+    try {
+        const resposta = await window.api.listarHistorico(paginaAtual, itensPorPagina);
+        
+        if (resposta.success && resposta.data) {
+            historicoDados = resposta.data.registros;
+            totalPaginas = resposta.data.totalPaginas;
+            renderizarTela();
+        } else {
+            console.error('Erro ao carregar histórico:', resposta.error);
+            mostrarErro('Erro ao carregar histórico: ' + (resposta.error || 'Desconhecido'));
+        }
+    } catch (erro) {
+        console.error('Erro ao carregar histórico:', erro);
+        mostrarErro('Erro ao conectar ao servidor');
+    }
+}
+
+// Função para renderizar a tabela
 function renderizarTela() {
     const tbody = document.getElementById('tabela-corpo');
     tbody.innerHTML = '';
 
-    const inicio = (paginaAtual - 1) * itensPorPagina;
-    const fim = inicio + itensPorPagina;
-    const dadosDaPagina = historicoDados.slice(inicio, fim);
-
-    dadosDaPagina.forEach(dado => {
+    if (historicoDados.length === 0) {
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${dado.id}</td>
-            <td>${dado.nome}</td>
-            <td>${dado.caso}</td>
-            <td>${dado.acao}</td>
-            <td>${dado.mudanca}</td>
-            <td>${dado.campo}</td>
-        `;
+        tr.innerHTML = '<td colspan="6" style="padding: 40px; color: #999;">Nenhum registro encontrado</td>';
         tbody.appendChild(tr);
-    });
+    } else {
+        historicoDados.forEach(dado => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${dado.id || 'N/A'}</td>
+                <td>${dado.nome || 'N/A'}</td>
+                <td>${dado.id_caso || 'N/A'}</td>
+                <td>${dado.tipo || 'N/A'}</td>
+                <td>${dado.mudanca || 'N/A'}</td>
+                <td>${dado.campo || 'N/A'}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
 
     atualizarControlesPaginacao();
 
@@ -70,24 +78,24 @@ function renderizarTela() {
     }, 50);
 }
 
-// 4. LÓGICA DE PAGINAÇÃO
+// Função para atualizar os controles de paginação
 function atualizarControlesPaginacao() {
     const container = document.getElementById('paginacao-container');
     container.innerHTML = '';
 
-    const totalPaginas = Math.ceil(historicoDados.length / itensPorPagina);
-    
+    // Botão anterior
     const btnAnterior = document.createElement('button');
     btnAnterior.innerHTML = '<span class="material-symbols-outlined arrow-icon">navigate_before</span>';
     btnAnterior.disabled = paginaAtual === 1;
     btnAnterior.onclick = () => {
         if (paginaAtual > 1) {
             paginaAtual--;
-            renderizarTela();
+            carregarDadosHistorico();
         }
     };
     container.appendChild(btnAnterior);
 
+    // Botões de página
     let paginasParaMostrar = [];
     const maxVizinhos = 2;
 
@@ -133,28 +141,37 @@ function atualizarControlesPaginacao() {
             if (pagina === paginaAtual) btn.classList.add('active');
             btn.onclick = () => {
                 paginaAtual = pagina;
-                renderizarTela();
+                carregarDadosHistorico();
             };
         }
         container.appendChild(btn);
     });
 
+    // Botão próximo
     const btnProximo = document.createElement('button');
     btnProximo.innerHTML = '<span class="material-symbols-outlined arrow-icon">navigate_next</span>';
-    btnProximo.disabled = paginaAtual === totalPaginas;
+    btnProximo.disabled = paginaAtual === totalPaginas || totalPaginas === 0;
     btnProximo.onclick = () => {
         if (paginaAtual < totalPaginas) {
             paginaAtual++;
-            renderizarTela();
+            carregarDadosHistorico();
         }
     };
     container.appendChild(btnProximo);
 }
 
+// Função para mostrar erro
+function mostrarErro(mensagem) {
+    const tbody = document.getElementById('tabela-corpo');
+    tbody.innerHTML = `<tr><td colspan="6" style="padding: 40px; color: #d32f2f; text-align: center;">${mensagem}</td></tr>`;
+}
+
+// Inicializar quando DOM estiver pronto
 document.addEventListener('DOMContentLoaded', () => {
     recalcularItensPorTela(); 
 });
 
+// Recalcular quando a janela for redimensionada
 window.addEventListener('resize', () => {
     recalcularItensPorTela();
 });

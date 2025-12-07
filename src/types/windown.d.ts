@@ -290,6 +290,17 @@ export interface IElectronAPI {
     error?: string;
   }>;
 
+  listarHistorico: (pagina?: number, itensPorPagina?: number) => Promise<{
+    success: boolean;
+    data?: {
+      registros: any[];
+      totalRegistros: number;
+      totalPaginas: number;
+      paginaAtual: number;
+    };
+    error?: string;
+  }>;
+
   autenticar: (email: string, senha: string) => Promise<{
     success: boolean;
     funcionario?: any;

@@ -52,6 +52,9 @@ contextBridge.exposeInMainWorld('api', {
   }) =>
     ipcRenderer.invoke('historico:salvar', dados),
 
+  listarHistorico: (pagina: number = 1, itensPorPagina: number = 10) =>
+    ipcRenderer.invoke('historico:listar', pagina, itensPorPagina),
+
   casosPorProtocolo: (protocolo: number) =>
     ipcRenderer.invoke('caso:getByProtocolo', protocolo),
 
