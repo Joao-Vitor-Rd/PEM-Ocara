@@ -16,6 +16,133 @@ export class CasoRepositoryPostgres implements ICasoRepository {
     }
 
     /**
+     * Salva um novo caso no banco de dados com uma assistida existente.
+     * Utiliza transação para garantir consistência dos dados.
+     * 
+     * @param caso - Objeto Caso a ser salvo
+     * @param idAssistidaExistente - ID da assistida que já existe no banco
+     * @returns Promise<{idCaso: number, idAssistida: number}> - IDs do caso salvo e da assistida existente
+     */
+    async salvarComAssistidaExistente(caso: Caso, idAssistidaExistente: number): Promise<{ idCaso: number; idAssistida: number }> {
+        const client = await this.pool.connect();
+        
+        try {
+            await client.query('BEGIN');
+
+            // Verificar se a assistida existente realmente existe
+            const checkQuery = `SELECT id FROM ASSISTIDA WHERE id = $1`;
+            const checkResult = await client.query(checkQuery, [idAssistidaExistente]);
+            
+            if (checkResult.rows.length === 0) {
+                throw new Error(`Assistida com ID ${idAssistidaExistente} não encontrada no banco de dados`);
+            }
+
+            const idAssistida = idAssistidaExistente;
+            console.log(`✓ Usando assistida existente com ID: ${idAssistida}`);
+
+            // Salvar Caso base (usando a assistida existente)
+            const sobreVoce = caso.getSobreVoce();
+            const outrasInfo = caso.getOutrasInformacoesImportantes();
+            
+            const queryCase = `
+                INSERT INTO CASO (
+                    Data, separacao, novo_relac, abrigo, depen_finc, 
+                    mora_risco, medida, frequencia, id_assistida, outras_informacoes
+                ) VALUES (
+                    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
+                ) RETURNING id_caso
+            `;
+
+            const dataOcorrida = caso.getAgressor()?.getDataOcorrida() || caso.getData();
+            
+            const valuesCaso = [
+                dataOcorrida,
+                sobreVoce?.getSeparacaoRecente() || 'Não',
+                sobreVoce?.getNovoRelacionamentoAumentouAgressao() || false,
+                outrasInfo?.getAceitaAbrigamentoTemporario() || false,
+                outrasInfo?.getDependenteFinanceiroAgressor() || false,
+                outrasInfo?.getMoraEmAreaRisco() || 'Não',
+                caso.getSobreAgressor()?.getAgressorCumpriuMedidaProtetiva() || false,
+                caso.getHistoricoViolencia()?.getAgressoesMaisFrequentesUltimamente() || false,
+                idAssistida,
+                caso.getOutrasInformacoesEncaminhamento()?.anotacoesLivres || ''
+            ];
+
+            const resultCaso = await client.query(queryCase, valuesCaso);
+            const idCaso = resultCaso.rows[0].id_caso;
+            console.log(`✓ Caso criado com ID: ${idCaso}`);
+
+            // Resto da lógica de salvamento (igual ao método salvar normal)
+            // 3. Salvar Filhos (da SobreVoce)
+            const faixaFilhos = sobreVoce?.getFaixaFilhos() || [];
+            if (faixaFilhos.length > 0 || sobreVoce?.getTemFilhosComAgressor() || sobreVoce?.getTemFilhosOutroRelacionamento()) {
+                await this.salvarFilhos(client, idAssistida, sobreVoce!);
+            }
+
+            // 4. Salvar Agressor
+            const agressor = caso.getAgressor();
+            if (agressor) {
+                const idAgressor = await this.salvarAgressor(client, idCaso, idAssistida, agressor);
+                
+                // 5. Salvar multivalorados do Agressor
+                const sobreAgressor = caso.getSobreAgressor();
+                if (sobreAgressor) {
+                    await this.salvarSubstanciasAgressor(client, idCaso, idAssistida, idAgressor, sobreAgressor);
+                    await this.salvarAmeacasAgressor(client, idCaso, idAssistida, idAgressor, sobreAgressor);
+                }
+            }
+
+            // 6. Salvar Violência
+            const historicoViolencia = caso.getHistoricoViolencia();
+            if (historicoViolencia) {
+                const idViolencia = await this.salvarViolencia(client, idCaso, idAssistida, historicoViolencia);
+                
+                // 7. Salvar multivalorados da Violência
+                await this.salvarTiposViolencia(client, idViolencia, idCaso, idAssistida, historicoViolencia);
+                await this.salvarAmeacasViolencia(client, idViolencia, idCaso, idAssistida, historicoViolencia);
+                await this.salvarAgressoesViolencia(client, idViolencia, idCaso, idAssistida, historicoViolencia);
+                await this.salvarComportamentosViolencia(client, idViolencia, idCaso, idAssistida, historicoViolencia);
+            }
+
+            // 8. Salvar PreenchimentoProfissional
+            const preenchimentoProfissional = caso.getPreenchimentoProfissional();
+            if (preenchimentoProfissional) {
+                await this.salvarPreenchimentoProfissional(client, idCaso, idAssistida, preenchimentoProfissional);
+            }
+
+            // 9. Salvar Anexos
+            const anexos = caso.getAnexos();
+            console.log(`\n=== SALVANDO ANEXOS ===`);
+            console.log(`Total de anexos no caso: ${anexos.length}`);
+            if (anexos && anexos.length > 0) {
+                for (const anexo of anexos) {
+                    console.log(`Salvando anexo: ${anexo.getNomeAnexo?.()}`);
+                    await this.salvarAnexo(client, idCaso, idAssistida, anexo);
+                }
+                console.log(`✓ Todos os ${anexos.length} anexo(s) foram salvos`);
+            } else {
+                console.log(`⚠ Nenhum anexo para salvar`);
+            }
+
+            // 10. Salvar Funcionário que acompanha o caso
+            if (caso.getProfissionalResponsavel()) {
+                await this.salvarFuncionarioCaso(client, idCaso, caso.getProfissionalResponsavel());
+            }
+
+            await client.query('COMMIT');
+            console.log(`✓ Caso salvo com sucesso com assistida existente. idCaso=${idCaso}, idAssistida=${idAssistida}`);
+            return { idCaso, idAssistida };
+
+        } catch (error) {
+            await client.query('ROLLBACK');
+            console.error('Erro ao salvar caso com assistida existente:', error);
+            throw error;
+        } finally {
+            client.release();
+        }
+    }
+
+    /**
      * Salva um novo caso no banco de dados com todas suas relações.
      * Utiliza transação para garantir consistência dos dados.
      * 
@@ -1038,6 +1165,103 @@ export class CasoRepositoryPostgres implements ICasoRepository {
         } catch (error) {
             console.error('Erro ao recuperar total de casos filtrado:', error);
             return 0;
+        }
+    }
+
+    async getAssistidaById(id: number): Promise<any> {
+        const query = `
+            SELECT 
+                id,
+                nome,
+                idade,
+                endereco,
+                identidadegenero as "identidadeGenero",
+                n_social as "nomeSocial",
+                escolaridade,
+                religiao,
+                nacionalidade,
+                zona as "zonaHabitacao",
+                ocupacao as "profissao",
+                cad_social as "numeroCadastroSocial",
+                dependentes as "quantidadeDependentes",
+                cor_raca as "corRaca",
+                deficiencia as "limitacaoFisica"
+            FROM ASSISTIDA
+            WHERE id = $1
+        `;
+
+        try {
+            const result = await this.pool.query(query, [id]);
+            if (result.rows[0]) {
+                // Garantir que os nomes estejam em camelCase para JavaScript/formulário
+                const assistida = result.rows[0];
+                return {
+                    id: assistida.id,
+                    nome: assistida.nome,
+                    idade: assistida.idade,
+                    endereco: assistida.endereco,
+                    identidadeGenero: assistida.identidadeGenero,
+                    nomeSocial: assistida.nomeSocial,
+                    escolaridade: assistida.escolaridade,
+                    religiao: assistida.religiao,
+                    nacionalidade: assistida.nacionalidade,
+                    zonaHabitacao: assistida.zonaHabitacao,
+                    profissao: assistida.profissao,
+                    numeroCadastroSocial: assistida.numeroCadastroSocial,
+                    quantidadeDependentes: assistida.quantidadeDependentes,
+                    corRaca: assistida.corRaca,
+                    limitacaoFisica: assistida.limitacaoFisica
+                };
+            }
+            return null;
+        } catch (error) {
+            console.error('Erro ao recuperar assistida por ID:', error);
+            return null;
+        }
+    }
+
+    async updateAssistida(id: number, data: any): Promise<any> {
+        const query = `
+            UPDATE ASSISTIDA
+            SET 
+                Nome = $1,
+                Idade = $2,
+                endereco = $3,
+                identidadeGenero = $4,
+                n_social = $5,
+                Escolaridade = $6,
+                Religiao = $7,
+                Nacionalidade = $8,
+                zona = $9,
+                ocupacao = $10,
+                cad_social = $11,
+                Dependentes = $12
+            WHERE id = $13
+            RETURNING *
+        `;
+
+        const values = [
+            data.nome || '',
+            data.idade || 0,
+            data.endereco?.toUpperCase() || '',
+            data.identidadeGenero || '',
+            data.nomeSocial || '',
+            data.escolaridade || '',
+            data.religiao || '',
+            data.nacionalidade || '',
+            data.zonaHabitacao || '',
+            data.profissao || '',
+            data.numeroCadastroSocial || '',
+            data.quantidadeDependentes || 0,
+            id
+        ];
+
+        try {
+            const result = await this.pool.query(query, values);
+            return result.rows[0] || null;
+        } catch (error) {
+            console.error('Erro ao atualizar assistida:', error);
+            throw error;
         }
     }
 

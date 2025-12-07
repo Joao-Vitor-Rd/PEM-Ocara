@@ -127,6 +127,18 @@ export interface IElectronAPI {
     error?: string;
   }>;
 
+  buscarAssistidaPorId: (id: number) => Promise<{
+    success: boolean;
+    assistida?: any;
+    error?: string;
+  }>;
+
+  atualizarAssistida: (data: any) => Promise<{
+    success: boolean;
+    assistida?: any;
+    error?: string;
+  }>;
+
   getEnderecosAssistidas: () => Promise<{
     success: boolean;
     enderecos?: any[];
@@ -228,6 +240,8 @@ export interface IElectronAPI {
     caso: any;
     profissionalResponsavel: string;
     data: Date;
+    modoEdicao?: string;
+    idAssistidaExistente?: number | null;
   }) => Promise<{
     success: boolean;
     idCaso?: number;

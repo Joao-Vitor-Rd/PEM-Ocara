@@ -87,6 +87,16 @@ export class AssistidaService {
         }
     }
 
+    public async getAssistidaPorId(id: number) {
+        try {
+            const assistida = await this.casoRepository.getAssistidaById(id);
+            return assistida;
+        } catch (error) {
+            Logger.error('Erro ao buscar assistida por ID:', error);
+            return null;
+        }
+    }
+
     public async getEnderecosAssistidas(): Promise<any[]> {
         try {
             const enderecos = await this.casoRepository.getEnderecosAssistidas();
@@ -94,6 +104,70 @@ export class AssistidaService {
         } catch (error) {
             Logger.error('Erro ao obter endereços das assistidas:', error);
             return [];
+        }
+    }
+
+    public async atualizarAssistida(
+        id: number,
+        nome: string,
+        idade: number,
+        identidadeGenero: string,
+        nomeSocial: string,
+        endereco: string,
+        escolaridade: string,
+        religiao: string,
+        nacionalidade: string,
+        zonaHabitacao: string,
+        profissao: string,
+        limitacaoFisica: string,
+        numeroCadastroSocial: string,
+        quantidadeDependentes: number,
+        temDependentes: boolean
+    ) {
+        if (!nome || nome.trim() === '') {
+            throw new Error('Nome da assistida é obrigatório');
+        }
+
+        if (!endereco || endereco.trim() === '') {
+            throw new Error('Endereço da assistida é obrigatório');
+        }
+
+        if (!idade || idade <= 0) {
+            throw new Error('Idade da assistida é obrigatória e deve ser maior que zero');
+        }
+
+        if (!profissao || profissao.trim() === '') {
+            throw new Error('Profissão da assistida é obrigatória');
+        }
+
+        if (!nacionalidade || nacionalidade.trim() === '') {
+            throw new Error('Nacionalidade da assistida é obrigatória');
+        }
+
+        const dataAtualizacao = {
+            nome,
+            idade,
+            identidadeGenero,
+            nomeSocial,
+            endereco,
+            escolaridade,
+            religiao,
+            nacionalidade,
+            zonaHabitacao,
+            profissao,
+            limitacaoFisica,
+            numeroCadastroSocial,
+            quantidadeDependentes,
+            temDependentes
+        };
+
+        try {
+            const assistidaAtualizada = await this.casoRepository.updateAssistida(id, dataAtualizacao);
+            Logger.info(`Assistida ${nome} (ID: ${id}) atualizada com sucesso`);
+            return assistidaAtualizada;
+        } catch (error) {
+            Logger.error(`Erro ao atualizar assistida ${id}:`, error);
+            throw error;
         }
     }
 

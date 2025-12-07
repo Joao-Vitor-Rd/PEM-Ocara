@@ -25,8 +25,6 @@
 
   <body>
     <div class="app-container">
-      <!-- sidebar -->
-
       <aside class="sidebar">
         <header class="sidebar-header">
           <h1>PEM OCARA</h1>
@@ -36,9 +34,7 @@
 
         <nav class="sidebar-nav">
           <ul>
-            <!-- assistidas -->
-
-            <li id="tela-assistidas-btn" data-window-target="telaListarAssistidas">
+            <li id="listarAssistidas" data-window-target="telaListarAssistidas">
               <a href="#">
                 <svg
                   viewBox="0 0 34 34"
@@ -56,16 +52,14 @@
               >
             </li>
 
-            <!-- rede de apoio -->
             <li id="telaRedeApoio" data-window-target="telaRedeApoio">
               <a href="#">
                 <span class="material-symbols-outlined icone-rede">groups</span>
                 <span>Rede de Apoio</span>
               </a>
             </li>
-            <!-- inicial -->
-
-            <li id="tela-inicial-btn" data-window-target="telaInicial">
+            
+            <li id="telaInicial" data-window-target="telaInicial">
               <a href="#">
                 <svg
                   viewBox="0 0 34 38"
@@ -82,8 +76,6 @@
                 <span>Inicial</span></a
               >
             </li>
-
-            <!-- estatisticas -->
 
             <li id="telaEstatisticas" data-window-target="telaEstatisticas">
               <a href="#" class="active">
@@ -102,8 +94,6 @@
                 <span>Estatísticas</span></a
               >
             </li>
-
-            <!-- conta -->
 
             <li id="telaConta" data-window-target="telaConfiguracoesConta">
               <a href="#">
@@ -125,7 +115,6 @@
           </ul>
         </nav>
       </aside>
-      <!--============ MAIN ==============-->
       <main class="main-content">
         <section class="cabecalho mb-2">
           <div class="titulo">
@@ -140,7 +129,7 @@
           <section class="summary-box-container">
             <div class="summary-box">
               <p>Total de Casos: <strong id="total-casos"></strong></p>
-              <p>Casos no Mês: <strong id="casos-mes"><strong></p>
+              <p>Casos no Mês: <strong id="casos-mes"></strong></p>
             </div>
           </section>
 
@@ -176,7 +165,6 @@
 
         <section><hr class="linha-purple" /></section>
 
-        <!--=========== RODAPE ===========-->
         <footer class="rodape">
           <img
             src="imgs/logo-ocara.png"
@@ -269,7 +257,6 @@
         </div>
       </div>
     </div>
-    <!--============ POPUP CONFIRMACAO =============-->
     <div class="popup-confirmacao" id="popupConfirmacao">
       <div class="popup-confirmacao-content">
         <p id="popupMensagem">Rede cadastrada com sucesso!</p>

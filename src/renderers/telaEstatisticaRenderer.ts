@@ -21,8 +21,9 @@ function setupFilterModal(): void {
   const chipsRegiao = document.querySelectorAll(".chip");
   const dataInicio = document.getElementById("data-inicio") as HTMLInputElement | null;
   const dataFim = document.getElementById("data-fim") as HTMLInputElement | null;
-  const telaInicialBtn = document.getElementById("tela-inicial-btn") as HTMLLIElement| null;7
-  const telaAssistidasBtn = document.getElementById("tela-assistidas-btn") as HTMLLIElement| null;
+  const telaInicialBtn = document.getElementById("telaInicial") as HTMLLIElement | null;
+  const telaAssistidasBtn = document.getElementById("listarAssistidas") as HTMLLIElement | null;
+  const telaRedeApoioBtn = document.getElementById("telaRedeApoio") as HTMLLIElement | null;
 
   // Validar elementos obrigatórios
   if (!modal || !btnCancelar || !btnAplicar || !btnLimparFiltros || !dataInicio || !dataFim) {
@@ -52,6 +53,10 @@ function setupFilterModal(): void {
 
   telaAssistidasBtn?.addEventListener('click', async (event) => {
     const mudarTela = await window.api.openWindow("telaListarAssistidas");
+  });
+
+  telaRedeApoioBtn?.addEventListener('click', async (event) => {
+    const mudarTela = await window.api.openWindow("telaRedeApoio");
   });
 
   // ===== ESTADO DOS FILTROS =====

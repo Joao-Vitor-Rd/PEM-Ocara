@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700;800&display=swap');
 
 html,
-html,
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
@@ -20,7 +19,7 @@ body {
 
 /* --- Barra Lateral / Sidebar ============) --- */
 .sidebar {
-    width: clamp(340px, 28vw, 480px);
+    width: clamp(280px, 25vw, 480px);
     background-color: #63468C;
     color: #FFFFFF;
     flex-shrink: 0;
@@ -35,9 +34,10 @@ body {
 
 .sidebar-header {
     text-align: center;
-    width: 400px;
+    width: 84%;
     margin: 0 auto;
     flex-shrink: 0;
+
 }
 
 .sidebar-header h1 {
@@ -50,8 +50,9 @@ body {
 
 .sidebar-divider {
     border: 2px solid #FFFFFF;
-    width: 100%;
-    margin-top: 15px;
+    width: 99%;
+    margin-top: 13px;
+    opacity: 1;
 }
 
 .sidebar-nav {
@@ -59,9 +60,7 @@ body {
     width: 100%;
     display: flex;
     align-items: center;
-    /* Centraliza a lista na horizontal */
     justify-content: center;
-    /* Centraliza a lista na vertical */
 }
 
 
@@ -105,29 +104,22 @@ body {
     flex-shrink: 0;
 }
 
-
+/*=======================MAIN =================*/
 .main-content {
     flex-grow: 1;
     overflow-y: auto;
     overflow-x: hidden;
-
     display: flex;
     flex-direction: column;
     padding: 50px 80px;
     box-sizing: border-box;
-
     max-width: 1920px;
-
     margin: 0 auto;
-
 }
 
-
-.icone-rede-apoio {
+.icone-material {
     transform: scale(1.4);
 }
-
-
 
 /*COMECA A TELA INICIAL ==========*/
 .container-geral {
@@ -194,7 +186,7 @@ body {
     width: 380px;
     height: 150px;
     background: #F2B872;
-    border-radius: 20px;
+    border-radius: 25px;
     border: none;
     cursor: pointer;
     color: #FFFFFF;
@@ -206,17 +198,17 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.btn-visualizar {
-    background: linear-gradient(135deg, #63468C, #8B5FBF);
-    transition: all 0.3s ease-in-out;
+.btn:hover {
+    transform: scale(1.03);
+    box-shadow: 0 14px 26px rgba(0, 0, 0, 0.22);
 }
 
-.btn-visualizar:hover {
-    background: linear-gradient(135deg, #523677, #7B4FAF);
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(99, 70, 140, 0.3);
+.btn:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Informações */
@@ -224,9 +216,6 @@ body {
     margin-top: 60px;
     width: 100%;
 }
-
-
-
 
 .informacoes h2 {
     font-weight: 600;
@@ -250,13 +239,14 @@ body {
     margin-bottom: 15px;
 }
 
+/*  ======= RODAPE =============*/
 .rodape {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     width: 100%;
-    margin-top: 70px;
+    margin-top: 20px;
 }
 
 .rodape p {
@@ -278,23 +268,220 @@ body {
     height: 100px;
     object-fit: contain;
 }
-/* Configuração base para os ícones Material Symbols */
-.material-symbols-outlined {
-    font-family: 'Material Symbols Outlined';
-    font-weight: normal;
-    font-style: normal;
-    font-size: 24px;        /* tamanho padrão, pode ser sobrescrito */
-    line-height: 1;
-    letter-spacing: normal;
-    text-transform: none;
-    display: inline-block;
-    white-space: nowrap;
-    word-wrap: normal;
-    direction: ltr;
+
+/* ============= MO0DAL CASO A ASSISTIDA EXISTENTE ========*/
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
 }
-/* Ícone "Rede de Apoio" na sidebar da TELA INICIAL */
-.material-symbols-outlined.icone-rede {
-    font-size: 36px;      /* pode ajustar aqui o tamanho */
-    margin-right: 12px;   /* espaço entre o ícone e o texto */
-    vertical-align: middle;
+
+.modal-select-container {
+    width: 1166px;
+    height: 540spx;
+    background: #FFFFFF;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    box-sizing: border-box;
+    position: relative;
+    gap: 10px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+    max-width: 95%;
+    max-height: 95vh;
+}
+
+.modal-select-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px;
+}
+
+.modal-select-header h2 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 48px;
+    color: #63468C;
+    margin: 0;
+    width: 1017px;
+}
+
+.close-frame {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.close-x {
+    font-size: 40px;
+    color: #63468C;
+    line-height: 30px;
+}
+
+
+.assistida-list-container {
+    width: 100%;
+    flex-grow: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-right: 10px;
+    padding-top: 20px;
+    min-height: 0;
+
+}
+
+.assistida-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 2px 0;
+    cursor: pointer;
+    position: relative;
+    width: 100%;
+}
+
+.assistida-item input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 30px;
+    height: 30px;
+}
+
+.radio-custom {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 2px solid #63468C;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.assistida-item input[type="radio"]:checked+.radio-custom::after {
+    content: '';
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #63468C;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.item-text {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 30px;
+    color: #63468C;
+}
+
+.btn-adicionar-caso {
+    width: 541px;
+    height: 50px;
+    background: #F2B872;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    flex-shrink: 0;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 36px;
+    text-align: center;
+    letter-spacing: 0.05em;
+    color: #FFFFFF;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    transition: transform 0.1s;
+    margin-top: 15px;
+}
+
+.btn-adicionar-caso:active {
+    transform: scale(0.98);
+}
+
+.material-symbols-outlined {
+    color: #63468C;
+    font-size: 38px;
+    font-variation-settings: 'FILL'0, 'wght'400, 'GRAD'0, 'opsz'38;
+}
+
+/* ======= ERRO MESSAGE =======*/
+.error-message {
+    color: #C94A2C;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    width: 100%;
+    text-align: left;
+    visibility: hidden;
+    height: 0;
+    overflow: hidden;
+    margin: 0;
+    padding-left: 5px;
+    transition: height 0.2s ease, visibility 0.2s ease;
+}
+
+.error-message.show {
+    visibility: visible;
+    height: auto;
+    min-height: 24px;
+    margin-bottom: 10px;
+}
+
+/* ======================================================= */
+/* === RESPONSIVIDADE PARA NOTEBOOKS (1366px ou menor) === */
+/* ======================================================= */
+@media (max-width: 1400px) {
+
+    .sidebar {
+        width: 300px;
+        padding: 30px 0;
+
+    }
+
+
+    .sidebar-header h1 {
+        font-size: 32px;
+        margin-top: 30px;
+    }
+
+
+    .sidebar-nav a {
+        font-size: 25px;
+        gap: 15px;
+        padding: 12px 20px;
+        white-space: nowrap;
+    }
+
+    .sidebar-nav svg {
+        width: 28px;
+        height: 28px;
+    }
+
+
+    .sidebar-divider {
+        margin-top: 30px;
+    }
 }

@@ -68,29 +68,51 @@ function mostrarErro(mensagem: string) {
 
 window.addEventListener('DOMContentLoaded', () => {
     const dadosSalvos = sessionStorage.getItem('dadosAssistida');
-    if (!dadosSalvos) return;
+    console.log('[telaCadastro1] dadosSalvos do sessionStorage:', dadosSalvos);
+    
+    if (!dadosSalvos) {
+        console.log('[telaCadastro1] Nenhum dado salvo no sessionStorage, formulário vazio');
+        return;
+    }
 
     const dados = JSON.parse(dadosSalvos);
+    console.log('[telaCadastro1] Dados parseados:', dados);
 
-    (document.getElementById('nome-completo') as HTMLInputElement).value = dados.nome || '';
-    (document.getElementById('idade') as HTMLInputElement).value = dados.idade?.toString() || '';
-    (document.getElementById('endereco') as HTMLInputElement).value = dados.endereco || '';
-    (document.getElementById('identidade-genero') as HTMLInputElement).value = dados.identidadeGenero || '';
-    (document.getElementById('nome-social') as HTMLInputElement).value = dados.nomeSocial || '';
-    (document.getElementById('escolaridade') as HTMLInputElement).value = dados.escolaridade || '';
-    (document.getElementById('religiao') as HTMLInputElement).value = dados.religiao || '';
-    (document.getElementById('profissao') as HTMLInputElement).value = dados.profissao || '';
-    (document.getElementById('limitacao') as HTMLInputElement).value = dados.limitacaoFisica || '';
-    (document.getElementById('numero-cadastro') as HTMLInputElement).value = dados.numeroCadastroSocial || '';
-    (document.getElementById('nacionalidade') as HTMLInputElement).value = dados.nacionalidade || '';
-    (document.getElementById('dependentes') as HTMLInputElement).value = dados.quantidadeDependentes?.toString() || '';
+    // Preencher cada campo com log
+    const camposParaPreencher = [
+        { id: 'nome-completo', valor: dados.nome },
+        { id: 'idade', valor: dados.idade?.toString() },
+        { id: 'endereco', valor: dados.endereco },
+        { id: 'identidade-genero', valor: dados.identidadeGenero },
+        { id: 'nome-social', valor: dados.nomeSocial },
+        { id: 'escolaridade', valor: dados.escolaridade },
+        { id: 'religiao', valor: dados.religiao },
+        { id: 'profissao', valor: dados.profissao },
+        { id: 'limitacao', valor: dados.limitacaoFisica },
+        { id: 'numero-cadastro', valor: dados.numeroCadastroSocial },
+        { id: 'nacionalidade', valor: dados.nacionalidade },
+        { id: 'dependentes', valor: dados.quantidadeDependentes?.toString() }
+    ];
+
+    camposParaPreencher.forEach(campo => {
+        const element = document.getElementById(campo.id) as HTMLInputElement;
+        if (element) {
+            element.value = campo.valor || '';
+            console.log(`[telaCadastro1] Preenchido ${campo.id} com: "${campo.valor}"`);
+        } else {
+            console.warn(`[telaCadastro1] Elemento com id "${campo.id}" não encontrado`);
+        }
+    });
 
     const radios = document.querySelectorAll('input[name="zona_habitacao"]') as NodeListOf<HTMLInputElement>;
     radios.forEach(r => {
         if (r.value === dados.zonaHabitacao) {
             r.checked = true;
+            console.log(`[telaCadastro1] Radio zona_habitacao marcado: ${r.value}`);
         }
     });
+    
+    console.log('[telaCadastro1] Preenchimento do formulário concluído');
 });
 
 
@@ -177,6 +199,15 @@ pxmBtn.addEventListener('click', async (event) => {
             temDependentes
         };
 
+        // Se estamos editando uma assistida existente, manter o ID e o modo
+        const modoEdicao = sessionStorage.getItem('modoEdicao');
+        const idAssistidaSelecionada = sessionStorage.getItem('idAssistidaSelecionada');
+        
+        if (modoEdicao === 'assistida' && idAssistidaSelecionada) {
+            // Adicionar ID para indicar que é uma assistida existente
+            (dadosAssistida as any).id = parseInt(idAssistidaSelecionada, 10);
+            console.log('[telaCadastro1] Mantendo assistida existente com ID:', idAssistidaSelecionada);
+        }
 
         sessionStorage.setItem('dadosAssistida', JSON.stringify(dadosAssistida));
 

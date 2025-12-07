@@ -1,0 +1,155 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700;800&display=swap');
+
+html, body {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #FFFFFF;
+    overflow-x: hidden;
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+.main-content {
+    position: relative;
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 50px 28px 20px 28px;
+    box-sizing: border-box;
+}
+
+.page-header {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.header-content h1 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    font-size: 48px;
+    color: #63468C;
+    margin: 0;
+    letter-spacing: 0.05em;
+}
+
+.btn-fechar-pagina {
+    text-decoration: none;
+    color: #63468C;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s;
+}
+
+.btn-fechar-pagina:hover {
+    transform: scale(1.1);
+}
+
+.btn-fechar-pagina .material-symbols-outlined {
+    font-size: 48px;
+    font-weight: bold;
+}
+
+.title-divider {
+    border: none;
+    border-top: 5px solid #63468C;
+    width: 100%;
+    margin: 10px 0 30px 0;
+    border-radius: 5px;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 30px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid #63468C;
+    text-align: center;
+    color: #7a7a7a;
+}
+
+thead tr {
+    background-color: #9d8ec3;
+    color: white;
+}
+
+th {
+    padding: 20px;
+    font-weight: 600;
+    font-size: 18px;
+    border: 1px solid #63468C;
+}
+
+td {
+    padding: 18px;
+    font-size: 16px;
+    border: 1px solid #63468C;
+    font-weight: 500;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: auto; 
+    margin-bottom: 10px;
+    gap: 10px;
+    color: #63468C;
+}
+
+.pagination button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    color: #63468C;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+}
+
+.page-number {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.page-number.active {
+    background-color: #63468C;
+    color: #FFFFFF;
+    font-weight: 700;
+}
+
+.page-number:hover:not(.active) {
+    background-color: #f0ebf8;
+}
+
+.arrow-icon {
+    font-size: 32px !important;
+}
+
+.pagination button:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+    background-color: transparent;
+}

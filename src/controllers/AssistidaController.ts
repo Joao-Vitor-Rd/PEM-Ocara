@@ -18,6 +18,9 @@ export class AssistidaController {
         return await this.assistidaService.getTodasAssistidas();
     }
 
+    public async handlerBuscarAssistidaPorId(id: number) {
+        return await this.assistidaService.getAssistidaPorId(id);
+    }
     public handlerCriarAssistida(
         nome: string,
         idade: number,
@@ -64,6 +67,59 @@ export class AssistidaController {
             return {
                 success: false,
                 error: error instanceof Error ? error.message : "Error ao Enviar Mensagem ao Servico"
+            }
+        }
+
+    }
+
+    public async handlerAtualizarAssistida(
+        id: number,
+        nome: string,
+        idade: number,
+        identidadeGenero: string,
+        nomeSocial: string,
+        endereco: string,
+        escolaridade: string,
+        religiao: string,
+        nacionalidade: string,
+        zonaHabitacao: string,
+        profissao: string,
+        limitacaoFisica: string,
+        numeroCadastroSocial: string,
+        quantidadeDependentes: number,
+        temDependentes: boolean
+    ): Promise<{
+        success: boolean;
+        assistida?: any;
+        error?: string
+    }> {
+
+        try {
+            const assistida = await this.assistidaService.atualizarAssistida(
+                id,
+                nome,
+                idade,
+                identidadeGenero,
+                nomeSocial,
+                endereco,
+                escolaridade,
+                religiao,
+                nacionalidade,
+                zonaHabitacao,
+                profissao,
+                limitacaoFisica,
+                numeroCadastroSocial,
+                quantidadeDependentes,
+                temDependentes
+            );
+            return {
+                success: true,
+                assistida: assistida,
+            };
+        } catch(error) {
+            return {
+                success: false,
+                error: error instanceof Error ? error.message : "Erro ao atualizar assistida"
             }
         }
 

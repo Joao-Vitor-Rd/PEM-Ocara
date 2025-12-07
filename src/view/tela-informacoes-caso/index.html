@@ -8,9 +8,7 @@
     <title>Informações do Caso</title>
 </head>
 <body>
-    <!-- Página Inteira -->
     <div class="app-container">
-        <!-- Menu Lateral -->
         <aside class="sidebar">
             <header class="sidebar-header">
                 <h1>PEM OCARA</h1>
@@ -19,7 +17,6 @@
 
             <nav class="sidebar-nav">
                 <ul>
-                    <!-- assistidas -->
                     <li id="listarAssistidas" data-window-target="telaListarAssistidas">
                         <a href="#" class="active">
                             <svg viewBox="0 0 34 34" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Assistidas">
@@ -33,7 +30,6 @@
                         </a>
                     </li>
 
-                    <!-- rede de apoio -->
                     <li id="telaRedeApoio" data-window-target="telaRedeApoio">
                         <a href="#">
                             <svg class="icone-rede-apoio" viewBox="0 0 50 25" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Rede de Apoio">
@@ -47,7 +43,6 @@
                         </a>
                     </li>
 
-                    <!-- inicial -->
                     <li id="telaInicial" data-window-target="telaInicial">
                         <a href="#">
                             <svg viewBox="0 0 34 38" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Inicial">
@@ -61,7 +56,6 @@
                         </a>
                     </li>
 
-                    <!-- estatisticas -->
                     <li id="telaEstatisticas" data-window-target="telaEstatisticas">
                         <a href="#">
                             <svg viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Estatísticas">
@@ -75,7 +69,6 @@
                         </a>
                     </li>
 
-                    <!-- conta -->
                     <li id="telaConta" data-window-target="telaConfiguracoesConta">
                         <a href="#">
                             <svg viewBox="0 0 42 36" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Conta">
@@ -92,14 +85,17 @@
             </nav>
         </aside>
 
-        <!-- Conteúdo da Página -->
         <main class="main-content">
             <div class="title">
                 <h1>Informações sobre o Caso <span id="Protocolo"></span></h1>
-                <button><span class="material-symbols-outlined">close</span></button>
+                <button id="fecharInformacoes"><span class="material-symbols-outlined">close</span></button>
             </div>
 
-            <button id="acessar-form">ACESSAR FORMULÁRIO</button>
+            <div class="botoes-principais">
+                <button id="acessar-form">ACESSAR FORMULÁRIO</button>
+                <button id="editar-form">EDITAR FORMULÁRIO</button>
+                <button id="alterar-privacidade">ALTERAR PRIVACIDADE</button>
+            </div>
 
             <div class="infos">
                 <p>Assistida: <span id="Assistida"></span></p>
@@ -111,7 +107,7 @@
                         <option value="aberto" selected>Caso Aberto</option>
                     </select>
                 </p>
-                <p>Status do Caso no Processo Jurídico: <span id="StatusJuridico">Não Iniciado</span></p>
+                <p>Status do Caso no Processo Jurídico: <span id="StatusJuridico"></span></p>
                 <p>Tipo de Violência: <span id="TipoViolencia"></span></p>
             </div>
 
@@ -135,7 +131,6 @@
                 <button id="encaminhamento">GERAR NOVO ENCAMINHAMENTO PARA A REDE</button>
             </div>
 
-            <!-- Rodapé -->
             <footer class="rodape d-flex justify-content-between align-items-center flex-wrap mt-auto px-5">
                 <img
                     src="img/logo-ocara.png"
@@ -158,7 +153,6 @@
         </main>
     </div>
 
-    <!-- Popup de Upload -->
     <div id="popup-upload" class="popup-overlay">
         <div class="popup-content">
             <button id="fechar-popup" class="btn-fechar-popup">
@@ -179,7 +173,6 @@
         </div>
     </div>
 
-    <!-- Popup de Confirmação -->
     <div class="popup-confirmacao" id="popupConfirmacao">
         <div class="popup-confirmacao-content">
             <p id="popupMensagem"></p>
@@ -187,7 +180,6 @@
         </div>
     </div>
 
-    <!-- Popup de Confirmação com o Cancelar também -->
     <div class="popup-confirmacao" id="popupConfirmar">
         <div class="popup-confirmacao-content">
             <p id="popupConfirmarMensagem"></p>
@@ -198,7 +190,6 @@
         </div>
     </div>
 
-    <!-- Modal de Encaminhamento -->
     <div class="modal-overlay" id="modalEncaminhamento">
         <div class="modal-content"> 
             <div class="modal-header">
@@ -233,7 +224,6 @@
                 <button class="btn-enviar" id="btnEnviarEncaminhamento" type="button">Enviar</button>
             </div>
             
-            <!-- Menu de seleção de anexos -->
             <div class="menu-anexos" id="menuAnexos" style="display: none;">
                 <div class="menu-anexos-header">
                     <h4>Selecionar Anexos do Caso</h4>
@@ -243,6 +233,129 @@
                 <div class="menu-anexos-body" id="listaAnexosModal"></div>
             </div>
         </div> 
+    </div>
+
+    <div class="modal-overlay" id="modalPrivacidade">
+        <div class="modal-privacidade-content">
+            <span class="modal-close" id="fecharModalPrivacidade">&times;</span>
+            
+            <h1>Selecione a privacidade desse Anexo</h1>
+            
+            <div class="opcoes-privacidade">
+                <label>
+                    <input type="radio" name="privacidade" value="publico">
+                    Anexo público (disponível para assistente social e para jurídico)
+                </label>
+                <label>
+                    <input type="radio" name="privacidade" value="restrito" checked>
+                    Anexo privado (disponível apenas para assistente social)
+                </label>
+            </div>
+
+            <button>Salvar Alterações</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalEditarFormulario">
+        <div class="modal-editar-formulario-content">
+            <span class="modal-close" id="fecharModalEditarFormulario">&times;</span>
+            
+            <h1>Selecione qual(is) etapa(s) você deseja editar</h1>
+            
+            <div class="opcoes">
+                <label>
+                    <input type="checkbox" name="etapa" value="dados-assistida">
+                    Dados da Assistida
+                </label>
+
+                <label>
+                    <input type="checkbox" name="etapa" value="dados-caso">
+                    Dados do Caso
+                </label>
+
+                <label>
+                    <input type="checkbox" name="etapa" value="outras-informacoes">
+                    Outras informações e encaminhamentos
+                </label>
+
+                <label>
+                    <input type="checkbox" name="etapa" value="observacoes">
+                    Campo de preenchimento profissional e violências encontradas
+                </label>
+            </div>
+
+            <button id="modal-editar-form">Editar Etapas Selecionadas</button>
+            
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalPrivacidadeFormulario">
+        <div class="modal-privacidade-formulario-content">
+            <div class="title">
+                <h1>Privacidade do Formulário</h1>
+                <button class="modal-close" id="fecharModalPrivacidadeFormulario">&times;</button>
+            </div>
+            
+            <div class="opcoes-padrao">
+                <h2>Visibilidade Padrão</h2>
+                <div opcao>
+                    <p>Definir todas as etapas como:</p>
+                    <div class="segmented-control">
+                        <input type="radio" name="visibilidade-padrao" id="privado-padrao" checked>
+                        <label for="privado-padrao">Privado</label>
+                        
+                        <input type="radio" name="visibilidade-padrao" id="publico-padrao">
+                        <label for="publico-padrao">Público</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="opcoes-padrao">
+                <h2>Visibilidade das Etapas Específicas</h2>
+                <div opcao>
+                    <p>Cadastro da Assistida:</p>
+                    <div class="segmented-control">
+                        <input type="radio" name="visibilidade-assistida" id="privado-assistida" class="visibilidade-etapa" checked>
+                        <label for="privado-assistida">Privado</label>
+
+                        <input type="radio" name="visibilidade-assistida" id="publico-assistida" class="visibilidade-etapa">
+                        <label for="publico-assistida">Público</label>
+                    </div>
+                </div>
+                <div opcao>
+                    <p>Cadastro do Caso:</p>
+                    <div class="segmented-control">
+                        <input type="radio" name="visibilidade-caso" id="privado-caso" class="visibilidade-etapa" checked>
+                        <label for="privado-caso">Privado</label>
+                        
+                        <input type="radio" name="visibilidade-caso" id="publico-caso" class="visibilidade-etapa">
+                        <label for="publico-caso">Público</label>
+                    </div>
+                </div>
+                <div opcao>
+                    <p>Outras Informações e Encaminhamentos:</p>
+                    <div class="segmented-control">
+                        <input type="radio" name="visibilidade-outras" id="privado-outras" class="visibilidade-etapa" checked>
+                        <label for="privado-outras">Privado</label>
+                        
+                        <input type="radio" name="visibilidade-outras" id="publico-outras" class="visibilidade-etapa">
+                        <label for="publico-outras">Público</label>
+                    </div>
+                </div>
+                <div opcao>
+                    <p>Campo para o preenchimento profissional e tipos de violência identificadas:</p>
+                    <div class="segmented-control">
+                        <input type="radio" name="visibilidade-profissional" id="privado-profissional" class="visibilidade-etapa" checked>
+                        <label for="privado-profissional">Privado</label>
+                        
+                        <input type="radio" name="visibilidade-profissional" id="publico-profissional" class="visibilidade-etapa">
+                        <label for="publico-profissional">Público</label>
+                    </div>
+                </div>
+            </div>
+
+            <button id="modal-privacidade-form">Salvar Alterações</button>
+        </div>
     </div>
 
     <script src="../../../dist/utils/sidebarNavigation.js"></script>

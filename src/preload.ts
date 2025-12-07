@@ -22,6 +22,10 @@ contextBridge.exposeInMainWorld('api', {
 
   listarAssistidas: () => ipcRenderer.invoke('assistida:listarTodas'),
   
+  buscarAssistidaPorId: (id: number) => ipcRenderer.invoke('assistida:buscarPorId', id),
+  
+  atualizarAssistida: (data: any) => ipcRenderer.invoke('assistida:atualizar', data),
+  
   listarCasosPorAssistida: (idAssistida: number) =>
     ipcRenderer.invoke('caso:listarPorAssistida', idAssistida),
   

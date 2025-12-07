@@ -191,6 +191,13 @@ pxmBtn.addEventListener('click', async () => {
             throw new Error(`Campos obrigatórios não preenchidos: ${camposFaltando.join(', ')}. Por favor, revise todas as telas anteriores.`);
         }
 
+        // Verificar se está usando uma assistida existente
+        const modoEdicao = sessionStorage.getItem('modoEdicao');
+        const idAssistidaExistente = dadosAssistida.id; // ID da assistida se for existente
+        
+        console.log('[telaCadastro6] modoEdicao:', modoEdicao);
+        console.log('[telaCadastro6] idAssistidaExistente:', idAssistidaExistente);
+
         // Chamar a API para salvar no banco de dados
         const anexosJSON = sessionStorage.getItem('cadastro_anexos');
         const anexos = anexosJSON ? JSON.parse(anexosJSON) : [];
@@ -199,7 +206,10 @@ pxmBtn.addEventListener('click', async () => {
             assistida: dadosAssistida,
             caso: Object.assign({}, dadosCaso, { anexos }),
             profissionalResponsavel: 'Assistente Social',
-            data: new Date()
+            data: new Date(),
+            // Indicar se deve usar uma assistida existente
+            modoEdicao: modoEdicao || 'nova',
+            idAssistidaExistente: idAssistidaExistente || null
         });
 
         if (!result.success) {

@@ -16,6 +16,15 @@ export interface ICasoRepository {
     salvar(caso: Caso): Promise<{ idCaso: number; idAssistida: number }>;
 
     /**
+     * Salva um novo caso vinculado a uma assistida já existente
+     * @param caso - Objeto Caso a ser salvo com todas as suas relações
+     * @param idAssistidaExistente - ID da assistida que já existe no banco
+     * @returns Promise<{idCaso: number, idAssistida: number}> - IDs do caso e assistida (que já existia)
+     * @throws Error - Se houver erro na persistência ou se a assistida não existir
+     */
+    salvarComAssistidaExistente(caso: Caso, idAssistidaExistente: number): Promise<{ idCaso: number; idAssistida: number }>;
+
+    /**
      * Recupera todas as assistidas do banco
      * @returns Promise<any[]> - Lista de assistidas
      */
@@ -34,6 +43,16 @@ export interface ICasoRepository {
      * @returns Promise<any> - Dados completos do caso
      */
     getCaso(idCaso: number): Promise<any>;
+
+    getAssistidaById(id: number): Promise<any>;
+
+    /**
+     * Atualiza dados de uma assistida no banco
+     * @param id - ID da assistida
+     * @param data - Objeto com os novos dados da assistida
+     * @returns Promise<any> - Assistida atualizada
+     */
+    updateAssistida(id: number, data: any): Promise<any>;
 
     /**
      * Recupera informações gerais de um caso específico

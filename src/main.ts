@@ -11,7 +11,6 @@ import { CasoController } from './controllers/CasoController';
 // --- Módulo Rede de Apoio (Seus Imports) ---
 import { ControladorOrgao } from './controllers/ControladorOrgao';
 import { PostgresOrgaoRepository } from './repository/PostgresOrgaoRepository';
-import './database/db'; // Sua conexão para a Rede de Apoio
 
 // --- Módulos da Branch backend-dev ---
 import { PdfService } from './services/PDFService';
@@ -509,9 +508,13 @@ ipcMain.handle('caso:salvarBD', async(_event, dados: {
   caso: any;
   profissionalResponsavel: string;
   data: Date;
+  modoEdicao?: string;
+  idAssistidaExistente?: number | null;
 }) => {
   try {
     Logger.info('Requisição para salvar caso no banco de dados via Repository');
+    Logger.info('modoEdicao:', dados.modoEdicao);
+    Logger.info('idAssistidaExistente:', dados.idAssistidaExistente);
     
     // 1. Processar anexos - converter caminhos para Buffer
     let anexosProcessados: any[] = [];
@@ -567,10 +570,18 @@ ipcMain.handle('caso:salvarBD', async(_event, dados: {
     });
     
     // 3. Salvar no BD usando o repository
-    const resultado = await casoRepository.salvar(casoCriado);
+    // Se houver uma assistida existente, passar o ID para que o repository use-a em vez de criar uma nova
+    let resultado;
+    if (dados.idAssistidaExistente) {
+      Logger.info(`Salvando novo caso para assistida existente ID: ${dados.idAssistidaExistente}`);
+      resultado = await casoRepository.salvarComAssistidaExistente(casoCriado, dados.idAssistidaExistente);
+    } else {
+      Logger.info('Salvando novo caso com nova assistida');
+      resultado = await casoRepository.salvar(casoCriado);
+    }
     
     Logger.info('Caso salvo com sucesso no BD com ID:', resultado.idCaso);
-    Logger.info('Assistida salva com sucesso no BD com ID:', resultado.idAssistida);
+    Logger.info('Assistida com ID:', resultado.idAssistida);
     return {
       success: true,
       idCaso: resultado.idCaso,
@@ -916,6 +927,65 @@ ipcMain.handle('assistida:listarTodas', async () => {
     };
   } catch (error) {
     Logger.error('Erro ao listar assistidas:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido'
+    };
+  }
+});
+
+// Buscar assistida por ID
+ipcMain.handle('assistida:buscarPorId', async (_event, id: number) => {
+  try {
+    Logger.info(`Requisição para buscar assistida com ID: ${id}`);
+    const assistida = await assistidaController.handlerBuscarAssistidaPorId(id);
+    
+    if (!assistida) {
+      return {
+        success: false,
+        error: 'Assistida não encontrada'
+      };
+    }
+    
+    return {
+      success: true,
+      assistida
+    };
+  } catch (error) {
+    Logger.error('Erro ao buscar assistida:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido'
+    };
+  }
+});
+
+// Atualizar assistida
+ipcMain.handle('assistida:atualizar', async (_event, data: any) => {
+  try {
+    Logger.info(`Requisição para atualizar assistida com ID: ${data.id}`);
+    
+    const resultado = await assistidaController.handlerAtualizarAssistida(
+      data.id,
+      data.nome || '',
+      data.idade || 0,
+      data.identidadeGenero || '',
+      data.nomeSocial || '',
+      data.endereco || '',
+      data.escolaridade || '',
+      data.religiao || '',
+      data.nacionalidade || '',
+      data.zonaHabitacao || '',
+      data.profissao || '',
+      data.limitacaoFisica || '',
+      data.numeroCadastroSocial || '',
+      data.quantidadeDependentes || 0,
+      data.temDependentes || false
+    );
+    
+    return resultado;
+  } catch (error) {
+    Logger.error('Erro ao atualizar assistida:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Erro desconhecido'
