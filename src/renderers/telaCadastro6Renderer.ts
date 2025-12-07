@@ -228,13 +228,20 @@ pxmBtn.addEventListener('click', async () => {
         console.log('idCasoRetornado após extração:', idCasoRetornado); // Debug
         console.log('idAssistidaRetornado após extração:', idAssistidaRetornado); // Debug
 
+        // Recuperar dados do usuário logado
+        const STORAGE_KEY = 'usuarioLogado';
+        const usuarioLogadoJSON = sessionStorage.getItem(STORAGE_KEY);
+        const usuarioLogado = usuarioLogadoJSON ? JSON.parse(usuarioLogadoJSON) : null;
+        const emailFuncionario = usuarioLogado?.email || 'sistema@sistema.com';
+        const nomeFuncionario = usuarioLogado?.nome || 'Sistema';
+
         // Serializar casoCriado para garantir que o IPC consegue passar os dados
         // IPC do Electron tem limitações com certos tipos (Date, Symbols, etc)
         const casoCriado = {
             idCaso: Number(idCasoRetornado),
             idAssistida: Number(idAssistidaRetornado),
-            emailFuncionario: 'assistente.social@pem-ocara.gov.br', // Mock de email do funcionário
-            nomeFuncionario: 'Assistente Social',
+            emailFuncionario: emailFuncionario,
+            nomeFuncionario: nomeFuncionario,
             ...dadosCaso // Dados completos do caso
         };
 
@@ -243,15 +250,12 @@ pxmBtn.addEventListener('click', async () => {
 
         console.log('casoCriado para histórico:', casoCriadoJSON); // Debug
         console.log('casoCriadoJSON.idCaso:', casoCriadoJSON.idCaso); // Debug
-
         const resultHistorico = await window.api.salvarHistoricoBD({
             caso: casoCriadoJSON,
             assistida: dadosAssistida,
-            profissionalResponsavel: 'Assistente Social',
+            profissionalResponsavel: nomeFuncionario,
             data: new Date()
         });
-
-        console.log('Resultado salvarHistoricoBD:', resultHistorico); // Debug
 
         if (!resultHistorico || !resultHistorico.success) {
             console.warn('Aviso ao salvar histórico:', resultHistorico?.error || 'Sem erro específico');

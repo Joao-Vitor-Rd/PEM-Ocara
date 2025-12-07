@@ -320,14 +320,6 @@ ipcMain.handle('historico:salvar', async(_event, dados: any) => {
   try {
     Logger.info('Requisição para salvar histórico do caso:', dados);
     
-    // O objeto completo vem como dados
-    // dados = { caso: {...}, assistida: {...}, profissionalResponsavel: "...", data: ... }
-    
-    console.log('📝 DEBUG handler historico:salvar');
-    console.log('   dados.caso.idCaso:', dados?.caso?.idCaso);
-    
-    // Passar o objeto caso completo ao controller
-    // O controller.handlerSalvarHistorico espera receber o caso diretamente
     const historicoId = await historicoController.handlerSalvarHistorico(dados.caso);
     
     return {

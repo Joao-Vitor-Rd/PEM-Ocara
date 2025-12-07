@@ -37,6 +37,14 @@ export class HistoricoRepositoryPostgres implements IHistoricoRepository {
             throw new Error('ID do caso (idCaso) é obrigatório e não pode ser 0');
         }
 
+        // Usar o email do funcionário como id_func
+        let idFunc = null;
+        if (emailFuncionario && emailFuncionario !== 'sistema@sistema.com') {
+            idFunc = emailFuncionario;
+        } else {
+            idFunc = 'sistema@sistema.com';
+        }
+
         const client: PoolClient = await this.pool.connect();
 
         try {
@@ -45,10 +53,6 @@ export class HistoricoRepositoryPostgres implements IHistoricoRepository {
             const historicoIds: number[] = [];
             
             console.log('📋 Iniciando registro de histórico para caso ID:', idCaso);
-
-            // ========== REGISTRAR DADOS DO CASO ==========
-            // Os dados já vêm completos no objeto caso (enviados do renderer)
-            // Mapear todos os campos do caso que devem ser registrados no histórico
             
             const camposParaRegistrar = [
                 // Dados da Assistida
@@ -115,6 +119,7 @@ export class HistoricoRepositoryPostgres implements IHistoricoRepository {
                         'CRIOU',
                         campo.campo,
                         valorString,
+                        idFunc,
                         emailFuncionario,
                         nomeFuncionario
                     );
@@ -153,6 +158,7 @@ export class HistoricoRepositoryPostgres implements IHistoricoRepository {
         tipo: string,
         campo: string,
         mudanca: string,
+        idFunc: number | null,
         emailFuncionario: string,
         nomeFuncionario: string
     ): Promise<number> {
@@ -160,18 +166,15 @@ export class HistoricoRepositoryPostgres implements IHistoricoRepository {
         // - id (PK, auto-increment)
         // - id_caso (FK para CASO)
         // - id_assistida (FK para ASSISTIDA)
-        // - id_func (FK para FUNCIONARIO, pode ser NULL)
+        // - id_func (character varying(120): email do funcionário)
         // - tipo (VARCHAR: 'CRIOU', 'ALTEROU', 'DELETOU')
         // - campo (VARCHAR: nome do campo)
         // - mudanca (TEXT: valor da mudança)
         
-        // Estratégia: se o email do funcionário não existe na tabela FUNCIONARIO,
-        // usar NULL para não violar a foreign key constraint
-        
         const query = `
             INSERT INTO HISTORICO (
                 id_caso, id_assistida, id_func, tipo, campo, mudanca
-            ) VALUES ($1, $2, NULL, $3, $4, $5)
+            ) VALUES ($1, $2, $3, $4, $5, $6)
             RETURNING id
         `;
 
@@ -179,12 +182,12 @@ export class HistoricoRepositoryPostgres implements IHistoricoRepository {
             const result = await client.query(query, [
                 idCaso,
                 idAssistida,
+                idFunc,
                 tipo,
                 campo,
                 mudanca
             ]);
             const idHistorico = result.rows[0].id;
-            console.log(`  ✓ ${tipo} - ${campo}`);
             return idHistorico;
         } catch (erro) {
             console.error(`  ✗ Erro ao registrar histórico: ${erro}`);
