@@ -446,7 +446,10 @@ export class CasoService {
                 anexo.dados
             );
             
-            const idAnexoSalvo = await this.anexoRepository.salvar(anexoObj, idCaso, idAssistida);
+            // Extrai o campo relatorio (default false)
+            const isRelatorio = anexo.relatorio === true;
+            
+            const idAnexoSalvo = await this.anexoRepository.salvar(anexoObj, idCaso, idAssistida, isRelatorio);
             
             if (idAnexoSalvo) {
                 return true;

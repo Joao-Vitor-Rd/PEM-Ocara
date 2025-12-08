@@ -124,7 +124,7 @@ contextBridge.exposeInMainWorld('api', {
   recuperarAnexosDoCaso: (idCaso: number) =>
     ipcRenderer.invoke('caso:recuperarAnexos', { idCaso }),
 
-  salvarAnexo: (anexo: { nome: string; tipo: string; tamanho: number; dados: Buffer }, idCaso: number, idAssistida: number) =>
+  salvarAnexo: (anexo: { nome: string; tipo: string; tamanho: number; dados: Buffer; relatorio?: boolean }, idCaso: number, idAssistida: number) =>
     ipcRenderer.invoke('caso:salvarAnexo', { anexo, idCaso, idAssistida }),
 
   downloadAnexo: (idAnexo: string, nomeArquivo: string) =>

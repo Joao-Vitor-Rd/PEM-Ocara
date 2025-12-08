@@ -447,6 +447,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             if (resultado.success && resultado.anexos && resultado.anexos.length > 0) {
                 resultado.anexos.forEach((anexo: any, index: number) => {
+                    // Determina o tipo baseado no campo 'relatorio' do banco de dados
+                    const isRelatorio = anexo.relatorio === true;
+                    const tipo = isRelatorio ? 'relatorio' : 'prova';
+                    
                     const novoArquivo = {
                         id: anexo.idAnexo || `anexo-bd-${index}`,
                         nome: anexo.nomeAnexo,
@@ -454,12 +458,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                         status: 'upado',
                         progresso: 100,
                         tipo: anexo.tipo,
-                        visibilidade: anexo.visibilidade || 'privado'
+                        visibilidade: anexo.visibilidade || 'privado',
+                        relatorio: isRelatorio  // Armazena o campo booleano
                         // Dados NÃO são enviados - será baixado quando clicado
                     };
                     
-                    // Determina se é prova ou relatório baseado no tipo MIME ou padrão
-                    const tipo = anexo.tipo && anexo.tipo.includes('pdf') ? 'relatorio' : 'prova';
                     fileManager.adicionar(tipo, novoArquivo);
                 });
                 
@@ -577,21 +580,26 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Atualizar tamanho real do arquivo
             arquivo.tamanho = Formatters.tamanhoArquivo(tamanhoArquivo);
 
+            // Define o campo relatorio baseado no tipo selecionado
+            const isRelatorio = tipo === 'relatorio';
+
             // Salvar no banco (Uint8Array será convertido para Buffer no main process)
             const resultado = await window.api.salvarAnexo({
                 nome: arquivo.nome,
                 tipo: arquivo.rawFile.type || 'application/octet-stream',
                 tamanho: tamanhoArquivo,
-                dados: uint8Array
+                dados: uint8Array,
+                relatorio: isRelatorio  // ✅ Passa o campo relatorio: true/false
             }, Number(idCaso), idAssistida);
 
             if (resultado.success) {
                 arquivo.status = 'upado';
                 arquivo.progresso = 100;
+                arquivo.relatorio = isRelatorio;  // Armazena no estado local também
                 // Atualizar o ID do arquivo com o ID retornado do banco
                 if (resultado.idAnexo) {
                     arquivo.id = resultado.idAnexo;
-                    console.log('Arquivo salvo com novo ID:', resultado.idAnexo);
+                    console.log('Arquivo salvo com novo ID:', resultado.idAnexo, 'Relatório:', isRelatorio);
                 }
             } else {
                 arquivo.status = 'erro';

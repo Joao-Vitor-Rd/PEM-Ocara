@@ -12,14 +12,14 @@ export class AnexoRepositorioPostgres implements IAnexoRepository {
     /**
      * Salva um anexo no banco de dados
      */
-    async salvar(anexo: Anexo, idCaso: number, idAssistida: number): Promise<number> {
+    async salvar(anexo: Anexo, idCaso: number, idAssistida: number, relatorio: boolean = false): Promise<number> {
         const client = await this.pool.connect();
         
         try {
             const query = `
                 INSERT INTO ANEXO (
-                    id_caso, id_assistida, nome, tipo, dados
-                ) VALUES ($1, $2, $3, $4, $5)
+                    id_caso, id_assistida, nome, tipo, dados, relatorio
+                ) VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING id_anexo
             `;
 
@@ -52,7 +52,8 @@ export class AnexoRepositorioPostgres implements IAnexoRepository {
                 idAssistida,
                 anexo.getNomeAnexo?.() || '',
                 anexo.getTipo?.() || '',
-                dadosAnexo
+                dadosAnexo,
+                relatorio
             ];
 
             const result = await client.query(query, values);
@@ -67,7 +68,7 @@ export class AnexoRepositorioPostgres implements IAnexoRepository {
      */
     async getAnexosCaso(idCaso: number): Promise<Anexo[]> {
         const query = `
-            SELECT id_anexo, nome, tipo, dados, (octet_length(dados)) as tamanho
+            SELECT id_anexo, nome, tipo, dados, (octet_length(dados)) as tamanho, relatorio
             FROM ANEXO
             WHERE id_caso = $1
             ORDER BY id_anexo DESC
@@ -84,6 +85,8 @@ export class AnexoRepositorioPostgres implements IAnexoRepository {
                     row.dados
                 );
                 anexo.setIdAnexo(row.id_anexo);
+                // Armazenar o campo relatorio no objeto (se a model suportar)
+                (anexo as any).relatorio = row.relatorio || false;
                 return anexo;
             });
         } catch (error) {
@@ -97,7 +100,7 @@ export class AnexoRepositorioPostgres implements IAnexoRepository {
      */
     async getAnexoById(idAnexo: number): Promise<Anexo | null> {
         const query = `
-            SELECT id_anexo, nome, tipo, dados, (octet_length(dados)) as tamanho
+            SELECT id_anexo, nome, tipo, dados, (octet_length(dados)) as tamanho, relatorio
             FROM ANEXO
             WHERE id_anexo = $1
         `;

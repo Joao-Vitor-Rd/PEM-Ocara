@@ -12,10 +12,11 @@ export interface IAnexoRepository {
      * @param anexo - Objeto Anexo a ser salvo
      * @param idCaso - ID do caso ao qual o anexo pertence
      * @param idAssistida - ID da assistida
+     * @param relatorio - Se o anexo é um relatório (true) ou prova (false)
      * @returns Promise<number> - ID do anexo salvo
      * @throws Error - Se houver erro na persistência
      */
-    salvar(anexo: Anexo, idCaso: number, idAssistida: number): Promise<number>;
+    salvar(anexo: Anexo, idCaso: number, idAssistida: number, relatorio?: boolean): Promise<number>;
 
     /**
      * Recupera todos os anexos de um caso específico

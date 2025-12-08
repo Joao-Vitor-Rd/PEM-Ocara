@@ -624,7 +624,8 @@ ipcMain.handle('caso:recuperarAnexos', async(_event, { idCaso }: { idCaso: numbe
         idAnexo: anexo.getIdAnexo?.(),
         nomeAnexo: anexo.getNomeAnexo?.(),
         tamanho: anexo.getTamanho?.(),
-        tipo: anexo.getTipo?.()
+        tipo: anexo.getTipo?.(),
+        relatorio: (anexo as any).relatorio || false  // ✅ Incluir campo relatorio
         // NÃO enviar dados aqui - serão baixados quando clicado
       };
     });
