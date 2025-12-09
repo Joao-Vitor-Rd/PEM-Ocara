@@ -2,6 +2,11 @@
 
 export {}
 
+import { aplicarPermissoesDeAcesso } from '../utils/SidebarManager';
+import { ativarNavegacao } from '../utils/Navegation';
+
+aplicarPermissoesDeAcesso();
+ativarNavegacao();
 
 document.addEventListener('DOMContentLoaded', async () => {
     const telaInicialBtn = document.getElementById('telaInicial') as HTMLButtonElement;

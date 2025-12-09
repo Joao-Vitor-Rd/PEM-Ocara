@@ -7,6 +7,12 @@
 
 import { Graficos } from "../utils/Graficos.js";
 
+import { aplicarPermissoesDeAcesso } from '../utils/SidebarManager';
+import { ativarNavegacao } from '../utils/Navegation';
+
+aplicarPermissoesDeAcesso();
+ativarNavegacao();
+
 /**
  * Configura e gerencia o modal de filtros com todas as interações
  * @returns {void}

@@ -2,6 +2,13 @@
 
 export {}
 
+import { aplicarPermissoesDeAcesso } from '../utils/SidebarManager';
+import { ativarNavegacao } from '../utils/Navegation';
+
+aplicarPermissoesDeAcesso();
+ativarNavegacao();
+
+
 let casosSalvos: any[] = [];
 
 // Formatar data

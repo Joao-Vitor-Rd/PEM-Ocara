@@ -1,11 +1,19 @@
 import { contextBridge, ipcRenderer, webUtils } from 'electron';
-import { get } from 'http';
 
 contextBridge.exposeInMainWorld('api', {
   createUser: (name: string, email: string) =>  
     ipcRenderer.invoke('user:create', { name, email }),
   getUsers: () => ipcRenderer.invoke('user:getAll'),
   getUserById: (id: string) => ipcRenderer.invoke('user:getById', id),
+
+  cadastrarFuncionario: (dados: any) => 
+    ipcRenderer.invoke('create-funcionario', dados),
+
+  autenticar: (email: string, senha: string) =>
+    ipcRenderer.invoke('auth:login', { email, senha }),
+
+  atualizarPerfil: (dados: { email: string; nome: string; senhaAtual: string; novaSenha?: string; novoEmail?: string }) =>
+    ipcRenderer.invoke('user:update-profile', dados),
 
   getPathForFile: (file: File) => {
     if(webUtils && webUtils.getPathForFile) {
@@ -134,11 +142,5 @@ contextBridge.exposeInMainWorld('api', {
   removeUserCreatedListener: () => {
     ipcRenderer.removeAllListeners('user:created');
   },
-
-  autenticar: (email: string, senha: string) =>
-    ipcRenderer.invoke('auth:login', { email, senha }),
-
-  atualizarPerfil: (dados: { email: string; nome: string; senhaAtual: string; novaSenha?: string; novoEmail?: string }) =>
-    ipcRenderer.invoke('user:update-profile', dados),
 });
 
