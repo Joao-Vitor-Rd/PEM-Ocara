@@ -255,4 +255,48 @@ export class HistoricoRepositoryPostgres implements IHistoricoRepository {
         }
     }
 
+    /**
+     * Registra a deleção de um arquivo/anexo no histórico
+     * Tipo: DELETOU, Campo: anexo, Mudança: removeu [nome do arquivo].[extensão]
+     */
+    async registrarDelecaoAnexo(
+        idCaso: number,
+        idAssistida: number,
+        nomeArquivoComExtensao: string,
+        nomeFuncionario: string,
+        emailFuncionario: string
+    ): Promise<number> {
+        const client: PoolClient = await this.pool.connect();
+
+        try {
+            await client.query('BEGIN');
+
+            const idFunc = emailFuncionario || 'sistema@sistema.com';
+            const mudanca = `removeu [${nomeArquivoComExtensao}]`;
+
+            const idHistorico = await this.registrarHistoricoInterno(
+                client,
+                idCaso,
+                idAssistida,
+                'DELETOU',
+                'anexo',
+                mudanca,
+                idFunc as any,
+                emailFuncionario,
+                nomeFuncionario
+            );
+
+            await client.query('COMMIT');
+            console.log(`✅ Deleção de anexo registrada no histórico com ID: ${idHistorico}`);
+            
+            return idHistorico;
+        } catch (error) {
+            await client.query('ROLLBACK');
+            console.error('❌ Erro ao registrar deleção de anexo no histórico:', error);
+            throw error;
+        } finally {
+            client.release();
+        }
+    }
+
 }

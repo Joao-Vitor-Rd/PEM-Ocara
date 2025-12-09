@@ -52,6 +52,9 @@ contextBridge.exposeInMainWorld('api', {
   }) =>
     ipcRenderer.invoke('historico:salvar', dados),
 
+  registrarDelecaoAnexo: (idCaso: number, idAssistida: number, nomeArquivoComExtensao: string, nomeFuncionario: string, emailFuncionario: string) =>
+    ipcRenderer.invoke('historico:registrarDelecao', { idCaso, idAssistida, nomeArquivoComExtensao, nomeFuncionario, emailFuncionario }),
+
   listarHistorico: (pagina: number = 1, itensPorPagina: number = 10) =>
     ipcRenderer.invoke('historico:listar', pagina, itensPorPagina),
 
@@ -136,7 +139,7 @@ contextBridge.exposeInMainWorld('api', {
     ipcRenderer.on('caso:criado', (_event, caso) => callback(caso));
   },
 
-  excluirAnexo: (idAnexo: number) => ipcRenderer.invoke('caso:deletarAnexo', idAnexo),
+  excluirAnexo: (idAnexo: number, nomeArquivo?: string) => ipcRenderer.invoke('caso:deletarAnexo', { idAnexo, nomeArquivo }),
 
   removeUserCreatedListener: () => {
     ipcRenderer.removeAllListeners('user:created');

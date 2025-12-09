@@ -17,6 +17,15 @@ export class HistoricoService {
         }
     }
 
+    async registrarDelecaoAnexo(idCaso: number, idAssistida: number, nomeArquivoComExtensao: string, nomeFuncionario: string, emailFuncionario: string): Promise<number> {
+        try {
+            const historicoId = await this.historicoRepository.registrarDelecaoAnexo(idCaso, idAssistida, nomeArquivoComExtensao, nomeFuncionario, emailFuncionario);
+            return historicoId;
+        } catch (error) {
+            throw new Error(`Erro ao registrar deleção de anexo: ${error}`);
+        }
+    }
+
     async listarHistorico(pagina: number = 1, itensPorPagina: number = 10): Promise<any> {
         try {
             return await this.historicoRepository.listar(pagina, itensPorPagina);

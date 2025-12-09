@@ -446,6 +446,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             const resultado = await window.api.recuperarAnexosDoCaso(Number(idCaso));
             
             if (resultado.success && resultado.anexos && resultado.anexos.length > 0) {
+                // 📍 Criar mapa de ID -> Nome para salvar no sessionStorage
+                const mapaAnexos: { [key: number]: string } = {};
+                
                 resultado.anexos.forEach((anexo: any, index: number) => {
                     // Determina o tipo baseado no campo 'relatorio' do banco de dados
                     const isRelatorio = anexo.relatorio === true;
@@ -463,8 +466,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                         // Dados NÃO são enviados - será baixado quando clicado
                     };
                     
+                    // Salvar no mapa o nome do arquivo com ID
+                    mapaAnexos[anexo.idAnexo] = anexo.nomeAnexo;
+                    
                     fileManager.adicionar(tipo, novoArquivo);
                 });
+                
+                // 💾 Salvar mapa de anexos no sessionStorage para fácil recuperação
+                sessionStorage.setItem('mapaAnexosCaso', JSON.stringify(mapaAnexos));
+                console.log('📍 Mapa de anexos salvo no sessionStorage:', mapaAnexos);
                 
                 atualizarTela();
             }
@@ -484,59 +494,52 @@ document.addEventListener('DOMContentLoaded', async () => {
             const confirmar = await uiManager.mostrarConfirmacao('Tem certeza que deseja apagar este arquivo?');
             if (confirmar) {
                 try {
+                    // PASSO 1: Recuperar nome do arquivo do sessionStorage (não do fileManager)
+                    const mapaAnexosJSON = sessionStorage.getItem('mapaAnexosCaso');
+                    const mapaAnexos = mapaAnexosJSON ? JSON.parse(mapaAnexosJSON) : {};
+                    const nomeArquivoSalvo = mapaAnexos[id] || 'Arquivo';
+                    console.log('📋 Nome do arquivo recuperado do sessionStorage:', nomeArquivoSalvo);
+                    
+                    // PASSO 2: Deletar do banco (passando o nome salvo)
                     console.log('Deletando do banco...');
+                    const resultadoDeletar = await window.api.excluirAnexo(id, nomeArquivoSalvo);
+                    console.log('Resultado da deleção do banco:', resultadoDeletar);
                     
-                    // Obter informações do arquivo antes de deletar
-                    const arquivo = fileManager.buscarPorId(id);
-                    const nomeArquivo = arquivo?.nome || 'Arquivo';
-                    
-                    await window.api.excluirAnexo(id);
-                    console.log('Removendo da memória com ID:', Number(id));
-                    fileManager.remover(Number(id));
-                    console.log('Arquivos depois:', fileManager.obterTodosCombinados());
-                    
-                    // 📝 Registrar a deleção no histórico
-                    try {
-                        const dadosHistorico = {
-                            caso: {
-                                idCaso: Number(idCaso),
-                                id_caso: Number(idCaso),
-                                id_assistida: idAssistida,
-                                idAssistida: idAssistida,
-                                nomeAssistida: dadosDoCaso.nome_assistida || dadosDoCaso.nomeAssistida,
-                                idadeAssistida: dadosDoCaso.idade_assistida || dadosDoCaso.idadeAssistida,
-                                identidadeGenero: dadosDoCaso.identidade_genero || dadosDoCaso.identidadeGenero,
-                                nomeSocial: dadosDoCaso.nome_social || dadosDoCaso.nomeSocial,
-                                endereco: dadosDoCaso.endereco,
-                                escolaridade: dadosDoCaso.escolaridade,
-                                religiao: dadosDoCaso.religiao,
-                                nacionalidade: dadosDoCaso.nacionalidade,
-                                zonaHabitacao: dadosDoCaso.zona_habitacao || dadosDoCaso.zonaHabitacao,
-                                profissao: dadosDoCaso.ocupacao || dadosDoCaso.profissao,
-                                limitacaoFisica: dadosDoCaso.deficiencia || dadosDoCaso.limitacaoFisica,
-                                numeroCadastroSocial: dadosDoCaso.cad_social || dadosDoCaso.numeroCadastroSocial,
-                                quantidadeDependentes: dadosDoCaso.dependentes || dadosDoCaso.quantidadeDependentes,
-                                nomeAgressor: dadosDoCaso.nome_agressor || dadosDoCaso.nomeAgressor,
-                                idadeAgresssor: dadosDoCaso.idade_agressor || dadosDoCaso.idadeAgresssor,
-                                dataOcorrida: dadosDoCaso.data || dadosDoCaso.dataOcorrida,
-                                ...dadosDoCaso // Incluir todos os outros dados também
-                            },
-                            assistida: {
-                                id: idAssistida,
-                                nome: dadosDoCaso.nome_assistida || dadosDoCaso.nomeAssistida
-                            },
-                            profissionalResponsavel: sessionStorage.getItem('nomeFuncionario') || 'N/A',
-                            data: new Date()
-                        };
+                    // PASSO 3: Se deletou com sucesso, continuar
+                    if (resultadoDeletar?.success) {
+                        // Remover da memória local
+                        fileManager.remover(Number(id));
+                        console.log('Removendo da memória com ID:', Number(id));
+                        console.log('Arquivos depois:', fileManager.obterTodosCombinados());
                         
-                        await window.api.salvarHistoricoBD(dadosHistorico);
-                        console.log('✅ Histórico registrado: Arquivo deletado', dadosHistorico);
-                    } catch (erroHistorico) {
-                        console.warn('Aviso: Histórico não foi registrado:', erroHistorico);
+                        // PASSO 4: Registrar a deleção no histórico com o nome salvo
+                        try {
+                            // Recuperar dados do usuário logado
+                            const STORAGE_KEY = 'usuarioLogado';
+                            const usuarioLogadoJSON = sessionStorage.getItem(STORAGE_KEY);
+                            const usuarioLogado = usuarioLogadoJSON ? JSON.parse(usuarioLogadoJSON) : null;
+                            const emailFuncionario = usuarioLogado?.email || 'sistema@sistema.com';
+                            const nomeFuncionario = usuarioLogado?.nome || 'Sistema';
+                            
+                            // Registrar a deleção no histórico com o nome salvo
+                            await window.api.registrarDelecaoAnexo(
+                                Number(idCaso),
+                                idAssistida,
+                                nomeArquivoSalvo,
+                                nomeFuncionario,
+                                emailFuncionario
+                            );
+                            console.log('✅ Histórico registrado: Arquivo deletado por', nomeFuncionario);
+                        } catch (erroHistorico) {
+                            console.warn('Aviso: Histórico não foi registrado:', erroHistorico);
+                        }
+                        
+                        atualizarTela();
+                        uiManager.mostrarPopup('Arquivo deletado com sucesso!');
+                    } else {
+                        console.error('Falha na deleção do banco');
+                        uiManager.mostrarPopup('Erro ao deletar arquivo do banco');
                     }
-                    
-                    atualizarTela();
-                    uiManager.mostrarPopup('Arquivo deletado com sucesso!');
                 } catch (erro) {
                     console.error('Erro ao deletar:', erro);
                     uiManager.mostrarPopup('Erro ao deletar arquivo');

@@ -335,6 +335,31 @@ ipcMain.handle('historico:salvar', async(_event, dados: any) => {
   }
 });
 
+ipcMain.handle('historico:registrarDelecao', async(_event, dados: any) => {
+  try {
+    Logger.info('Requisição para registrar deleção de anexo no histórico:', dados);
+    
+    const historicoId = await historicoController.handlerRegistrarDelecaoAnexo(
+      dados.idCaso,
+      dados.idAssistida,
+      dados.nomeArquivoComExtensao,
+      dados.nomeFuncionario,
+      dados.emailFuncionario
+    );
+    
+    return {
+      success: true,
+      historicoId
+    };
+  } catch (error) {
+    Logger.error('Erro ao registrar deleção de anexo no histórico:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido ao registrar deleção'
+    };
+  }
+});
+
 ipcMain.handle('historico:listar', async(_event, pagina: number = 1, itensPorPagina: number = 10) => {
   try {
     Logger.info(`Requisição para listar histórico - Página: ${pagina}, Itens por página: ${itensPorPagina}`);
@@ -430,12 +455,14 @@ ipcMain.handle('caso:obterInformacoesGerais', async(_event, idCaso: number) => {
   }
 });
 
-ipcMain.handle('caso:deletarAnexo', async(_event, idAnexo: number) => {
+ipcMain.handle('caso:deletarAnexo', async(_event, dados: any) => {
   try {
-    Logger.info('Requisição para deletar anexo:', idAnexo);
+    const { idAnexo, nomeArquivo } = dados;
+    Logger.info('Requisição para deletar anexo:', idAnexo, 'Nome:', nomeArquivo);
     const sucesso = await casoController.handlerExcluirAnexo(idAnexo);
     return {
-      success: sucesso
+      success: sucesso,
+      nomeArquivo: nomeArquivo
     };
   } catch (error) {
     Logger.error('Erro ao deletar anexo:', error);

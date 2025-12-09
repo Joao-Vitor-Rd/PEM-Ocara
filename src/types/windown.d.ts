@@ -163,8 +163,9 @@ export interface IElectronAPI {
     error?: string;
   }>;
 
-  excluirAnexo: (idAnexo: number) => Promise<{
+  excluirAnexo: (idAnexo: number, nomeArquivo?: string) => Promise<{
     success: boolean;
+    nomeArquivo?: string;
     error?: string;
   }>;
 
@@ -285,6 +286,12 @@ export interface IElectronAPI {
     profissionalResponsavel: string;
     data: Date;
   }) => Promise<{
+    success: boolean;
+    historicoId?: number;
+    error?: string;
+  }>;
+
+  registrarDelecaoAnexo: (idCaso: number, idAssistida: number, nomeArquivoComExtensao: string, nomeFuncionario: string, emailFuncionario: string) => Promise<{
     success: boolean;
     historicoId?: number;
     error?: string;

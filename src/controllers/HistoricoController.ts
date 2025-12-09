@@ -15,6 +15,10 @@ export class HistoricoController {
         return this.historicoService.salvarHistorico(caso);
     }
 
+    handlerRegistrarDelecaoAnexo(idCaso: number, idAssistida: number, nomeArquivoComExtensao: string, nomeFuncionario: string, emailFuncionario: string): Promise<number> {
+        return this.historicoService.registrarDelecaoAnexo(idCaso, idAssistida, nomeArquivoComExtensao, nomeFuncionario, emailFuncionario);
+    }
+
     handlerListarHistorico(pagina: number = 1, itensPorPagina: number = 10): Promise<any> {
         return this.historicoService.listarHistorico(pagina, itensPorPagina);
     }

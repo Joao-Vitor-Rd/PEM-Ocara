@@ -24,6 +24,23 @@ export interface IHistoricoRepository {
     atualizar(caso: Caso): Promise<number>;
 
     /**
+     * Registra a deleção de um anexo/arquivo no histórico
+     * @param idCaso - ID do caso
+     * @param idAssistida - ID da assistida
+     * @param nomeArquivoComExtensao - Nome do arquivo com extensão (ex: documento.pdf)
+     * @param nomeFuncionario - Nome do funcionário que deletou
+     * @param emailFuncionario - Email do funcionário
+     * @returns Promise<number> - ID do registro de histórico criado
+     */
+    registrarDelecaoAnexo(
+        idCaso: number,
+        idAssistida: number,
+        nomeArquivoComExtensao: string,
+        nomeFuncionario: string,
+        emailFuncionario: string
+    ): Promise<number>;
+
+    /**
      * Lista todos os registros de histórico com paginação
      * @param pagina - Número da página (começa em 1)
      * @param itensPorPagina - Quantidade de itens por página (padrão: 10)
