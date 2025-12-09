@@ -1,6 +1,11 @@
 export {};
 
-// 1. Captura dos Elementos
+import { aplicarPermissoesDeAcesso } from '../utils/SidebarManager';
+import { ativarNavegacao } from '../utils/Navegation';
+
+aplicarPermissoesDeAcesso();
+ativarNavegacao();
+
 const cadastroAssistidaBtn = document.getElementById('telaCadastroAssistida') as HTMLButtonElement;
 const assistidasBtn = document.getElementById('listarAssistidas') as HTMLLIElement;
 const redeApoioBtn = document.getElementById('telaRedeApoio') as HTMLLIElement;

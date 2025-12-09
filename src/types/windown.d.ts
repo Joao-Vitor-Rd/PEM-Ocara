@@ -1,5 +1,3 @@
-// src/types/windown.d.ts
-
 export interface IElectronAPI {
   createUser: (name: string, email: string) => Promise<{
     success: boolean;

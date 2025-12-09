@@ -23,10 +23,6 @@ function togglePasswordVisibility() {
 }
 
 async function handleLogin() {
-    if (!emailInput || !senhaInput) {
-        setError('Formulário inválido.');
-        return;
-    }
 
     const email = emailInput.value.trim();
     const senha = senhaInput.value.trim();
@@ -36,24 +32,45 @@ async function handleLogin() {
         return;
     }
 
-    setError(null);
-    loginBtn?.classList.add('loading');
     try {
         const resultado = await window.api.autenticar(email, senha);
+        
         if (!resultado.success || !resultado.funcionario) {
             setError(resultado.error ?? 'Não foi possível autenticar.');
             return;
         }
 
-        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(resultado.funcionario));
-        await window.api.openWindow('telaInicial');
+        const usuario = resultado.funcionario;
+        sessionStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+
+        console.log('Login efetuado. Cargo:', usuario.cargo);
+
+        switch (usuario.cargo) {
+            case 'ADMINISTRADOR':
+                await window.api.openWindow('telaEstatisticas'); 
+                break;
+            
+            case 'ASSISTENTE_SOCIAL':
+                await window.api.openWindow('telaInicial'); 
+                break;
+            
+            case 'JURIDICO':
+                await window.api.openWindow('telaVisualizarCasosBD'); 
+                break;
+
+            default:
+                setError('Perfil de usuário não identificado.');
+                sessionStorage.clear();
+        }
+
     } catch (error) {
-        console.error('Erro ao autenticar:', error);
-        setError('Erro inesperado ao autenticar.');
+        console.error('Erro:', error);
+        setError('Erro de conexão.');
     } finally {
         loginBtn?.classList.remove('loading');
     }
 }
+
 
 function initialize() {
     const usuarioSalvo = sessionStorage.getItem(STORAGE_KEY);

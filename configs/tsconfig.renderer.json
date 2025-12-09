@@ -9,6 +9,7 @@
   "include": [
     "../src/renderers/**/*.ts",
     "../src/utils/**/*.ts",
-    "../src/types/**/*.d.ts"
+    "../src/types/**/*.d.ts",
+    "../src/**/*"
   ]
 }

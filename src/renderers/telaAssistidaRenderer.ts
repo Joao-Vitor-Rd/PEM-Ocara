@@ -2,6 +2,12 @@
 
 export {}
 
+import { aplicarPermissoesDeAcesso } from '../utils/SidebarManager';
+import { ativarNavegacao } from '../utils/Navegation';
+
+aplicarPermissoesDeAcesso();
+ativarNavegacao();
+
 const telaInicialBtn = document.getElementById('telaInicial') as HTMLLIElement;
 const cadastroAssistidaBtn = document.getElementById('telaCadastroAssistida') as HTMLButtonElement;
 const telaEstatisticasBtn = document.getElementById('telaEstatisticas') as HTMLLIElement;
