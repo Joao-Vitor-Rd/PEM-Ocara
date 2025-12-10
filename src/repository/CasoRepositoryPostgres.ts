@@ -61,7 +61,7 @@ export class CasoRepositoryPostgres implements ICasoRepository {
                 sobreVoce?.getNovoRelacionamentoAumentouAgressao() || false,
                 outrasInfo?.getAceitaAbrigamentoTemporario() || false,
                 outrasInfo?.getDependenteFinanceiroAgressor() || false,
-                outrasInfo?.getMoraEmAreaRisco() || 'Não',
+                outrasInfo?.getMoraEmAreaRisco() || 'Não sei',
                 caso.getSobreAgressor()?.getAgressorCumpriuMedidaProtetiva() || false,
                 caso.getHistoricoViolencia()?.getAgressoesMaisFrequentesUltimamente() || false,
                 idAssistida,
@@ -184,7 +184,7 @@ export class CasoRepositoryPostgres implements ICasoRepository {
                 sobreVoce?.getNovoRelacionamentoAumentouAgressao() || false,
                 outrasInfo?.getAceitaAbrigamentoTemporario() || false,
                 outrasInfo?.getDependenteFinanceiroAgressor() || false,
-                outrasInfo?.getMoraEmAreaRisco() || 'Não',
+                outrasInfo?.getMoraEmAreaRisco() || 'Não sei',
                 caso.getSobreAgressor()?.getAgressorCumpriuMedidaProtetiva() || false,
                 caso.getHistoricoViolencia()?.getAgressoesMaisFrequentesUltimamente() || false,
                 idAssistida,
@@ -270,9 +270,9 @@ export class CasoRepositoryPostgres implements ICasoRepository {
             INSERT INTO ASSISTIDA (
                 Nome, Idade, endereco, identidadeGenero, n_social, Escolaridade,
                 Religiao, Nacionalidade, zona, ocupacao, cad_social,
-                Dependentes, Cor_Raca, deficiencia
+                Dependentes, Cor_Raca, limitacao, deficiencia
             ) VALUES (
-                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
             ) RETURNING id
         `;
 
@@ -290,6 +290,7 @@ export class CasoRepositoryPostgres implements ICasoRepository {
             assistida.getNumeroCadastroSocial() || '',
             assistida.getQuantidadeDependentes() || 0,
             sobreVoce.getCorRaca() ? sobreVoce.getCorRaca() : 'Não informado',
+            assistida.getLimitacaoFisica() ? assistida.getLimitacaoFisica() : 'Não informado',
             sobreVoce.getPossuiDeficienciaDoenca() ? sobreVoce.getPossuiDeficienciaDoenca() : 'Não informado'
         ];
 
@@ -375,7 +376,7 @@ export class CasoRepositoryPostgres implements ICasoRepository {
             agressor.getNome() || '',
             agressor.getIdade() || 0,
             agressor.getVinculoAssistida() || '',
-            sobreAgressor.getDoencaMental?.() || '',
+            sobreAgressor.getDoencaMental?.() ? String(sobreAgressor.getDoencaMental?.()) : '',
             sobreAgressor.getAgressorCumpriuMedidaProtetiva?.() || false,
             sobreAgressor.getAgressorTentativaSuicidio?.() || false,
             sobreAgressor.getAgressorDesempregado?.() || false,
@@ -468,21 +469,7 @@ export class CasoRepositoryPostgres implements ICasoRepository {
         idAssistida: number,
         historicoViolencia: any
     ): Promise<void> {
-        // Salvar ameaças familiares
-        const tipos = historicoViolencia.getAmeacaFamiliar() || [];
-        const tiposUnicos = new Set(tipos); // Remove duplicatas no client
-        
-        for (const tipo of tiposUnicos) {
-            const query = `
-                INSERT INTO TIPO_VIOLENCIA (
-                    id_violencia, id_caso, id_assistida, tipo_violencia
-                ) VALUES ($1, $2, $3, $4)
-                ON CONFLICT DO NOTHING
-            `;
-            await client.query(query, [idViolencia, idCaso, idAssistida, tipo]);
-        }
-
-        // Salvar outras formas de violência
+        // Q3: Salvar APENAS outras formas de violência
         const outrasFormas = historicoViolencia.getOutrasFormasViolencia() || [];
         const outrasFormasUnicas = new Set(outrasFormas); // Remove duplicatas no client
         
