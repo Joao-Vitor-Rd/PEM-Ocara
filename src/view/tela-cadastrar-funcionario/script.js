@@ -1,4 +1,5 @@
 const STORAGE_KEY = 'usuarioLogado';
+const SIDEBAR_TYPE_KEY = 'sidebarType';
 
 function getUsuarioLogado() {
     const raw = sessionStorage.getItem(STORAGE_KEY);
@@ -14,6 +15,57 @@ function getUsuarioLogado() {
 
 function isAdminUser(usuario) {
     return (usuario?.cargo ?? '').toUpperCase() === 'ADMINISTRADOR';
+}
+
+function resolveSidebarType(usuarioAtual) {
+    const saved = sessionStorage.getItem(SIDEBAR_TYPE_KEY);
+    if (saved === 'admin' || saved === 'normal') {
+        return saved;
+    }
+
+    const derived = isAdminUser(usuarioAtual) ? 'admin' : 'normal';
+    sessionStorage.setItem(SIDEBAR_TYPE_KEY, derived);
+    return derived;
+}
+
+function configureSidebarNavigation(sidebarType) {
+    const navConfig = [
+        {
+            selector: '#listarFuncionarios',
+            targets: { admin: 'telaListarFuncionarios', normal: 'telaListarFuncionarios' }
+        },
+        {
+            selector: '#navRede',
+            targets: { admin: 'telaRedeApoioAdm', normal: 'telaRedeApoio' }
+        },
+        {
+            selector: '#navInicial',
+            targets: { admin: 'telaInicialAdm', normal: 'telaInicial' }
+        },
+        {
+            selector: '#navEstatisticas',
+            targets: { admin: 'telaEstatisticasAdm', normal: 'telaEstatisticas' }
+        },
+        {
+            selector: '#navConta',
+            targets: { admin: 'telaContaAdm', normal: 'telaConfiguracoesConta' }
+        }
+    ];
+
+    navConfig.forEach(({ selector, targets }) => {
+        const element = document.querySelector(selector);
+        if (!element) {
+            return;
+        }
+
+        element.addEventListener('click', (event) => {
+            event.preventDefault();
+            const windowName = targets[sidebarType] || targets.admin;
+            if (windowName) {
+                window.api.openWindow(windowName);
+            }
+        });
+    });
 }
 
 function wireCloseButton(destination) {
@@ -310,8 +362,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+    const sidebarType = resolveSidebarType(usuarioAtual);
+    configureSidebarNavigation(sidebarType);
+
     if (!isAdminUser(usuarioAtual)) {
-        wireCloseButton('telaInicial');
+        const destino = sidebarType === 'admin' ? 'telaListarFuncionarios' : 'telaInicial';
+        wireCloseButton(destino);
         renderAccessDenied();
         return;
     }
