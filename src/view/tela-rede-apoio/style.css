@@ -463,3 +463,92 @@ body {
     display: none;
     text-align: center;
 }
+/* ================================================= */
+/* === ESTILOS DO MODAL EDITAR (Vindo da Develop) == */
+/* ================================================= */
+
+/* Adaptação para o modal de edição que tem botões no rodapé */
+#modalEditarRede .modal-content {
+    background-color: #FFFFFF;
+    width: 1011px;
+    max-height: 90vh;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Ajuste para o corpo do modal ocupar o espaço disponível */
+#modalEditarRede .modal-body {
+    padding: 20px 30px;
+    padding-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+    min-height: 0;
+    /* overflow-y: auto removido daqui para ficar igual a develop (que só tem no media query) */
+}
+
+/* Área dos botões de ação (Apagar/Salvar) */
+.modal-footer-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 30px;
+    background-color: #fff;
+    flex-shrink: 0;
+    /* border-top REMOVIDO para ficar idêntico a develop */
+}
+
+.btn-padrao {
+    flex: 1;
+    max-width: 363px;
+    height: 75px;
+    border-radius: 24px;
+    font-family: 'Poppins'; /* sans-serif removido para igualar develop */
+    font-weight: 600;
+    font-size: 29px;
+    letter-spacing: 0.05em;
+    color: #FFFFFF;
+    border: none;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    cursor: pointer;
+}
+
+.btn-padrao:hover {
+    transform: scale(1.02);
+}
+
+.btn-laranja { background: #F2B872; }
+.btn-vermelho { background: #E66953; }
+
+/* --- Responsividade Específica do Modal Editar --- */
+@media screen and (max-width: 1440px), screen and (max-height: 800px) {
+    #modalEditarRede .modal-content {
+        width: 60%;
+        max-width: 700px;
+        max-height: 95vh;
+    }
+
+    #modalEditarRede .modal-body {
+        padding: 1px 10px;
+        gap: 10px;
+        overflow-y: auto; /* Adicionado aqui igual a develop */
+    }
+
+    .modal-footer-buttons {
+        padding: 10px 10px;
+        gap: 10px;
+    }
+
+    .btn-padrao {
+        height: 55px;
+        font-size: 21px;
+        border-radius: 16px;
+        max-width: 250px;
+        margin-top: 5px;
+    }
+}

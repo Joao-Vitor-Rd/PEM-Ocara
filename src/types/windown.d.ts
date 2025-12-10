@@ -272,6 +272,21 @@ export interface IElectronAPI {
     error?: string;
   }>;
 
+  atualizarOrgaoRedeApoio: (
+    id: number,
+    nome?: string,
+    email?: string
+  ) => Promise<{
+    success: boolean;
+    orgao?: any;
+    error?: string;
+  }>;
+
+  deletarOrgaoRedeApoio: (id: number) => Promise<{
+    success: boolean;
+    error?: string;
+  }>;
+
   getPathForFile: (file: File) => string;
   
   gerarPreviewCaso: (dados: any) => Promise<{

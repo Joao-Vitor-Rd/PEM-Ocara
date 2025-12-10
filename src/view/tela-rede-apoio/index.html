@@ -226,6 +226,68 @@
       </div>
     </div>
 
+    <div id="modalEditarRede" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Editar Rede de Apoio</h3>
+          <button class="modal-close" id="fecharModalEditar">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <input type="hidden" id="idRedeEditar" />
+
+          <div class="form-group">
+            <label>Atual nome da Rede</label>
+            <input 
+              type="text" 
+              id="nomeAtualDisplay" 
+              readonly 
+              style="background-color: #f0f0f0; color: #666;" 
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="novoNome">Novo nome da Rede</label>
+            <input
+              type="text"
+              id="novoNome"
+              placeholder="Digite aqui o novo nome da Rede de Apoio"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Atual e-mail da Rede</label>
+            <input
+              type="text"
+              id="emailAtualDisplay"
+              readonly
+              style="background-color: #f0f0f0; color: #666;"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="novoEmail">Novo e-mail da Rede</label>
+            <input
+              type="text"
+              id="novoEmail"
+              placeholder="Digite aqui o novo e-mail da Rede de Apoio"
+            />
+          </div>
+
+          <p id="redeErrorEdit" class="error-message"></p>
+        </div>
+
+        <div class="modal-footer-buttons">
+          <button class="btn-padrao btn-vermelho btn-apagar" id="btnApagarRede">
+            Apagar Rede
+          </button>
+          <button class="btn-padrao btn-laranja btn-salvar" id="btnSalvarEdicao">
+            Salvar Alterações
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script src="../../../dist/utils/sidebarNavigation.js"></script>
     <script src="script.js"></script>
   </body>

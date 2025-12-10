@@ -1,183 +1,151 @@
 /**
- * Gerenciamento de Modal para Cadastro de Rede de Apoio
- *
- * Este script controla a abertura, fechamento, validação e submissão
- * do formulário de cadastro de rede de apoio, incluindo feedback visual
- * para o usuário através de modais e mensagens de erro.
+ * Gerenciamento de Modal para Cadastro e Edição de Rede de Apoio
+ * Integração: Backend (Local) + Visual (Develop)
  */
 
-// ===== SELEÇÃO DE ELEMENTOS DO DOM =====
-// Elementos principais da interface
+// ===== 1. SELEÇÃO DE ELEMENTOS DO DOM =====
+
+// --- Modal Cadastro ---
 const btnAbrir = document.getElementById("btnAbrirModalRede");
 const btnFechar = document.getElementById("fecharModalRede");
 const modal = document.getElementById("modalRedeApoio");
+const btnCadastrar = document.querySelector(".btn-atualizar"); // Botão cadastrar
+const redeError = document.getElementById("redeError");
+
+// --- Modal Edição (NOVO) ---
+const modalEditar = document.getElementById("modalEditarRede");
+const btnFecharEditar = document.getElementById("fecharModalEditar");
+const btnSalvarEdit = document.getElementById("btnSalvarEdicao");
+const btnApagarEdit = document.getElementById("btnApagarRede");
+const redeErrorEdit = document.getElementById("redeErrorEdit");
+
+// Inputs do Modal Edição
+const inputIdEditar = document.getElementById("idRedeEditar"); // Hidden
+const inputNomeAtual = document.getElementById("nomeAtualDisplay");
+const inputEmailAtual = document.getElementById("emailAtualDisplay");
+const inputNovoNome = document.getElementById("novoNome");
+const inputNovoEmail = document.getElementById("novoEmail");
+
+// --- Global / Outros ---
 const popupConfirmacao = document.getElementById("popupConfirmacao");
 const popupBtnOk = document.getElementById("popupBtnOk");
 const popupMensagem = document.getElementById("popupMensagem");
-const btnCadastrar = document.querySelector(".btn-atualizar");
-
-// Container da lista de redes de apoio
 const listaRedes = document.getElementById("listaRedes");
 
-// Elemento único para exibição de mensagens de erro
-const redeError = document.getElementById("redeError");
-
-// ===== MENU LATERAL (SIDEBAR) =====
+// ===== 2. NAVEGAÇÃO SIDEBAR =====
 const menuAssistidas = document.getElementById("menuAssistidas");
-const menuRedeApoio = document.getElementById("menuRedeApoio");
 const menuInicial = document.getElementById("menuInicial");
 
-menuAssistidas?.addEventListener("click", (event) => {
-  event.preventDefault();
-  window.api.openWindow("telaListarAssistidas");
-});
+menuAssistidas?.addEventListener("click", () => window.api.openWindow("telaListarAssistidas"));
+menuInicial?.addEventListener("click", () => window.api.openWindow("telaInicial"));
 
-menuInicial?.addEventListener("click", (event) => {
-  event.preventDefault();
-  window.api.openWindow("telaInicial");
-});
 
-// Estamos na própria tela de Rede de Apoio; aqui é opcional recarregar
-menuRedeApoio?.addEventListener("click", (event) => {
-  event.preventDefault();
-  // window.api.openWindow("telaRedeApoio");
-});
-
-// ===== CLASSES DE VALIDAÇÃO =====
-/**
- * Validador para campos de nome
- * Implementa regras de negócio específicas para nomes
- */
+// ===== 3. CLASSES DE VALIDAÇÃO =====
 class NameValidator {
   validate(novoNome) {
     const nomeTrimado = novoNome.trim();
-
-    // Validação de campo obrigatório
-    if (nomeTrimado === "") {
-      return "Por favor, preencha o campo de nome.";
-    }
-
-    // Validação de comprimento mínimo
-    if (nomeTrimado.length < 3) {
-      return "O nome deve ter pelo menos 3 caracteres.";
-    }
-
-    // Validação contra apenas números
-    if (/^\d+$/.test(nomeTrimado)) {
-      return "O nome não pode conter apenas números.";
-    }
-
-    // Validação de presença de letras
-    if (!/[a-zA-Z]/.test(nomeTrimado)) {
-      return "O nome deve conter pelo menos uma letra.";
-    }
-
-    return null; // Retorna null quando a validação é bem-sucedida
+    if (nomeTrimado === "") return "Por favor, preencha o campo de nome.";
+    if (nomeTrimado.length < 3) return "O nome deve ter pelo menos 3 caracteres.";
+    if (/^\d+$/.test(nomeTrimado)) return "O nome não pode conter apenas números.";
+    if (!/[a-zA-Z]/.test(nomeTrimado)) return "O nome deve conter pelo menos uma letra.";
+    return null;
   }
 }
 
-/**
- * Validador para campos de email
- * Verifica formato válido de endereço de email
- */
 class EmailValidator {
   validate(novoEmail) {
     const email = novoEmail.trim();
-
-    // Validação de campo obrigatório
-    if (email === "") {
-      return "Por favor, preencha o campo de e-mail.";
-    }
-
-    // Validação de formato usando regex
+    if (email === "") return "Por favor, preencha o campo de e-mail.";
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return "Por favor, insira um formato de e-mail válido.";
-    }
-
-    return null; // Retorna null quando a validação é bem-sucedida
+    if (!emailRegex.test(email)) return "Por favor, insira um formato de e-mail válido.";
+    return null;
   }
 }
 
-// Instâncias dos validadores para reutilização
 const nameValidator = new NameValidator();
 const emailValidator = new EmailValidator();
 
-// ===== GERENCIAMENTO DE ESTADO DO FORMULÁRIO =====
-/**
- * Limpa todos os campos do formulário e remove mensagens de erro
- * @returns {void}
- */
-const limparFormulario = () => {
+
+// ===== 4. FUNÇÕES AUXILIARES E ESTADO =====
+
+const limparFormularioCadastro = () => {
   document.getElementById("nomeRede").value = "";
   document.getElementById("emailRede").value = "";
-  limparErro();
+  limparErro(redeError);
 };
 
-// ===== CONTROLE DE MODAL =====
-/**
- * Abre o modal de cadastro e prepara o ambiente para novo preenchimento
- * @returns {void}
- */
+const limparFormularioEdicao = () => {
+  if (inputIdEditar) inputIdEditar.value = "";
+  if (inputNomeAtual) inputNomeAtual.value = "";
+  if (inputEmailAtual) inputEmailAtual.value = "";
+  if (inputNovoNome) inputNovoNome.value = "";
+  if (inputNovoEmail) inputNovoEmail.value = "";
+  limparErro(redeErrorEdit);
+};
+
+const mostrarErro = (elemento, mensagem) => {
+  if (elemento) {
+    elemento.textContent = mensagem;
+    elemento.style.display = "block";
+  }
+};
+
+const limparErro = (elemento) => {
+  if (elemento) {
+    elemento.textContent = "";
+    elemento.style.display = "none";
+  }
+};
+
+// --- Controle de Modais ---
+
+// Abrir Cadastro
 const abrirModal = () => {
   modal.classList.add("visible");
-  limparErro(); // Garante que erros anteriores sejam limpos
+  limparErro(redeError);
 };
 
-/**
- * Fecha o modal de cadastro e limpa o formulário
- * @returns {void}
- */
+// Fechar Cadastro
 const fecharModal = () => {
   modal.classList.remove("visible");
-  limparFormulario(); // Reseta o estado do formulário ao fechar
+  limparFormularioCadastro();
 };
 
-// ===== CONTROLE DE POPUP DE CONFIRMAÇÃO =====
-/**
- * Exibe popup de confirmação de sucesso
- * @returns {void}
- */
-const abrirPopup = () => {
+// Abrir Edição (Preenchendo dados)
+// Essa função recebe o objeto 'orgao' vindo do banco
+const abrirModalEdicao = (orgao) => {
+  modalEditar.classList.add("visible");
+  limparErro(redeErrorEdit);
+
+  // Preenche os campos visuais
+  inputNomeAtual.value = orgao.nome;
+  inputEmailAtual.value = orgao.email || "Sem e-mail cadastrado";
+  
+  // Guarda o ID no input hidden para usar ao salvar/apagar
+  inputIdEditar.value = orgao.id ?? "";
+};
+
+// Fechar Edição
+const fecharModalEdicao = () => {
+  modalEditar.classList.remove("visible");
+  limparFormularioEdicao();
+};
+
+// Popup Global
+const abrirPopup = (msg) => {
+  if (msg) popupMensagem.textContent = msg;
   popupConfirmacao.classList.add("visible");
 };
 
-/**
- * Fecha o popup de confirmação
- * @returns {void}
- */
 const fecharPopup = () => {
   popupConfirmacao.classList.remove("visible");
 };
 
-// ===== GERENCIAMENTO DE MENSAGENS DE ERRO =====
-/**
- * Exibe mensagem de erro para o usuário
- * @param {string} mensagem - Texto da mensagem de erro a ser exibida
- * @returns {void}
- */
-const mostrarErro = (mensagem) => {
-  redeError.textContent = mensagem;
-  redeError.style.display = "block";
-};
 
-/**
- * Limpa mensagens de erro da interface
- * @returns {void}
- */
-const limparErro = () => {
-  redeError.textContent = "";
-  redeError.style.display = "none";
-};
+// ===== 5. RENDERIZAÇÃO (INTEGRAÇÃO COM BACKEND) =====
 
-// ===== LISTAGEM DE REDES DE APOIO =====
-/**
- * Renderiza os cards de redes de apoio no container #listaRedes
- * @param {Array<any>} orgaos
- */
 const renderizarRedes = (orgaos) => {
   if (!listaRedes) return;
-
   listaRedes.innerHTML = "";
 
   if (!orgaos || orgaos.length === 0) {
@@ -190,9 +158,11 @@ const renderizarRedes = (orgaos) => {
   }
 
   orgaos.forEach((orgao) => {
+    // Cria a coluna e o card
     const col = document.createElement("div");
     col.className = "col-md-6";
 
+    // HTML do Card
     col.innerHTML = `
       <div class="text-center card-paciente card-rede-apoio">
         <h3 class="mb-2">${orgao.nome}</h3>
@@ -200,119 +170,195 @@ const renderizarRedes = (orgaos) => {
       </div>
     `;
 
+    // --- AQUI ESTÁ A MÁGICA ---
+    // Adiciona o evento de click NESTE card específico
+    const cardElement = col.querySelector(".card-rede-apoio");
+    cardElement.addEventListener("click", () => {
+      console.log("Card clicado, abrindo edição para:", orgao);
+      abrirModalEdicao(orgao);
+    });
+
     listaRedes.appendChild(col);
   });
 };
 
-/**
- * Busca no backend (mock) a lista de redes cadastradas
- */
 const carregarRedes = async () => {
   try {
     if (!window.api || !window.api.listarOrgaosRedeApoio) {
-      console.error("API listarOrgaosRedeApoio não disponível");
+      console.warn("API não disponível (Modo Dev/Mock)");
       return;
     }
 
     const resultado = await window.api.listarOrgaosRedeApoio();
-    console.log("Redes de apoio carregadas:", resultado);
+    console.log("Redes carregadas:", resultado);
 
-    if (!resultado.success) {
-      console.error(resultado.error || "Erro ao listar redes de apoio");
-      return;
+    if (resultado.success) {
+      renderizarRedes(resultado.orgaos || []);
+    } else {
+      console.error(resultado.error);
     }
-
-    renderizarRedes(resultado.orgaos || []);
   } catch (err) {
-    console.error("Erro ao carregar redes de apoio:", err);
+    console.error("Erro ao carregar redes:", err);
   }
 };
 
-// ===== CONFIGURAÇÃO DE EVENT LISTENERS =====
-// Controle de abertura e fechamento de modais
-btnAbrir.addEventListener("click", abrirModal);
-btnFechar.addEventListener("click", fecharModal);
-popupBtnOk.addEventListener("click", fecharPopup);
 
-// Fechar modais ao clicar fora do conteúdo
-modal.addEventListener("click", (e) => {
-  if (e.target === modal) {
-    fecharModal();
-  }
+// ===== 6. EVENT LISTENERS GERAIS =====
+
+// Botões Cadastro
+if (btnAbrir) btnAbrir.addEventListener("click", abrirModal);
+if (btnFechar) btnFechar.addEventListener("click", fecharModal);
+
+// Botões Edição
+if (btnFecharEditar) btnFecharEditar.addEventListener("click", fecharModalEdicao);
+
+// Popup
+if (popupBtnOk) popupBtnOk.addEventListener("click", fecharPopup);
+
+// Fechar ao clicar fora (Overlay)
+window.addEventListener("click", (e) => {
+  if (e.target === modal) fecharModal();
+  if (e.target === modalEditar) fecharModalEdicao();
+  if (e.target === popupConfirmacao) fecharPopup();
 });
 
-popupConfirmacao.addEventListener("click", (e) => {
-  if (e.target === popupConfirmacao) {
-    fecharPopup();
-  }
-});
+// Limpar erros ao digitar
+document.getElementById("nomeRede").addEventListener("input", () => limparErro(redeError));
+document.getElementById("emailRede").addEventListener("input", () => limparErro(redeError));
 
-// ===== LÓGICA PRINCIPAL DE CADASTRO =====
-/**
- * Handler principal para o processo de cadastro
- * Executa validações em sequência e procede com cadastro se válido
- */
-btnCadastrar.addEventListener("click", async () => {
-  // Captura dos valores atuais dos campos
-  const nomeRede = document.getElementById("nomeRede").value;
-  const emailRede = document.getElementById("emailRede").value;
+if (inputNovoNome) inputNovoNome.addEventListener("input", () => limparErro(redeErrorEdit));
+if (inputNovoEmail) inputNovoEmail.addEventListener("input", () => limparErro(redeErrorEdit));
 
-  // Limpa estado anterior de erro
-  limparErro();
 
-  // Pipeline de validações - nome tem prioridade
-  const erroNome = nameValidator.validate(nomeRede);
-  if (erroNome) {
-    mostrarErro(erroNome);
-    return; // Interrompe execução se nome for inválido
-  }
+// ===== 7. AÇÕES DE SUBMISSÃO (CADASTRAR, EDITAR, APAGAR) =====
 
-  // Validação de email só executa se nome for válido
-  const erroEmail = emailValidator.validate(emailRede);
-  if (erroEmail) {
-    mostrarErro(erroEmail);
-    return; // Interrompe execução se email for inválido
-  }
+// --- CADASTRAR ---
+if (btnCadastrar) {
+  btnCadastrar.addEventListener("click", async () => {
+    const nomeRede = document.getElementById("nomeRede").value;
+    const emailRede = document.getElementById("emailRede").value;
 
-  // Chama backend via IPC
-  try {
-    if (!window.api || !window.api.criarOrgaoRedeApoio) {
-      console.error("API do Electron não disponível.");
-      mostrarErro("Erro interno: API não disponível.");
+    limparErro(redeError);
+
+    // Validação
+    const erroNome = nameValidator.validate(nomeRede);
+    if (erroNome) return mostrarErro(redeError, erroNome);
+
+    const erroEmail = emailValidator.validate(emailRede);
+    if (erroEmail) return mostrarErro(redeError, erroEmail);
+
+    // Chamada ao Backend
+    try {
+      if (!window.api || !window.api.criarOrgaoRedeApoio) {
+        alert("API não encontrada.");
+        return;
+      }
+
+      const resultado = await window.api.criarOrgaoRedeApoio(nomeRede, emailRede);
+
+      if (resultado.success) {
+        fecharModal();
+        abrirPopup("Rede cadastrada com sucesso!");
+        carregarRedes(); // Atualiza a lista
+      } else {
+        mostrarErro(redeError, resultado.error || "Erro ao cadastrar.");
+      }
+    } catch (err) {
+      console.error(err);
+      mostrarErro(redeError, "Erro interno ao cadastrar.");
+    }
+  });
+}
+
+// --- SALVAR EDIÇÃO ---
+if (btnSalvarEdit) {
+  btnSalvarEdit.addEventListener("click", async () => {
+    const id = Number(inputIdEditar.value);
+    const novoNome = inputNovoNome.value.trim();
+    const novoEmail = inputNovoEmail.value.trim();
+
+    limparErro(redeErrorEdit);
+
+    if (!id) {
+      mostrarErro(redeErrorEdit, "Registro inválido. Abra o card novamente.");
       return;
     }
 
-    const resultado = await window.api.criarOrgaoRedeApoio(
-      nomeRede,
-      emailRede
-    );
-    console.log("Resultado cadastro rede de apoio:", resultado);
+    if (!novoNome && !novoEmail) {
+      mostrarErro(redeErrorEdit, "Preencha ao menos um campo para alterar.");
+      return;
+    }
+    
+    if (novoNome) {
+        const erroNome = nameValidator.validate(novoNome);
+        if (erroNome) return mostrarErro(redeErrorEdit, erroNome);
+    }
+    
+    if (novoEmail) {
+        const erroEmail = emailValidator.validate(novoEmail);
+        if (erroEmail) return mostrarErro(redeErrorEdit, erroEmail);
+    }
 
-    if (!resultado || !resultado.success) {
-      const mensagemErro =
-        resultado?.error || "Não foi possível cadastrar a rede de apoio.";
-      mostrarErro(mensagemErro);
+    if (!window.api || !window.api.atualizarOrgaoRedeApoio) {
+      mostrarErro(redeErrorEdit, "API não encontrada.");
       return;
     }
 
-    // Sucesso
-    fecharModal();
-    popupMensagem.textContent = "Rede cadastrada com sucesso!";
-    abrirPopup();
-    limparFormulario();
+    try {
+      const resultado = await window.api.atualizarOrgaoRedeApoio(
+        id,
+        novoNome || undefined,
+        novoEmail || undefined
+      );
 
-    // Recarrega a lista com a nova rede
-    await carregarRedes();
-  } catch (err) {
-    console.error("Erro ao cadastrar Rede de Apoio:", err);
-    mostrarErro("Erro interno ao cadastrar a rede de apoio.");
-  }
-});
+      if (!resultado.success) {
+        mostrarErro(redeErrorEdit, resultado.error || "Erro ao atualizar registro.");
+        return;
+      }
 
-// ===== MELHORIA DE USABILIDADE =====
-// Limpa mensagens de erro durante a digitação para feedback imediato
-document.getElementById("nomeRede").addEventListener("input", limparErro);
-document.getElementById("emailRede").addEventListener("input", limparErro);
+      fecharModalEdicao();
+      abrirPopup("Rede atualizada com sucesso!");
+      await carregarRedes();
+    } catch (error) {
+      console.error("Erro ao atualizar rede:", error);
+      mostrarErro(redeErrorEdit, "Erro interno ao atualizar.");
+    }
+  });
+}
 
-// Carrega as redes cadastradas ao abrir a tela
+// --- APAGAR REDE ---
+if (btnApagarEdit) {
+  btnApagarEdit.addEventListener("click", async () => {
+    const id = Number(inputIdEditar.value);
+    limparErro(redeErrorEdit);
+
+    if (!id) {
+      mostrarErro(redeErrorEdit, "Registro inválido. Abra o card novamente.");
+      return;
+    }
+
+    if (!window.api || !window.api.deletarOrgaoRedeApoio) {
+      mostrarErro(redeErrorEdit, "API não encontrada.");
+      return;
+    }
+
+    try {
+      const resultado = await window.api.deletarOrgaoRedeApoio(id);
+
+      if (!resultado.success) {
+        mostrarErro(redeErrorEdit, resultado.error || "Erro ao remover registro.");
+        return;
+      }
+
+      fecharModalEdicao();
+      abrirPopup("Rede removida com sucesso!");
+      await carregarRedes();
+    } catch (error) {
+      console.error("Erro ao remover rede:", error);
+      mostrarErro(redeErrorEdit, "Erro interno ao remover.");
+    }
+  });
+}
+
+// Inicializa a tela carregando os dados
 carregarRedes();

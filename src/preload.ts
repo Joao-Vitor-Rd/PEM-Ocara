@@ -124,6 +124,12 @@ contextBridge.exposeInMainWorld('api', {
   listarOrgaosRedeApoio: () =>
     ipcRenderer.invoke('orgao:listarTodos'),
 
+  atualizarOrgaoRedeApoio: (id: number, nome?: string, email?: string) =>
+    ipcRenderer.invoke('orgao:update', { id, nome, email }),
+
+  deletarOrgaoRedeApoio: (id: number) =>
+    ipcRenderer.invoke('orgao:delete', id),
+
   recuperarAnexosDoCaso: (idCaso: number) =>
     ipcRenderer.invoke('caso:recuperarAnexos', { idCaso }),
 
