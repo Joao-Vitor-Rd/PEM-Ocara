@@ -323,6 +323,21 @@ export interface IElectronAPI {
     error?: string;
   }>;
 
+  cadastrarFuncionario: (dados: {
+    nome: string;
+    email: string;
+    cargo: string;
+    senha: string;
+  }) => Promise<{
+    success: boolean;
+    funcionario?: any;
+    error?: string;
+  }>;
+
+  logout: () => Promise<{
+    success: boolean;
+  }>;
+
   autenticar: (email: string, senha: string) => Promise<{
     success: boolean;
     funcionario?: any;

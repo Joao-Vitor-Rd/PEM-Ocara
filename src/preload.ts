@@ -151,6 +151,11 @@ contextBridge.exposeInMainWorld('api', {
     ipcRenderer.removeAllListeners('user:created');
   },
 
+  cadastrarFuncionario: (dados: { nome: string; email: string; cargo: string; senha: string }) =>
+    ipcRenderer.invoke('create-funcionario', dados),
+
+  logout: () => ipcRenderer.invoke('auth:logout'),
+
   autenticar: (email: string, senha: string) =>
     ipcRenderer.invoke('auth:login', { email, senha }),
 

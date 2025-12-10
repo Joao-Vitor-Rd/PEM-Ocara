@@ -1,0 +1,449 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700;800&display=swap');
+
+/* --- 0. CONFIGURAÇÕES GLOBAIS --- */
+html,
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #FFFFFF;
+    overflow-x: hidden;
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* --- 1. SIDEBAR --- */
+.sidebar {
+    width: clamp(280px, 25vw, 480px);
+    background-color: #63468C;
+    color: #FFFFFF;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 50px 0;
+    box-sizing: border-box;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+
+.sidebar-header {
+    text-align: center;
+    width: 84%;
+    margin: 0 auto;
+    flex-shrink: 0;
+    padding-top: 8px;
+}
+
+.sidebar-header h1 {
+    font-weight: 300;
+    font-size: 48px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.sidebar-divider {
+    border: none;
+    height: 4px;
+    background-color: #FFFFFF;
+    opacity: 1;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.sidebar-nav {
+    flex-grow: 1;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-around;
+}
+
+.sidebar-nav a {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+    text-decoration: none;
+    color: #FFFFFF;
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: 0.050em;
+    padding: 15px 40px;
+    border-radius: 50px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.sidebar-nav a.active {
+    background-color: #FFFFFF;
+    color: #63468C;
+}
+
+.sidebar-nav a:not(.active):hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-nav svg {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+.icone-material {
+    transform: scale(1.35);
+}
+
+/* --- 2. CONTEÚDO PRINCIPAL --- */
+.main-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 2.5vw 4vw;
+    box-sizing: border-box;
+    max-width: 95%;
+    margin: 0 auto;
+}
+
+/* --- 3. BARRA DE BUSCA --- */
+.barra-busca-full {
+    margin-left: -25px;
+    margin-right: -25px;
+    padding-left: 80px;
+    padding-right: 80px;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.barra-busca-full .material-symbols-outlined {
+    color: #666666 !important;
+    font-size: 38px !important;
+    font-variation-settings: 'FILL'0, 'wght'400, 'GRAD'0, 'opsz'38;
+}
+
+.input-busca-prototipo {
+    font-weight: 300;
+    font-size: 20px !important;
+    line-height: 30px;
+    text-align: center;
+    color: #666666;
+    border-color: #666666 !important;
+    border-bottom-width: 2px !important;
+}
+
+.input-busca-prototipo::placeholder {
+    color: #666666;
+    opacity: 1;
+}
+
+/* --- 4. CARDS (PACIENTE E REDE) --- */
+.card-paciente {
+    background-color: #CEB3F2;
+    border: 1px solid #000;
+    border-radius: 25px;
+    width: 100%;
+    padding: 20px 30px 10px 30px;
+}
+
+.card-paciente h3 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: clamp(24px, 3vw, 40px);
+    letter-spacing: 0.05em;
+    color: #FFFFFF;
+    text-shadow: 0px 4px 4px #63468C;
+    text-decoration-line: none !important;
+    margin-bottom: 15px !important;
+}
+
+.card-paciente p {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    text-decoration-line: underline;
+    color: #838383;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+}
+
+.card-rede-apoio {
+    padding: 42px 40px !important;
+    margin-top: 10px !important;
+}
+
+.card-rede-apoio h3 {
+    margin-bottom: 0 !important;
+}
+
+/* --- 5. BOTÕES --- */
+.btn-assistida {
+    width: 70%;
+    padding: 39px 0;
+    background-color: #F2B872;
+    border: 1px solid #865D2B;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 25px;
+    color: white;
+    font-size: clamp(24px, 2.5vw, 35px);
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 0.17em;
+    font-weight: 800;
+    text-align: center;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-assistida:hover {
+    transform: scale(1.03);
+    box-shadow: 0 14px 26px rgba(0, 0, 0, 0.22);
+}
+
+.btn-assistida:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* --- 6. MODAL (CADASTRAR/ATUALIZAR) --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.modal-overlay.visible {
+    display: flex;
+}
+
+.modal-content {
+    background-color: #FFFFFF;
+    width: min(1011px, 90vw);
+    max-width: 90vw;
+    height: auto;
+    max-height: 90vh;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    padding: 0;
+    overflow: hidden;
+    transform: scale(0.95);
+    transition: transform 0.3s ease-in-out;
+}
+
+.modal-overlay.visible .modal-content {
+    transform: scale(1);
+}
+
+.modal-header {
+    padding: 10px 20px;
+    height: 80px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-title {
+    margin: 0;
+    font-family: 'Poppins';
+    font-weight: 700;
+    font-size: clamp(28px, 3.5vw, 40px);
+    letter-spacing: 0.1em;
+    color: #63468C;
+}
+
+.modal-close {
+    font-size: 3rem;
+    font-weight: 300;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #63468C;
+}
+
+.modal-body {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-family: 'Poppins';
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 48px;
+    color: #63468C;
+    margin-bottom: 10px;
+}
+
+.form-group input {
+    border: 1px solid #63468C;
+    border-radius: 10px;
+    font-family: 'Poppins';
+    font-weight: 500;
+    font-size: 24px;
+    color: #838383;
+    letter-spacing: 0.1em;
+    height: 64px;
+    padding: 10px 15px;
+    box-sizing: border-box;
+}
+
+.form-group input::placeholder {
+    font-family: 'Poppins';
+    font-weight: 500;
+    font-size: 24px;
+    color: #838383;
+    letter-spacing: 0.1em;
+}
+
+.btn-atualizar {
+    width: min(363px, 80%);
+    height: 83px;
+    background: #F2B872;
+    border-radius: 24px;
+    font-family: 'Poppins';
+    font-weight: 600;
+    font-size: 32px;
+    letter-spacing: 0.05em;
+    color: #FFFFFF;
+    align-self: center;
+    margin-top: 20px;
+    border: none;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    cursor: pointer;
+}
+
+.btn-atualizar:hover {
+    transform: scale(1.03);
+    box-shadow: 0 14px 26px rgba(0, 0, 0, 0.22);
+}
+
+.btn-atualizar:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* --- 7. POPUP CONFIRMAÇÃO --- */
+.popup-confirmacao {
+    display: none !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    z-index: 10000 !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.popup-confirmacao.visible {
+    display: flex !important;
+}
+
+.popup-confirmacao-content {
+    background-color: #FFFFFF !important;
+    border-radius: 15px !important;
+    padding: 40px 50px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+    text-align: center !important;
+    max-width: 600px !important;
+    width: 90% !important;
+    transform: scale(0.9) !important;
+    transition: transform 0.3s ease-out !important;
+}
+
+.popup-confirmacao.visible .popup-confirmacao-content {
+    transform: scale(1) !important;
+}
+
+.popup-confirmacao-content p {
+    font-size: 22px !important;
+    color: #63468C !important;
+    font-weight: 500 !important;
+    margin: 0 0 30px 0 !important;
+    line-height: 1.4 !important;
+}
+
+.popup-btn-ok {
+    background-color: #63468C !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 12px 50px !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s ease-in-out !important;
+    font-family: 'Poppins', sans-serif !important;
+}
+
+.popup-btn-ok:hover {
+    background-color: #4d3670 !important;
+}
+
+.error-message {
+    color: #C94A2C;
+    font-size: 18px;
+    font-weight: 500;
+    margin: -15px 0 10px 0;
+    display: none;
+    text-align: center;
+}
+
+/* --- 8. RODAPÉ --- */
+.rodape {
+    margin-top: auto;
+    padding-top: 40px;
+    padding-bottom: 20px;
+}
+
+.rodape p {
+    flex-grow: 1;
+    text-align: center;
+    font-weight: 700;
+    font-size: 16px;
+    color: #63468C;
+}
+
+.logo-esquerda {
+    width: 112px;
+    height: 80px;
+    object-fit: contain;
+}
+
+.logo-direita {
+    width: 133px;
+    height: 100px;
+    object-fit: contain;
+}

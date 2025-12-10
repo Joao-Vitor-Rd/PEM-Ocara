@@ -26,6 +26,7 @@ import { AnexoRepositorioPostgres } from './repository/AnexoRepositorioPostgres'
 import { FuncionarioRepositoryPostgres } from './repository/FuncionarioRepositoryPostgres';
 import { FuncionarioService } from './services/FuncionarioService';
 import { ControladorFuncionario } from './controllers/FuncionarioController';
+import { PerfilUsuario } from './models/Funcionario';
 
 // Módulo de Credenciais
 import { CredencialRepositoryPostgres } from './repository/CredencialRepositoryPostgres';
@@ -49,6 +50,12 @@ let funcionarioController: ControladorFuncionario;
 let credencialController: ControladorCredencial;
 let historicoController: HistoricoController;
 let orgaoController: ControladorOrgao;
+type UsuarioSessaoAtiva = {
+  email: string;
+  nome: string;
+  cargo: string;
+};
+let usuarioLogadoAtual: UsuarioSessaoAtiva | null = null;
 
 // Repository para salvar casos no BD
 
@@ -1091,6 +1098,11 @@ ipcMain.handle('assistida:atualizar', async (_event, data: any) => {
 ipcMain.handle('create-funcionario', async (_event, data) => {
   try {
     Logger.info('Requisição para criar funcionário:', data.email);
+    const cargoAtual = (usuarioLogadoAtual?.cargo ?? '').toUpperCase();
+    if (!usuarioLogadoAtual || cargoAtual !== PerfilUsuario.ADMIN) {
+      Logger.warn('Tentativa de cadastro de funcionário sem permissão adequada.');
+      return { success: false, error: 'Apenas administradores podem cadastrar funcionários.' };
+    }
     return await funcionarioController.cadastrarFuncionario(data);
   } catch (error) {
     Logger.error('Erro no handler create-funcionario:', error);
@@ -1159,11 +1171,27 @@ ipcMain.handle('user:update-profile', async (_event, data) => {
 ipcMain.handle('auth:login', async (_event, credenciais: { email: string; senha: string }) => {
   try {
     Logger.info('Tentativa de login para:', credenciais.email);
-    return await funcionarioController.autenticarFuncionario(credenciais.email, credenciais.senha);
+    const resultado = await funcionarioController.autenticarFuncionario(credenciais.email, credenciais.senha);
+    if (resultado.success && resultado.funcionario) {
+      usuarioLogadoAtual = {
+        email: resultado.funcionario.email,
+        nome: resultado.funcionario.nome,
+        cargo: resultado.funcionario.cargo,
+      };
+    } else {
+      usuarioLogadoAtual = null;
+    }
+    return resultado;
   } catch (error) {
     Logger.error('Erro no handler auth:login:', error);
     return { success: false, error: error instanceof Error ? error.message : 'Erro desconhecido' };
   }
+});
+
+ipcMain.handle('auth:logout', async () => {
+  Logger.info('Encerrando sessão atual.');
+  usuarioLogadoAtual = null;
+  return { success: true };
 });
 
 // ==========================================
@@ -1268,6 +1296,12 @@ ipcMain.on('window:open', (_event, windowName: string) => {
       break;
     case 'telaRedeApoioAdm':
       windowManager.loadContent('main', 'tela-rede-apoio-adm/index.html');
+      break;
+    case 'telaListarFuncionarios':
+      windowManager.loadContent('main', 'tela-funcionario-cadastrado/index.html');
+      break;
+    case 'telaCadastrarFuncionario':
+      windowManager.loadContent('main', 'tela-cadastrar-funcionario/index.html');
       break;
     default:
       console.log('tela desconhecida:', windowName);

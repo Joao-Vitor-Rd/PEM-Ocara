@@ -458,10 +458,11 @@ class EmailController {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     let usuarioAtual = carregarUsuarioDaSessao();
 
     if (!usuarioAtual) {
+        await window.api.logout();
         window.api.openWindow('telaLogin');
         return;
     }
@@ -521,8 +522,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const logoutButton = document.getElementById('logoutButton');
     if (logoutButton) {
-        logoutButton.addEventListener('click', () => {
+        logoutButton.addEventListener('click', async () => {
             salvarUsuarioNaSessao(null);
+            await window.api.logout();
             window.api.openWindow('telaLogin');
         });
     }
