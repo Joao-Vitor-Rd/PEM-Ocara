@@ -917,6 +917,7 @@ ipcMain.handle('orgao:create', async (_event, data: { nome: string; email: strin
     return {
       success: true,
       orgao: {
+        id: orgao.getId(),
         nome: orgao.getNome(),
         email: orgao.getEmail(),
       },
@@ -938,6 +939,7 @@ ipcMain.handle('orgao:listarTodos', async () => {
     return {
       success: true,
       orgaos: orgaos.map(orgao => ({
+          id: orgao.getId(),
           nome: orgao.getNome(),
           email: orgao.getEmail(),
         })
@@ -949,6 +951,54 @@ ipcMain.handle('orgao:listarTodos', async () => {
       success: false,
       error: error instanceof Error ? error.message : 'Erro desconhecido',
       orgaos: [],
+    };
+  }
+});
+
+ipcMain.handle('orgao:update', async (_event, data: { id: number; nome?: string; email?: string }) => {
+  try {
+    Logger.info('Requisição para atualizar órgão da rede de apoio:', data);
+    const result = await orgaoController.atualizarOrgao(data.id, data.nome, data.email);
+
+    if (!result.success || !result.orgao) {
+      return {
+        success: false,
+        error: result.error ?? 'Erro ao atualizar órgão da rede de apoio',
+      };
+    }
+
+    const orgao = result.orgao;
+    return {
+      success: true,
+      orgao: {
+        id: orgao.getId(),
+        nome: orgao.getNome(),
+        email: orgao.getEmail(),
+      },
+    };
+  } catch (error) {
+    Logger.error('Erro ao atualizar órgão da rede de apoio:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido',
+    };
+  }
+});
+
+ipcMain.handle('orgao:delete', async (_event, id: number) => {
+  try {
+    Logger.info('Requisição para remover órgão da rede de apoio:', id);
+    const result = await orgaoController.removerOrgao(id);
+    if (!result.success) {
+      return result;
+    }
+
+    return { success: true };
+  } catch (error) {
+    Logger.error('Erro ao remover órgão da rede de apoio:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido',
     };
   }
 });
