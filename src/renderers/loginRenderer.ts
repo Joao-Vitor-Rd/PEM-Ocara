@@ -1,5 +1,7 @@
 export {};
 
+import { setSidebarType, navigateToTelaInicial } from '../utils/SidebarManager.js';
+
 const STORAGE_KEY = 'usuarioLogado';
 
 const emailInput = document.getElementById('email') as HTMLInputElement;
@@ -46,7 +48,15 @@ async function handleLogin() {
         }
 
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify(resultado.funcionario));
-        await window.api.openWindow('telaInicial');
+        
+        const cargo = resultado.funcionario.cargo?.toUpperCase() || '';
+        const sidebarType = cargo === 'ADMINISTRADOR' ? 'admin' : 'normal';
+        setSidebarType(sidebarType);
+        
+        const mudarTela = cargo === 'ADMINISTRADOR' 
+                    ? await window.api.openWindow('telaInicialAdm') 
+                    : await window.api.openWindow('telaInicial');
+
     } catch (error) {
         console.error('Erro ao autenticar:', error);
         setError('Erro inesperado ao autenticar.');
@@ -58,7 +68,7 @@ async function handleLogin() {
 function initialize() {
     const usuarioSalvo = sessionStorage.getItem(STORAGE_KEY);
     if (usuarioSalvo) {
-        window.api.openWindow('telaInicial');
+        navigateToTelaInicial();
         return;
     }
 

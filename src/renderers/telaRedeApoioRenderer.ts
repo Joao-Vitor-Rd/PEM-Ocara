@@ -1,39 +1,65 @@
 /// <reference path="../types/windown.d.ts" />
 
+import { navigateToTelaInicial, navigateToTelaConta, navigateToTelaEstatisticas, navigateToTelaRedeApoio } from '../utils/SidebarManager.js';
+
 export {}
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const menuAssistidas = document.getElementById('menuAssistidas') as HTMLLIElement;
-    const menuInicial = document.getElementById('menuInicial') as HTMLLIElement;
-    const listarAssistidas = document.getElementById('listarAssistidas') as HTMLLIElement;
-    const telaInicial = document.getElementById('telaInicial') as HTMLLIElement;
+    // IDs do sidebar normal
+    const navAssistidas = document.getElementById('navAssistidas') as HTMLLIElement;
+    const navRede = document.getElementById('navRede') as HTMLLIElement;
+    const navInicial = document.getElementById('navInicial') as HTMLLIElement;
+    const navEstatisticas = document.getElementById('navEstatisticas') as HTMLLIElement;
+    const navConta = document.getElementById('navConta') as HTMLLIElement;
     
-    // Navegação sidebar
-    if (listarAssistidas) {
-        listarAssistidas.addEventListener('click', async (event) => {
+    // IDs do sidebar admin
+    const navFuncionarios = document.getElementById('navFuncionarios') as HTMLLIElement;
+
+    // Navegação para Assistidas
+    if (navAssistidas) {
+        navAssistidas.addEventListener('click', async (event) => {
             event.preventDefault();
             await window.api.openWindow('telaListarAssistidas');
         });
     }
 
-    if (telaInicial) {
-        telaInicial.addEventListener('click', async (event) => {
+    // Navegação para Rede de Apoio (já estamos aqui)
+    if (navRede) {
+        navRede.addEventListener('click', async (event) => {
             event.preventDefault();
-            await window.api.openWindow('telaInicial');
+            await navigateToTelaRedeApoio();
         });
     }
 
-    if (menuAssistidas) {
-        menuAssistidas.addEventListener('click', async (event) => {
+    // Navegação para Inicial
+    if (navInicial) {
+        navInicial.addEventListener('click', async (event) => {
             event.preventDefault();
-            await window.api.openWindow('telaListarAssistidas');
+            await navigateToTelaInicial();
         });
     }
 
-    if (menuInicial) {
-        menuInicial.addEventListener('click', async (event) => {
+    // Navegação para Estatísticas
+    if (navEstatisticas) {
+        navEstatisticas.addEventListener('click', async (event) => {
             event.preventDefault();
-            await window.api.openWindow('telaInicial');
+            await navigateToTelaEstatisticas();
+        });
+    }
+
+    // Navegação para Conta
+    if (navConta) {
+        navConta.addEventListener('click', async (event) => {
+            event.preventDefault();
+            await navigateToTelaConta();
+        });
+    }
+
+    // Navegação para Funcionários (admin only)
+    if (navFuncionarios) {
+        navFuncionarios.addEventListener('click', async (event) => {
+            event.preventDefault();
+            await window.api.openWindow('telaListarFuncionarios');
         });
     }
 });

@@ -1,5 +1,7 @@
 /// <reference path="../types/windown.d.ts" />
 
+import { navigateToTelaInicial, navigateToTelaEstatisticas } from '../utils/SidebarManager.js';
+
 export {}
 
 const telaInicialBtn = document.getElementById('telaInicial') as HTMLLIElement;
@@ -8,7 +10,7 @@ const telaEstatisticasBtn = document.getElementById('telaEstatisticas') as HTMLL
 const telaRedeApoioBtn = document.getElementById('telaRedeApoio') as HTMLLIElement;
 
 telaInicialBtn?.addEventListener('click', async (event) => {
-    const mudarTela = await window.api.openWindow("telaInicial");
+    await navigateToTelaInicial();
 })
 
 cadastroAssistidaBtn?.addEventListener('click', async (event) => {
@@ -16,7 +18,7 @@ cadastroAssistidaBtn?.addEventListener('click', async (event) => {
 })
 
 telaEstatisticasBtn?.addEventListener('click', async (event) => {
-    const mudarTela = await window.api.openWindow("telaEstatisticas");
+    await navigateToTelaEstatisticas();
 })
 
 telaRedeApoioBtn?.addEventListener('click', async (event) => {

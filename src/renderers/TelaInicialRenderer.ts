@@ -1,3 +1,9 @@
+/// <reference path="../types/windown.d.ts" />
+
+import { navigateToTelaInicial, navigateToTelaConta, navigateToTelaEstatisticas, navigateToTelaRedeApoio } from '../utils/SidebarManager.js';
+
+export {}
+
 // 1. Captura dos Elementos
 const cadastroAssistidaBtn = document.getElementById('telaCadastroAssistida') as HTMLButtonElement;
 const cadastroExistenteBtn = document.getElementById('telaCadastroExistente') as HTMLButtonElement;
@@ -104,7 +110,7 @@ if (btnAdicionarCaso) {
 // 7. Lógica do Botão Estatísticas
 if (estatisticasBtn) {
     estatisticasBtn.addEventListener('click', async (event) => {
-        await window.api.openWindow("telaEstatisticas");
+        await navigateToTelaEstatisticas();
     });
 }
 
@@ -112,7 +118,7 @@ if (estatisticasBtn) {
 if (redeApoioBtn) {
     redeApoioBtn.addEventListener('click', async (event) => {
         event.preventDefault();
-        await window.api.openWindow('telaRedeApoio');
+        await navigateToTelaRedeApoio();
     });
 }
 
@@ -135,6 +141,6 @@ if (cadastroAssistidaBtn) {
 if (contaBtn) {
     contaBtn.addEventListener('click', async (event) => {
         event.preventDefault();
-        await window.api.openWindow('telaConfiguracoesConta');
+        await navigateToTelaConta();
     });
 }

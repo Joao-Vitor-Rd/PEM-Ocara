@@ -1,5 +1,7 @@
 /// <reference path="../types/windown.d.ts" />
 
+import { navigateToTelaInicial } from '../utils/SidebarManager.js';
+
 export {}
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -184,5 +186,5 @@ function exibirInformacoesCaso(caso: any) {
 }
 
 function voltarParaInicio() {
-    window.api.openWindow('telaInicial');
+    navigateToTelaInicial();
 }

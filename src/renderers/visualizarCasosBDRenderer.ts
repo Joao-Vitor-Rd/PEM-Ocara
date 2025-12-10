@@ -1,5 +1,7 @@
 /// <reference path="../types/windown.d.ts" />
 
+import { navigateToTelaInicial } from '../utils/SidebarManager.js';
+
 export {}
 
 let casosSalvos: any[] = [];
@@ -264,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnVoltar = document.getElementById('voltar-inicio') as HTMLElement;
     btnVoltar.addEventListener('click', (e) => {
         e.preventDefault();
-        window.api.openWindow('telaInicial');
+        navigateToTelaInicial();
     });
 });
 

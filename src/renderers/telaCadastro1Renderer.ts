@@ -1,5 +1,7 @@
 /// <reference path="../types/windown.d.ts" />
 
+import { navigateToTelaInicial } from '../utils/SidebarManager.js';
+
 export {}
 
 function mostrarErro(mensagem: string) {
@@ -122,7 +124,7 @@ const voltarBtn = document.getElementById('voltar') as HTMLButtonElement;
 voltarBtn.addEventListener('click', async (event) => {
     sessionStorage.removeItem('dadosAssistida');
     sessionStorage.removeItem('dadosCaso');
-    const mudarTela = await window.api.openWindow("telaInicial");
+    await navigateToTelaInicial();
 })
 
 

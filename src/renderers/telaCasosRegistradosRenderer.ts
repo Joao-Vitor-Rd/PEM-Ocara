@@ -1,5 +1,7 @@
 /// <reference path="../types/windown.d.ts" />
 
+import { navigateToTelaInicial, navigateToTelaEstatisticas } from '../utils/SidebarManager.js';
+
 export {}
 
 
@@ -26,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (telaInicialBtn) {
         telaInicialBtn.addEventListener('click', async (event) => {
-            const mudarTela = await window.api.openWindow("telaInicial");
+            await navigateToTelaInicial();
         });
     }
 
@@ -38,7 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (telaEstatisticasBtn) {
         telaEstatisticasBtn.addEventListener('click', async (event) => {
-            const mudarTela = await window.api.openWindow("telaEstatisticas");
+            await navigateToTelaEstatisticas();
         });
     }
 

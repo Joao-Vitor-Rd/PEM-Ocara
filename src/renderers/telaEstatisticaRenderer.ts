@@ -6,6 +6,7 @@
  */
 
 import { Graficos } from "../utils/Graficos.js";
+import { navigateToTelaInicial, navigateToTelaConta, navigateToTelaEstatisticas, navigateToTelaRedeApoio } from '../utils/SidebarManager.js';
 
 /**
  * Configura e gerencia o modal de filtros com todas as interações
@@ -21,9 +22,16 @@ function setupFilterModal(): void {
   const chipsRegiao = document.querySelectorAll(".chip");
   const dataInicio = document.getElementById("data-inicio") as HTMLInputElement | null;
   const dataFim = document.getElementById("data-fim") as HTMLInputElement | null;
-  const telaInicialBtn = document.getElementById("telaInicial") as HTMLLIElement | null;
-  const telaAssistidasBtn = document.getElementById("listarAssistidas") as HTMLLIElement | null;
-  const telaRedeApoioBtn = document.getElementById("telaRedeApoio") as HTMLLIElement | null;
+  
+  // IDs do sidebar normal
+  const navInicial = document.getElementById("navInicial") as HTMLLIElement | null;
+  const navAssistidas = document.getElementById("navAssistidas") as HTMLLIElement | null;
+  const navRede = document.getElementById("navRede") as HTMLLIElement | null;
+  const navEstatisticas = document.getElementById("navEstatisticas") as HTMLLIElement | null;
+  const navConta = document.getElementById("navConta") as HTMLLIElement | null;
+  
+  // IDs do sidebar admin
+  const navFuncionarios = document.getElementById("navFuncionarios") as HTMLLIElement | null;
 
   // Validar elementos obrigatórios
   if (!modal || !btnCancelar || !btnAplicar || !btnLimparFiltros || !dataInicio || !dataFim) {
@@ -47,16 +55,28 @@ function setupFilterModal(): void {
     dateFimGroup.parentNode.insertBefore(errorMessage, dateFimGroup.nextSibling);
   }
 
-  telaInicialBtn?.addEventListener('click', async (event) => {
-    const mudarTela = await window.api.openWindow("telaInicial");
+  navInicial?.addEventListener('click', async (event) => {
+    await navigateToTelaInicial();
   });
 
-  telaAssistidasBtn?.addEventListener('click', async (event) => {
-    const mudarTela = await window.api.openWindow("telaListarAssistidas");
+  navAssistidas?.addEventListener('click', async (event) => {
+    await window.api.openWindow("telaListarAssistidas");
   });
 
-  telaRedeApoioBtn?.addEventListener('click', async (event) => {
-    const mudarTela = await window.api.openWindow("telaRedeApoio");
+  navRede?.addEventListener('click', async (event) => {
+    await navigateToTelaRedeApoio();
+  });
+
+  navEstatisticas?.addEventListener('click', async (event) => {
+    await navigateToTelaEstatisticas();
+  });
+
+  navConta?.addEventListener('click', async (event) => {
+    await navigateToTelaConta();
+  });
+
+  navFuncionarios?.addEventListener('click', async (event) => {
+    await window.api.openWindow("telaListarFuncionarios");
   });
 
   // ===== ESTADO DOS FILTROS =====

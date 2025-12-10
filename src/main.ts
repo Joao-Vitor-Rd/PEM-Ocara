@@ -1207,6 +1207,18 @@ ipcMain.on('window:open', (_event, windowName: string) => {
     case 'historicoMudancas':
       windowManager.loadContent('main', 'tela-historico/index.html');
       break;
+    case 'telaInicialAdm':
+      windowManager.loadContent('main', 'tela-inicial-adm/index.html');
+      break;
+    case 'telaContaAdm':
+      windowManager.loadContent('main', 'tela-configuracoes-conta-adm/index.html');
+      break;
+    case 'telaEstatisticasAdm':
+      windowManager.loadContent('main', 'tela-estatisticas-adm/index.html');
+      break;
+    case 'telaRedeApoioAdm':
+      windowManager.loadContent('main', 'tela-rede-apoio-adm/index.html');
+      break;
     default:
       console.log('tela desconhecida:', windowName);
   }

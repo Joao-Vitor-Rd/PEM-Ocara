@@ -1,5 +1,7 @@
 /// <reference path="../types/windown.d.ts" />
 
+import { navigateToTelaInicial, navigateToTelaEstatisticas } from '../utils/SidebarManager.js';
+
 export {}
 
 const telaInicialBtn = document.getElementById('telaInicial') as HTMLLIElement | null;
@@ -14,7 +16,7 @@ const tipoViolencia = document.getElementById('TipoViolencia') as HTMLSpanElemen
 
 if (telaInicialBtn) {
     telaInicialBtn.addEventListener('click', async (event) => {
-        const mudarTela = await window.api.openWindow("telaInicial");
+        await navigateToTelaInicial();
     })
 }
 
@@ -38,7 +40,7 @@ if (telaRedeApoioBtn) {
 
 if (telaEstatisticasBtn) {
     telaEstatisticasBtn.addEventListener('click', async (event) => {
-        const mudarTela = await window.api.openWindow("telaEstatisticas");
+        await navigateToTelaEstatisticas();
     })
 }
 
