@@ -6,6 +6,33 @@
     <link rel="stylesheet" href="./style.css">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <title>Informações do Caso</title>
+    <script>
+      // Para usuários jurídicos, esconder EDITAR e ALTERAR PRIVACIDADE, e centralizar ACESSAR
+      const usuarioLogadoJSON = sessionStorage.getItem('usuarioLogado');
+      if (usuarioLogadoJSON) {
+        try {
+          const usuarioLogado = JSON.parse(usuarioLogadoJSON);
+          const cargo = usuarioLogado.cargo ? usuarioLogado.cargo.toLowerCase() : '';
+          
+          if (cargo.includes('juridico')) {
+            const style = document.createElement('style');
+            style.textContent = `
+              #editar-form,
+              #alterar-privacidade {
+                display: none !important;
+              }
+              .botoes-principais {
+                display: flex !important;
+                justify-content: center !important;
+              }
+            `;
+            document.head.appendChild(style);
+          }
+        } catch (error) {
+          console.error('Erro ao verificar cargo na inicialização:', error);
+        }
+      }
+    </script>
 </head>
 <body>
     <div class="app-container">

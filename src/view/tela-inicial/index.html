@@ -9,6 +9,32 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
+    <script>
+      // Esconder botões imediatamente para evitar piscada
+      // se o usuário for assistente social ou juridico
+      const usuarioLogadoJSON = sessionStorage.getItem('usuarioLogado');
+      if (usuarioLogadoJSON) {
+        try {
+          const usuarioLogado = JSON.parse(usuarioLogadoJSON);
+          const cargo = usuarioLogado.cargo ? usuarioLogado.cargo.toLowerCase() : '';
+          
+          if (cargo.includes('juridico') || cargo.includes('assistente social')) {
+            // Adicionar estilos CSS dinamicamente para esconder os botões antes de renderizar
+            const style = document.createElement('style');
+            style.textContent = `
+              #telaCadastroAssistida,
+              #telaCadastroExistente,
+              #btnAdicionarCaso {
+                display: none !important;
+              }
+            `;
+            document.head.appendChild(style);
+          }
+        } catch (error) {
+          console.error('Erro ao verificar cargo na inicialização:', error);
+        }
+      }
+    </script>
   </head>
 
   <body>
