@@ -384,6 +384,39 @@ export interface IElectronAPI {
     error?: string;
   }>;
 
+  salvarCredenciais: (dados: {
+    email?: string;
+    senha?: string;
+    servico?: string;
+  }) => Promise<{
+    success: boolean;
+    dados?: {
+      email?: string;
+      servico?: string;
+      senhaConfigurada?: boolean;
+    } | null;
+    error?: string;
+  }>;
+
+  obterCredenciais: () => Promise<{
+    success: boolean;
+    dados?: {
+      email?: string | null;
+      servico?: string | null;
+      senhaConfigurada?: boolean;
+    } | null;
+    error?: string;
+  }>;
+
+  definirOrigemSobreAplicacao: (origem: 'telaConfiguracoesConta' | 'telaContaAdm') => Promise<{
+    success: boolean;
+  }>;
+
+  obterOrigemSobreAplicacao: () => Promise<{
+    success: boolean;
+    origem: 'telaConfiguracoesConta' | 'telaContaAdm';
+  }>;
+
 }
 declare global {
   interface Window {

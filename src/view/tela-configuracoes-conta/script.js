@@ -528,6 +528,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.api.openWindow('telaLogin');
         });
     }
+
+    const itemSobreAplicacao = document.getElementById('itemSobreAplicacao');
+    if (itemSobreAplicacao) {
+        itemSobreAplicacao.addEventListener('click', async () => {
+            try {
+                await window.api.definirOrigemSobreAplicacao('telaConfiguracoesConta');
+            } catch (error) {
+                console.error('Falha ao definir origem da tela sobre a aplicação:', error);
+            }
+            window.api.openWindow('telaSobreAplicacao');
+        });
+    }
     
     new PasswordController(passwordValidator, passwordModalManager, successModalManager, profileState);
     new EmailController(emailValidator, emailModalManager, successModalManager, profileState);

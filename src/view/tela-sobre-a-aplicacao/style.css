@@ -1,0 +1,262 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700;800&display=swap');
+
+body {
+   font-family: 'Poppins', sans-serif;
+    color: #63468C;
+}
+
+/* Header */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 20px 0px 20px;
+    background-color: #ffffff;
+    z-index: 1000;
+}
+
+header .title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+header .material-symbols-outlined {
+    font-size: 50px;
+    cursor: pointer;
+}
+
+#linha {
+    border: none;
+    background-color: #63468C;
+    height: 5px;
+    width: 100%;
+    margin: 30px auto 30px auto;
+    border-radius: 50px;
+}
+
+
+/* Conteúdo */
+.conteúdo {
+    display: flex;
+    flex-direction: column;
+    padding: 25px 25px;
+    gap: 40px;
+    margin-top: 150px;
+}
+
+/* Titulo */
+.title-logo {
+    text-align: center;
+}
+
+.title-logo img {
+    width: 263px;
+    height: 247px;
+    margin-bottom: 5px;
+}
+
+.title-logo h1 {
+    font-size: 96px;
+    font-weight: 800;
+    letter-spacing: 0.25em;
+    text-decoration: underline;
+    margin: 0;
+}
+
+.title-logo #version {
+    font-size: 36px;
+    font-weight: 400;
+    color: #838383;
+}
+
+/* Missão */
+.missao {
+    text-align: center;
+}
+
+.missao h2 {
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    letter-spacing: 0.05em;
+}
+
+.missao p {
+    font-size: 36px;
+    font-weight: 300;
+    color: #3A3A3A;
+    letter-spacing: 0.05em;
+}
+
+/* Equipe */
+.equipe {
+    text-align: center;
+}
+
+.equipe h2 {
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    letter-spacing: 0.05em;
+}
+
+.equipe ul {
+    list-style-position: inside;
+}
+
+.equipe li {
+    font-size: 36px;
+    font-weight: 300;
+    color: #3A3A3A;
+    letter-spacing: 0.05em;
+    margin-bottom: 5px;
+}
+
+
+/* Rodapé */
+footer {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 200;
+    letter-spacing: 0.05em;
+}
+
+/* Responsividade para monitores e telas de computador */
+@media (max-width: 1440px) {
+    header h1 {
+        font-size: 42px;
+    }
+
+    header .material-symbols-outlined {
+        font-size: 45px;
+    }
+
+    .conteúdo {
+        padding: 22px;
+        gap: 35px;
+        margin-top: 140px;
+    }
+
+    .title-logo img {
+        width: 230px;
+        height: 216px;
+    }
+
+    .title-logo h1 {
+        font-size: 80px;
+    }
+
+    .title-logo #version {
+        font-size: 32px;
+    }
+
+    .missao h2,
+    .equipe h2 {
+        font-size: 42px;
+    }
+
+    .missao p,
+    .equipe li {
+        font-size: 32px;
+    }
+
+    footer {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 1280px) {
+    header h1 {
+        font-size: 38px;
+    }
+
+    header .material-symbols-outlined {
+        font-size: 42px;
+    }
+
+    .conteúdo {
+        padding: 20px;
+        gap: 32px;
+        margin-top: 130px;
+    }
+
+    .title-logo img {
+        width: 210px;
+        height: 197px;
+    }
+
+    .title-logo h1 {
+        font-size: 72px;
+    }
+
+    .title-logo #version {
+        font-size: 30px;
+    }
+
+    .missao h2,
+    .equipe h2 {
+        font-size: 38px;
+    }
+
+    .missao p,
+    .equipe li {
+        font-size: 28px;
+    }
+
+    footer {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 1024px) {
+    header h1 {
+        font-size: 32px;
+    }
+
+    header .material-symbols-outlined {
+        font-size: 38px;
+    }
+
+    .conteúdo {
+        padding: 18px;
+        gap: 28px;
+        margin-top: 120px;
+    }
+
+    .title-logo img {
+        width: 180px;
+        height: 169px;
+    }
+
+    .title-logo h1 {
+        font-size: 60px;
+        letter-spacing: 0.2em;
+    }
+
+    .title-logo #version {
+        font-size: 26px;
+    }
+
+    .missao h2,
+    .equipe h2 {
+        font-size: 34px;
+    }
+
+    .missao p,
+    .equipe li {
+        font-size: 24px;
+    }
+
+    footer {
+        font-size: 18px;
+    }
+}

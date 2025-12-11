@@ -46,6 +46,7 @@ if (navEstatisticas) {
 // 6. Lógica do Botão Conta
 if (navConta) {
     navConta.addEventListener('click', async (event) => {
-
+        event.preventDefault();
+        await navigateToTelaConta();
     });
 }

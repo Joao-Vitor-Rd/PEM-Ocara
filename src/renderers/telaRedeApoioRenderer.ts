@@ -49,7 +49,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Navegação para Conta
     if (navConta) {
-
+        navConta.addEventListener('click', async (event) => {
+            event.preventDefault();
+            await navigateToTelaConta();
+        });
     }
 
     // Navegação para Funcionários (admin only)
