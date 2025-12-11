@@ -924,7 +924,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         // --- PASSO 2: Preparar dados para a TELA 2 e 3 (O Caso) ---
-        // AQUI ESTAVA FALTANDO! Salvar o objeto do caso para as próximas telas lerem.
+        //Salvar o objeto do caso para as próximas telas lerem.
 
         if (dadosDoCaso && Object.keys(dadosDoCaso).length > 0) {
           // Salvamos a variável global 'dadosDoCaso' que sua tela já carregou
