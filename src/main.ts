@@ -56,6 +56,7 @@ type UsuarioSessaoAtiva = {
   cargo: string;
 };
 let usuarioLogadoAtual: UsuarioSessaoAtiva | null = null;
+let ultimaOrigemTelaSobreAplicacao: 'telaConfiguracoesConta' | 'telaContaAdm' = 'telaConfiguracoesConta';
 
 // Repository para salvar casos no BD
 
@@ -1234,6 +1235,19 @@ ipcMain.handle('credencial:obter', async () => {
     return { success: false, error: error instanceof Error ? error.message : 'Erro desconhecido' };
   }
 });
+
+// ==========================================
+// UI HELPERS - TELA SOBRE A APLICAÇÃO
+// ==========================================
+
+ipcMain.handle('sobre:setOrigem', async (_event, origem: 'telaConfiguracoesConta' | 'telaContaAdm') => {
+  ultimaOrigemTelaSobreAplicacao = origem;
+  return { success: true };
+});
+
+ipcMain.handle('sobre:getOrigem', async () => {
+  return { success: true, origem: ultimaOrigemTelaSobreAplicacao };
+});
 // ==========================================
 // WINDOW MANAGEMENT
 // ==========================================
@@ -1304,7 +1318,7 @@ ipcMain.on('window:open', (_event, windowName: string) => {
       windowManager.loadContent('main', 'tela-inicial-adm/index.html');
       break;
     case 'telaContaAdm':
-      windowManager.loadContent('main', 'tela-configuracoes-conta-adm/index.html');
+      windowManager.loadContent('main', 'tela-configuracoes-conta-funcionario/index.html');
       break;
     case 'telaEstatisticasAdm':
       windowManager.loadContent('main', 'tela-estatisticas-adm/index.html');
@@ -1320,6 +1334,9 @@ ipcMain.on('window:open', (_event, windowName: string) => {
       break;
     case 'telaDadosFuncionario':
       windowManager.loadContent('main', 'tela-dados-funcionario/index.html');
+      break;
+    case 'telaSobreAplicacao':
+      windowManager.loadContent('main', 'tela-sobre-a-aplicacao/index.html');
       break;
     default:
       console.log('tela desconhecida:', windowName);

@@ -171,5 +171,15 @@ contextBridge.exposeInMainWorld('api', {
 
   atualizarPerfil: (dados: { email: string; nome: string; senhaAtual: string; novaSenha?: string; novoEmail?: string }) =>
     ipcRenderer.invoke('user:update-profile', dados),
+
+  salvarCredenciais: (dados: { email?: string; senha?: string; servico?: string }) =>
+    ipcRenderer.invoke('credencial:salvar', dados),
+
+  obterCredenciais: () => ipcRenderer.invoke('credencial:obter'),
+
+  definirOrigemSobreAplicacao: (origem: 'telaConfiguracoesConta' | 'telaContaAdm') =>
+    ipcRenderer.invoke('sobre:setOrigem', origem),
+
+  obterOrigemSobreAplicacao: () => ipcRenderer.invoke('sobre:getOrigem'),
 });
 
