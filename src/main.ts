@@ -1338,6 +1338,15 @@ ipcMain.on('window:open', (_event, windowName: string) => {
     case 'telaSobreAplicacao':
       windowManager.loadContent('main', 'tela-sobre-a-aplicacao/index.html');
       break;
+    case 'telaVisualizacao1':
+      windowManager.loadContent('main', 'tela-cadastro-1-visualizacao/index.html');
+      break;
+    case 'telaVisualizacao2':
+      windowManager.loadContent('main', 'tela-cadastro-2-visualizacao/index.html');
+      break;
+    case 'telaVisualizacao3':
+      windowManager.loadContent('main', 'tela-cadastro-3-visualizacao/index.html');
+      break;
     default:
       console.log('tela desconhecida:', windowName);
   }

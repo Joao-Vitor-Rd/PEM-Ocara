@@ -668,8 +668,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const btnAcessarForm = document.getElementById('acessar-form');
     if (btnAcessarForm) {
         btnAcessarForm.addEventListener('click', () => {
-            console.log('Acessar formulário clicado');
-            window.api.openWindow("telaInformacoesCaso");
+             console.log('Acessar formulário de visualização clicado');
+        if (idCaso) {
+            sessionStorage.setItem('idCasoVisualizacao', idCaso.toString());
+        }
+        window.api.openWindow("telaVisualizacao1");
         });
     }
 
