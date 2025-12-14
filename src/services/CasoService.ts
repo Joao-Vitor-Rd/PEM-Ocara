@@ -88,6 +88,10 @@ export class CasoService {
         anexos?: any[];
     
     }) {
+        // DEBUG Q06
+        console.log('[CasoService Q06 DEBUG] ocorrenciaPolicialMedidaProtetivaAgressor recebido:', dados.ocorrenciaPolicialMedidaProtetivaAgressor);
+        console.log('[CasoService Q06 DEBUG] tipo:', typeof dados.ocorrenciaPolicialMedidaProtetivaAgressor);
+        
         // Criar nova assistida sempre
         const assistida = this.assistidaService.criarAssistida(
             dados.nomeAssistida,

@@ -25,6 +25,31 @@ export class CasoRepositoryPostgres implements ICasoRepository {
     }
 
     /**
+     * Converte valores para padrão SIM/NAO/NAO_SEI (para campos com 3 opções)
+     */
+    private toSimNaoNaoSei(value: any): string {
+        if (!value) return 'NAO';
+        
+        if (typeof value === 'string') {
+            const trimmed = value.trim().toLowerCase();
+            // Se já está no formato correto
+            if (trimmed === 'sim' || trimmed === 'nao' || trimmed === 'nao_sei') {
+                return trimmed.toUpperCase();
+            }
+            // Converter de português
+            if (trimmed === 'sim') return 'SIM';
+            if (trimmed === 'não') return 'NAO';
+            if (trimmed.includes('não sei')) return 'NAO_SEI';
+        }
+        
+        if (typeof value === 'boolean') {
+            return value ? 'SIM' : 'NAO';
+        }
+        
+        return 'NAO';
+    }
+
+    /**
      * Salva um novo caso no banco de dados com uma assistida existente.
      * Utiliza transação para garantir consistência dos dados.
      * 
@@ -32,7 +57,7 @@ export class CasoRepositoryPostgres implements ICasoRepository {
      * @param idAssistidaExistente - ID da assistida que já existe no banco
      * @returns Promise<{idCaso: number, idAssistida: number}> - IDs do caso salvo e da assistida existente
      */
-    async salvarComAssistidaExistente(caso: Caso, idAssistidaExistente: number): Promise<{ idCaso: number; idAssistida: number }> {
+    async salvarComAssistidaExistente(caso: Caso, idAssistidaExistente: number, dadosRaw?: any): Promise<{ idCaso: number; idAssistida: number }> {
         const client = await this.pool.connect();
         
         try {
@@ -70,12 +95,23 @@ export class CasoRepositoryPostgres implements ICasoRepository {
                 this.toBoolean(sobreVoce?.getNovoRelacionamentoAumentouAgressao?.()),
                 this.toBoolean(outrasInfo?.getAceitaAbrigamentoTemporario?.()),
                 this.toBoolean(outrasInfo?.getDependenteFinanceiroAgressor?.()),
-                outrasInfo?.getMoraEmAreaRisco() || 'Não sei',
-                this.toBoolean(caso.getSobreAgressor()?.getAgressorCumpriuMedidaProtetiva?.()),
+                this.toSimNaoNaoSei(outrasInfo?.getMoraEmAreaRisco()), // Q20: Convert to SIM/NAO/NAO_SEI
+                // Q06: Preferir dadosRaw._boMedida se disponível (vem do frontend)
+                dadosRaw?._boMedida !== undefined 
+                    ? dadosRaw._boMedida === 'Sim'
+                    : this.toBoolean(caso.getHistoricoViolencia()?.getOcorrenciaPolicialMedidaProtetivaAgressor?.()), // Q06
                 this.toBoolean(caso.getHistoricoViolencia()?.getAgressoesMaisFrequentesUltimamente?.()),
                 idAssistida,
                 caso.getOutrasInformacoesEncaminhamento()?.anotacoesLivres || ''
             ];
+
+            // DEBUG Q06
+            const q06Value = dadosRaw?._boMedida !== undefined 
+                ? dadosRaw._boMedida === 'Sim'
+                : this.toBoolean(caso.getHistoricoViolencia()?.getOcorrenciaPolicialMedidaProtetivaAgressor?.());
+            console.log('[Q06 DEBUG Repository - saveWithExistingAssistida] dadosRaw._boMedida:', dadosRaw?._boMedida);
+            console.log('[Q06 DEBUG Repository - saveWithExistingAssistida] Q06 valor convertido:', q06Value);
+            console.log('[Q06 DEBUG Repository - saveWithExistingAssistida] Q06 valor na INSERT (posição $7):', valuesCaso[6]);
 
             const resultCaso = await client.query(queryCase, valuesCaso);
             const idCaso = resultCaso.rows[0].id_caso;
@@ -92,7 +128,7 @@ export class CasoRepositoryPostgres implements ICasoRepository {
             const agressor = caso.getAgressor();
             const sobreAgressor = caso.getSobreAgressor();
             if (agressor && sobreAgressor) {
-                const idAgressor = await this.salvarAgressor(client, idCaso, idAssistida, agressor, sobreAgressor);
+                const idAgressor = await this.salvarAgressor(client, idCaso, idAssistida, agressor, sobreAgressor, dadosRaw);
                 
                 // 5. Salvar multivalorados do Agressor
                 if (sobreAgressor) {
@@ -158,7 +194,7 @@ export class CasoRepositoryPostgres implements ICasoRepository {
      * @param caso - Objeto Caso a ser salvo
      * @returns Promise<number> - ID do caso salvo (id_caso)
      */
-    async salvar(caso: Caso): Promise<{ idCaso: number; idAssistida: number }> {
+    async salvar(caso: Caso, dadosRaw?: any): Promise<{ idCaso: number; idAssistida: number }> {
         const client = await this.pool.connect();
         
         try {
@@ -193,12 +229,22 @@ export class CasoRepositoryPostgres implements ICasoRepository {
                 this.toBoolean(sobreVoce?.getNovoRelacionamentoAumentouAgressao?.()),
                 this.toBoolean(outrasInfo?.getAceitaAbrigamentoTemporario?.()),
                 this.toBoolean(outrasInfo?.getDependenteFinanceiroAgressor?.()),
-                outrasInfo?.getMoraEmAreaRisco() || 'Não sei',
-                this.toBoolean(caso.getSobreAgressor()?.getAgressorCumpriuMedidaProtetiva?.()),
+                this.toSimNaoNaoSei(outrasInfo?.getMoraEmAreaRisco()), // Q20: Convert to SIM/NAO/NAO_SEI
+                // Q06: Preferir dadosRaw._boMedida se disponível (vem do frontend)
+                dadosRaw?._boMedida !== undefined 
+                    ? dadosRaw._boMedida === 'Sim'
+                    : this.toBoolean(caso.getHistoricoViolencia()?.getOcorrenciaPolicialMedidaProtetivaAgressor?.()), // Q06
                 this.toBoolean(caso.getHistoricoViolencia()?.getAgressoesMaisFrequentesUltimamente?.()),
                 idAssistida,
                 caso.getOutrasInformacoesEncaminhamento()?.anotacoesLivres || ''
             ];
+
+            const q06Value = dadosRaw?._boMedida !== undefined 
+                ? dadosRaw._boMedida === 'Sim'
+                : this.toBoolean(caso.getHistoricoViolencia()?.getOcorrenciaPolicialMedidaProtetivaAgressor?.());
+            console.log('[Q06 DEBUG Repository - salvar] dadosRaw._boMedida:', dadosRaw?._boMedida);
+            console.log('[Q06 DEBUG Repository - salvar] Q06 valor convertido:', q06Value);
+            console.log('[Q06 DEBUG Repository - salvar] Q06 valor na INSERT (posição $7):', valuesCaso[6]);
 
             const resultCaso = await client.query(queryCase, valuesCaso);
             const idCaso = resultCaso.rows[0].id_caso;
@@ -213,7 +259,7 @@ export class CasoRepositoryPostgres implements ICasoRepository {
             const agressor = caso.getAgressor();
             const sobreAgressor = caso.getSobreAgressor();
             if (agressor && sobreAgressor) {
-                const idAgressor = await this.salvarAgressor(client, idCaso, idAssistida, agressor, sobreAgressor);
+                const idAgressor = await this.salvarAgressor(client, idCaso, idAssistida, agressor, sobreAgressor, dadosRaw);
                 
                 // 5. Salvar multivalorados do Agressor
                 if (sobreAgressor) {
@@ -367,7 +413,7 @@ export class CasoRepositoryPostgres implements ICasoRepository {
     /**
      * Salva os dados do Agressor
      */
-    private async salvarAgressor(client: PoolClient, idCaso: number, idAssistida: number, agressor: any, sobreAgressor: any): Promise<number> {
+    private async salvarAgressor(client: PoolClient, idCaso: number, idAssistida: number, agressor: any, sobreAgressor: any, dadosRaw?: any): Promise<number> {
         const queryAgressor = `
             INSERT INTO AGRESSOR (
                 id_caso, id_assistida, Nome, Idade, Vinculo,
@@ -383,12 +429,23 @@ export class CasoRepositoryPostgres implements ICasoRepository {
             agressor.getNome() || '',
             agressor.getIdade() || 0,
             agressor.getVinculoAssistida() || '',
-            sobreAgressor.getDoencaMental ? String(sobreAgressor.getDoencaMental()) : '',
-            this.toBoolean(sobreAgressor.getAgressorCumpriuMedidaProtetiva?.()),
+            sobreAgressor.getDoencaMental?.() || '', // Q09: Already SIM_MEDICACAO, SIM_SEM_MEDICACAO, NAO, NAO_SEI from HTML
+            // Q10: Preferir dadosRaw._descumpriuMedida se disponível (vem do frontend)
+            dadosRaw?._descumpriuMedida !== undefined 
+                ? dadosRaw._descumpriuMedida === 'Sim'
+                : this.toBoolean(sobreAgressor.getAgressorCumpriuMedidaProtetiva?.()), // Q10
             this.toBoolean(sobreAgressor.getAgressorTentativaSuicidio?.()),
-            this.toBoolean(sobreAgressor.getAgressorDesempregado?.()),
-            this.toBoolean(sobreAgressor.getAgressorPossuiArmaFogo?.())
+            sobreAgressor.getAgressorDesempregado ? String(sobreAgressor.getAgressorDesempregado()) : '', // Q12: already SIM/NAO/NAO_SEI
+            sobreAgressor.getAgressorPossuiArmaFogo ? String(sobreAgressor.getAgressorPossuiArmaFogo()) : '' // Q13: already SIM/NAO/NAO_SEI
         ];
+
+        // DEBUG Q10
+        const q10Value = dadosRaw?._descumpriuMedida !== undefined 
+            ? dadosRaw._descumpriuMedida === 'Sim'
+            : this.toBoolean(sobreAgressor.getAgressorCumpriuMedidaProtetiva?.());
+        console.log('[Q10 DEBUG Repository] dadosRaw._descumpriuMedida:', dadosRaw?._descumpriuMedida);
+        console.log('[Q10 DEBUG Repository] Q10 valor convertido:', q10Value);
+        console.log('[Q10 DEBUG Repository] Q10 valor na INSERT (posição $7):', valuesAgressor[6]);
 
         const result = await client.query(queryAgressor, valuesAgressor);
         return result.rows[0].id_agressor;

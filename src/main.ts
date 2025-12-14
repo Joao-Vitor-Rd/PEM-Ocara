@@ -562,6 +562,10 @@ ipcMain.handle('caso:salvarBD', async(_event, dados: {
     Logger.info('modoEdicao:', dados.modoEdicao);
     Logger.info('idAssistidaExistente:', dados.idAssistidaExistente);
     
+    // DEBUG Q06
+    Logger.info('[Q06 DEBUG] dados.caso.ocorrenciaPolicialMedidaProtetivaAgressor:', dados.caso.ocorrenciaPolicialMedidaProtetivaAgressor);
+    Logger.info('[Q06 DEBUG] tipo:', typeof dados.caso.ocorrenciaPolicialMedidaProtetivaAgressor);
+    
     // 1. Processar anexos - converter caminhos para Buffer
     let anexosProcessados: any[] = [];
     
@@ -617,13 +621,18 @@ ipcMain.handle('caso:salvarBD', async(_event, dados: {
     
     // 3. Salvar no BD usando o repository
     // Se houver uma assistida existente, passar o ID para que o repository use-a em vez de criar uma nova
+    Logger.info('[Q06 e Q10 - DEBUG main.ts] dados.caso._boMedida:', dados.caso?._boMedida);
+    Logger.info('[Q06 e Q10 - DEBUG main.ts] dados.caso._descumpriuMedida:', dados.caso?._descumpriuMedida);
+    Logger.info('[Q06 e Q10 - DEBUG main.ts] dados.caso.ocorrenciaPolicialMedidaProtetivaAgressor:', dados.caso?.ocorrenciaPolicialMedidaProtetivaAgressor);
+    Logger.info('[Q06 e Q10 - DEBUG main.ts] dados.caso.agressorCumpriuMedidaProtetiva:', dados.caso?.agressorCumpriuMedidaProtetiva);
+    
     let resultado;
     if (dados.idAssistidaExistente) {
       Logger.info(`Salvando novo caso para assistida existente ID: ${dados.idAssistidaExistente}`);
-      resultado = await casoRepository.salvarComAssistidaExistente(casoCriado, dados.idAssistidaExistente);
+      resultado = await casoRepository.salvarComAssistidaExistente(casoCriado, dados.idAssistidaExistente, dados.caso);
     } else {
       Logger.info('Salvando novo caso com nova assistida');
-      resultado = await casoRepository.salvar(casoCriado);
+      resultado = await casoRepository.salvar(casoCriado, dados.caso);
     }
     
     Logger.info('Caso salvo com sucesso no BD com ID:', resultado.idCaso);
