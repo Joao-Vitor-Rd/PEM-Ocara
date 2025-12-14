@@ -139,6 +139,12 @@ contextBridge.exposeInMainWorld('api', {
   downloadAnexo: (idAnexo: string, nomeArquivo: string) =>
     ipcRenderer.invoke('anexo:download', { idAnexo, nomeArquivo }),
 
+  listarRedesContatadas: (idCaso: number) =>
+    ipcRenderer.invoke('caso:listarRedesContatadas', { idCaso }),
+
+  enviarEmailEncaminhamento: (dados: { idCaso: number; idRedeDestino: number; assunto?: string; mensagem: string; anexosIds?: number[] }) =>
+    ipcRenderer.invoke('encaminhamento:enviarEmail', dados),
+
   closeWindow: () => ipcRenderer.send('window:close'),
 
   onCasoCriado: (callback: (caso: any) => void) => {

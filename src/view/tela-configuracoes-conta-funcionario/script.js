@@ -631,14 +631,15 @@ class ProcuradoriaController {
   }
 }
 class SenhaProcuradoriaValidator {
-  validate(senha, confirmarSenha) {
+  validate(senha, confirmarSenha, opcoes = {}) {
+    const exigirMaiuscula = opcoes.exigirMaiuscula !== false;
     if (senha.trim() === "" || confirmarSenha.trim() === "") {
       return "Por favor, preencha todos os campos.";
     }
     if (senha.length < 8) {
       return "A senha deve ter pelo menos 8 caracteres.";
     }
-    if (!/[A-Z]/.test(senha)) {
+    if (exigirMaiuscula && !/[A-Z]/.test(senha)) {
       return "A senha deve conter pelo menos uma letra maiúscula.";
     }
     if (!/[a-z]/.test(senha)) {
@@ -664,7 +665,7 @@ class SenhaProcuradoriaValidator {
     if (novaSenha === senhaAtual) {
       return "A nova senha não pode ser igual à senha atual.";
     }
-    const basicValidation = this.validate(novaSenha, confirmarSenha);
+    const basicValidation = this.validate(novaSenha, confirmarSenha, { exigirMaiuscula: true });
     return basicValidation;
   }
 }
@@ -804,7 +805,7 @@ class SenhaProcuradoriaController {
       return;
     }
 
-    const erro = this.validator.validate(senha, confirmar);
+    const erro = this.validator.validate(senha, confirmar, { exigirMaiuscula: false });
 
     if (erro) {
       this.showError(erro, this.errorDisplayCadastro);

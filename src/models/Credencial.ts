@@ -3,14 +3,16 @@
  * Mapeia a tabela CREDENCIAIS_PROCURADORIA.
  */
 export class Credencial {
+    private _id?: number;
     private _email: string;
     private _senha: string;
     private _servico: string; // Ex: 'gmail', 'outlook', ou host customizado
 
-    constructor(email: string, senha: string, servico: string = 'gmail') {
+    constructor(email: string, senha: string, servico: string = 'gmail', id?: number) {
         this._email = email;
         this._senha = senha;
         this._servico = servico;
+        this._id = id;
     }
 
     // Getters e Setters
@@ -22,4 +24,7 @@ export class Credencial {
 
     public get servico(): string { return this._servico; }
     public set servico(v: string) { this._servico = v; }
+
+    public get id(): number | undefined { return this._id; }
+    public set id(v: number | undefined) { this._id = v; }
 }

@@ -431,6 +431,42 @@ document.addEventListener('DOMContentLoaded', async () => {
     let idAssistida: number = 0;
 
     const redesCadastradas: any[] = [];
+    const redesContatadasElement = document.getElementById('redes-contatadas') as HTMLParagraphElement | null;
+
+    const atualizarRedesContatadas = async () => {
+        if (!redesContatadasElement) {
+            return;
+        }
+
+        try {
+            const resposta = await window.api.listarRedesContatadas(Number(idCaso));
+
+            if (resposta?.success && Array.isArray(resposta.redes) && resposta.redes.length > 0) {
+                redesContatadasElement.textContent = resposta.redes.join(', ');
+            } else {
+                redesContatadasElement.textContent = 'Nenhuma rede de apoio foi contatada até o momento';
+            }
+        } catch (erro) {
+            console.error('Erro ao carregar redes contatadas:', erro);
+            redesContatadasElement.textContent = 'Não foi possível carregar as redes contatadas.';
+        }
+    };
+
+    const carregarRedesApoio = async () => {
+        try {
+            const resposta = await window.api.listarOrgaosRedeApoio();
+            redesCadastradas.length = 0;
+
+            if (resposta?.success && Array.isArray(resposta.orgaos)) {
+                resposta.orgaos.forEach((orgao: any) => redesCadastradas.push(orgao));
+            } else {
+                console.warn('Não foi possível carregar as redes de apoio:', resposta?.error);
+            }
+        } catch (erro) {
+            console.error('Erro ao carregar redes de apoio:', erro);
+            uiManager.mostrarPopup('Não foi possível carregar as redes de apoio. Tente novamente mais tarde.');
+        }
+    };
 
     // Carrega e exibe dados do caso
     if (informacoesGerais.success && informacoesGerais.informacoes) {   
@@ -808,20 +844,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Modal de encaminhamento
-    const btnAbrirEncaminhamento = document.getElementById('encaminhamento');
-    const selectEmailPara = document.getElementById('email-para');
+    const btnAbrirEncaminhamento = document.getElementById('encaminhamento') as HTMLButtonElement | null;
+    const selectEmailPara = document.getElementById('email-para') as HTMLSelectElement | null;
 
     if (btnAbrirEncaminhamento) {
-        btnAbrirEncaminhamento.onclick = () => {
+        btnAbrirEncaminhamento.onclick = async () => {
+            await carregarRedesApoio();
+
+            if (!redesCadastradas.length) {
+                uiManager.mostrarPopup('Cadastre uma rede de apoio antes de enviar encaminhamentos.');
+                return;
+            }
+
             if (selectEmailPara) {
-                selectEmailPara.innerHTML = '<option value="" disabled selected>Para</option>';
+                selectEmailPara.innerHTML = '<option value="" disabled selected>Selecione o destinatário</option>';
                 redesCadastradas.forEach((rede: any) => {
                     const opt = document.createElement('option');
-                    opt.value = rede.id;
-                    opt.textContent = rede.nome;
+                    opt.value = String(rede.id);
+                    opt.textContent = `${rede.nome} (${rede.email})`;
+                    (opt.dataset as DOMStringMap).email = rede.email;
                     selectEmailPara.appendChild(opt);
                 });
             }
+
             uiManager.toggleModalEncaminhamento(true);
         };
     }
@@ -899,44 +944,73 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Botão enviar encaminhamento
-    const btnEnviar = document.getElementById('btnEnviarEncaminhamento');
+    const btnEnviar = document.getElementById('btnEnviarEncaminhamento') as HTMLButtonElement | null;
     if (btnEnviar) {
-        btnEnviar.onclick = () => {
-            const emailParaInput = document.getElementById('email-para') as HTMLInputElement | null;
+        const textoOriginalEnviar = btnEnviar.textContent || 'Enviar';
+
+        btnEnviar.onclick = async () => {
+            const emailParaInput = document.getElementById('email-para') as HTMLSelectElement | null;
             const emailAssuntoInput = document.getElementById('email-assunto') as HTMLInputElement | null;
-            const emailCorpoInput = document.getElementById('email-corpo') as HTMLInputElement | null;
-            
-            const emailPara = emailParaInput?.value || '';
-            const emailAssunto = emailAssuntoInput?.value || '';
-            const emailCorpo = emailCorpoInput?.value || '';
-            
-            // Validações
-            if (!emailPara || emailPara === '') {
+            const emailCorpoInput = document.getElementById('email-corpo') as HTMLTextAreaElement | null;
+
+            const idRedeSelecionada = emailParaInput?.value || '';
+            const emailAssunto = (emailAssuntoInput?.value || '').trim();
+            const emailCorpo = (emailCorpoInput?.value || '').trim();
+
+            if (!idRedeSelecionada) {
                 uiManager.mostrarPopup('Por favor, selecione um destinatário.');
                 return;
             }
-            
-            if (!emailCorpo || emailCorpo.trim().length < 5) {
+
+            if (!emailCorpo || emailCorpo.length < 10) {
                 uiManager.mostrarPopup('O campo de mensagem deve conter pelo menos 10 caracteres.');
                 return;
             }
-            
-            console.log('Enviando encaminhamento...');
-            console.log('Para:', emailPara);
-            console.log('Assunto:', emailAssunto);
-            console.log('Corpo:', emailCorpo);
-            console.log('Anexos selecionados:', estadoEncaminhamento.anexosSelecionadosIds);
-            
-            uiManager.toggleModalEncaminhamento(false);
-            
-            uiManager.mostrarPopup('Email enviado com sucesso!');
-            
-            // Limpa campos
-            if (emailParaInput) emailParaInput.value = '';
-            if (emailAssuntoInput) emailAssuntoInput.value = '';
-            if (emailCorpoInput) emailCorpoInput.value = '';
-            estadoEncaminhamento.anexosSelecionadosIds = [];
-            if (menuAnexos) menuAnexos.style.display = 'none';
+
+            const redeDestino = redesCadastradas.find((rede: any) => String(rede.id) === String(idRedeSelecionada));
+            if (!redeDestino) {
+                uiManager.mostrarPopup('Rede de apoio selecionada não encontrada.');
+                return;
+            }
+
+            const anexosSelecionados = (estadoEncaminhamento.anexosSelecionadosIds || [])
+                .map((valor: any) => Number(valor))
+                .filter((valor: number) => Number.isInteger(valor) && valor > 0);
+
+            try {
+                btnEnviar.disabled = true;
+                btnEnviar.textContent = 'Enviando...';
+
+                const resposta = await window.api.enviarEmailEncaminhamento({
+                    idCaso: Number(idCaso),
+                    idRedeDestino: Number(redeDestino.id),
+                    assunto: emailAssunto,
+                    mensagem: emailCorpo,
+                    anexosIds: anexosSelecionados
+                });
+
+                if (!resposta?.success) {
+                    throw new Error(resposta?.error || 'Falha ao enviar o e-mail.');
+                }
+
+                uiManager.toggleModalEncaminhamento(false);
+                uiManager.mostrarPopup('E-mail enviado com sucesso!');
+                await atualizarRedesContatadas();
+
+                if (emailParaInput) {
+                    emailParaInput.selectedIndex = 0;
+                }
+                if (emailAssuntoInput) emailAssuntoInput.value = '';
+                if (emailCorpoInput) emailCorpoInput.value = '';
+                estadoEncaminhamento.anexosSelecionadosIds = [];
+                if (menuAnexos) menuAnexos.style.display = 'none';
+            } catch (erro) {
+                console.error('Erro ao enviar encaminhamento:', erro);
+                uiManager.mostrarPopup(erro instanceof Error ? erro.message : 'Erro desconhecido ao enviar o e-mail.');
+            } finally {
+                btnEnviar.disabled = false;
+                btnEnviar.textContent = textoOriginalEnviar;
+            }
         };
     }
 
@@ -966,6 +1040,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (redesContatadas && !redesContatadas.textContent.trim()) {
         redesContatadas.textContent = 'Nenhuma rede de apoio foi contatada até o momento';
     }
+
+    await atualizarRedesContatadas();
 
     // Controle de Visibilidade Padrão e Etapas Específicas
     const radiosPadrao = document.querySelectorAll('input[name="visibilidade-padrao"]');

@@ -80,4 +80,33 @@ export class ControladorCredencial {
             return { success: false, error: "Erro ao buscar configurações." };
         }
     }
+
+    /**
+     * Envia um e-mail utilizando as credenciais institucionais já configuradas.
+     */
+    public async enviarEmailInstitucional(dados: {
+        destinatario: string;
+        assunto?: string;
+        corpoHtml: string;
+        anexos?: any[];
+    }): Promise<ResultadoOperacao> {
+        const destinatario = (dados.destinatario ?? '').trim();
+        const corpo = (dados.corpoHtml ?? '').trim();
+        const assunto = (dados.assunto ?? '').trim() || 'Encaminhamento - Procuradoria da Mulher';
+
+        if (!destinatario) {
+            return { success: false, error: 'Destinatário é obrigatório.' };
+        }
+
+        if (!corpo) {
+            return { success: false, error: 'Corpo do e-mail é obrigatório.' };
+        }
+
+        try {
+            await this.service.enviarEmail(destinatario, assunto, corpo, dados.anexos || []);
+            return { success: true };
+        } catch (err: any) {
+            return { success: false, error: err.message || 'Erro ao enviar o e-mail institucional.' };
+        }
+    }
 }

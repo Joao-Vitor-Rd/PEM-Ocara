@@ -11,6 +11,8 @@ import { CasoController } from './controllers/CasoController';
 // --- Módulo Rede de Apoio (Seus Imports) ---
 import { ControladorOrgao } from './controllers/ControladorOrgao';
 import { PostgresOrgaoRepository } from './repository/PostgresOrgaoRepository';
+import { CasoRedeApoioContatoRepository } from './repository/CasoRedeApoioContatoRepository';
+import { ICasoRedeApoioContatoRepository } from './repository/ICasoRedeApoioContatoRepository';
 
 // --- Módulos da Branch backend-dev ---
 import { PdfService } from './services/PDFService';
@@ -50,6 +52,7 @@ let funcionarioController: ControladorFuncionario;
 let credencialController: ControladorCredencial;
 let historicoController: HistoricoController;
 let orgaoController: ControladorOrgao;
+let casoRedeApoioContatoRepository: ICasoRedeApoioContatoRepository;
 type UsuarioSessaoAtiva = {
   email: string;
   nome: string;
@@ -57,6 +60,52 @@ type UsuarioSessaoAtiva = {
 };
 let usuarioLogadoAtual: UsuarioSessaoAtiva | null = null;
 let ultimaOrigemTelaSobreAplicacao: 'telaConfiguracoesConta' | 'telaContaAdm' = 'telaConfiguracoesConta';
+
+function converterDadosAnexoParaBuffer(dados: any): Buffer | null {
+  if (!dados) {
+    return null;
+  }
+
+  if (Buffer.isBuffer(dados)) {
+    return dados;
+  }
+
+  if (dados instanceof Uint8Array) {
+    return Buffer.from(dados);
+  }
+
+  if (Array.isArray(dados)) {
+    return Buffer.from(dados);
+  }
+
+  if (typeof dados === 'string') {
+    if (dados.startsWith('\\x')) {
+      return Buffer.from(dados.slice(2), 'hex');
+    }
+    return Buffer.from(dados, 'utf-8');
+  }
+
+  if (typeof dados === 'object') {
+    return Buffer.from(Object.values(dados));
+  }
+
+  return null;
+}
+
+function escaparHtmlBasico(texto: string): string {
+  return texto
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function formatarCorpoEmailHTML(conteudo: string): string {
+  const seguro = escaparHtmlBasico(conteudo ?? '');
+  const comQuebras = seguro.replace(/\r?\n/g, '<br />');
+  return `<div style="font-family: Arial, sans-serif; line-height: 1.5; font-size: 14px;">${comQuebras}</div>`;
+}
 
 // Repository para salvar casos no BD
 
@@ -89,6 +138,7 @@ async function bootstrap(): Promise<void> {
   // 3. Inicializar Repositórios (Injeção de Dependência)
   casoRepository = new CasoRepositoryPostgres(dbPool);
   anexoRepository = new AnexoRepositorioPostgres(dbPool);
+  casoRedeApoioContatoRepository = new CasoRedeApoioContatoRepository(dbPool);
   
   const funcionarioRepository = new FuncionarioRepositoryPostgres(dbPool);
   const credencialRepository = new CredencialRepositoryPostgres(dbPool);
@@ -797,6 +847,144 @@ ipcMain.handle('anexo:download', async(_event, { idAnexo, nomeArquivo }: { idAne
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Erro desconhecido ao baixar anexo'
+    };
+  }
+});
+
+ipcMain.handle('encaminhamento:enviarEmail', async (_event, dados: {
+  idCaso: number;
+  idRedeDestino: number;
+  assunto?: string;
+  mensagem: string;
+  anexosIds?: number[];
+}) => {
+  try {
+    Logger.info('Requisição para enviar e-mail de encaminhamento:', dados?.idCaso);
+
+    const idCaso = Number(dados?.idCaso);
+    const idRedeDestino = Number(dados?.idRedeDestino);
+
+    if (!Number.isInteger(idCaso) || idCaso <= 0) {
+      return { success: false, error: 'Caso inválido para envio de encaminhamento.' };
+    }
+
+    if (!Number.isInteger(idRedeDestino) || idRedeDestino <= 0) {
+      return { success: false, error: 'Selecione uma rede de apoio válida.' };
+    }
+
+    const orgaos = await orgaoController.listarOrgaos();
+    const redeDestino = orgaos.find(orgao => (orgao.getId?.() ?? 0) === idRedeDestino);
+
+    if (!redeDestino) {
+      return { success: false, error: 'Rede de apoio não encontrada.' };
+    }
+
+    const emailDestino = redeDestino.getEmail?.();
+    if (!emailDestino) {
+      return { success: false, error: 'O órgão selecionado não possui e-mail cadastrado.' };
+    }
+
+    const anexosIds = Array.isArray(dados?.anexosIds) ? dados.anexosIds : [];
+    const anexosEmail: any[] = [];
+
+    for (const anexoIdRaw of anexosIds) {
+      const anexoId = Number(anexoIdRaw);
+      if (!Number.isInteger(anexoId) || anexoId <= 0) {
+        continue;
+      }
+
+      const anexo = await anexoRepository.getAnexoById(anexoId);
+      if (!anexo) {
+        Logger.warn(`Anexo ${anexoId} não encontrado para envio.`);
+        continue;
+      }
+
+      const buffer = converterDadosAnexoParaBuffer(anexo.getDados?.());
+      if (!buffer) {
+        Logger.warn(`Não foi possível converter os dados do anexo ${anexoId} para envio.`);
+        continue;
+      }
+
+      anexosEmail.push({
+        filename: anexo.getNomeAnexo?.() || `anexo-${anexoId}`,
+        content: buffer,
+        contentType: anexo.getTipo?.() || undefined
+      });
+    }
+
+    const assunto = (dados?.assunto ?? '').trim() || `Encaminhamento do Caso #${idCaso}`;
+    const corpoHtml = formatarCorpoEmailHTML(dados?.mensagem ?? '');
+
+    const resultadoEnvio = await credencialController.enviarEmailInstitucional({
+      destinatario: emailDestino,
+      assunto,
+      corpoHtml,
+      anexos: anexosEmail
+    });
+
+    if (!resultadoEnvio.success) {
+      return { success: false, error: resultadoEnvio.error ?? 'Falha ao enviar o e-mail.' };
+    }
+
+    if (casoRedeApoioContatoRepository) {
+      try {
+        await casoRedeApoioContatoRepository.registrarContato({
+          idCaso,
+          emailRede: emailDestino,
+          assunto,
+          mensagem: dados?.mensagem ?? '',
+          dataEnvio: new Date()
+        });
+      } catch (erroRegistro) {
+        Logger.warn('Falha ao registrar a rede de apoio contatada:', erroRegistro);
+      }
+    }
+
+    Logger.info(`E-mail de encaminhamento enviado com sucesso para ${emailDestino} (caso ${idCaso}).`);
+    return {
+      success: true,
+      dados: {
+        destinatario: emailDestino,
+        orgaoDestino: redeDestino.getNome?.(),
+        anexosEnviados: anexosEmail.length
+      }
+    };
+  } catch (error) {
+    Logger.error('Erro ao enviar e-mail de encaminhamento:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido ao enviar o e-mail.'
+    };
+  }
+});
+
+ipcMain.handle('caso:listarRedesContatadas', async (_event, payload: { idCaso?: number } | number) => {
+  try {
+    if (!casoRedeApoioContatoRepository) {
+      return { success: false, error: 'Repositório de contatos não está disponível.' };
+    }
+
+    let idCaso: number;
+    if (typeof payload === 'number') {
+      idCaso = payload;
+    } else {
+      idCaso = Number(payload?.idCaso);
+    }
+
+    if (!Number.isInteger(idCaso) || idCaso <= 0) {
+      return { success: false, error: 'Caso inválido para consulta.' };
+    }
+
+    const redes = await casoRedeApoioContatoRepository.obterNomesRedesContatadas(idCaso);
+    return {
+      success: true,
+      redes
+    };
+  } catch (error) {
+    Logger.error('Erro ao listar redes contatadas:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido ao listar redes contatadas.'
     };
   }
 });

@@ -188,6 +188,28 @@ export interface IElectronAPI {
     error?: string;
   }>;
 
+  listarRedesContatadas: (idCaso: number) => Promise<{
+    success: boolean;
+    redes?: string[];
+    error?: string;
+  }>;
+
+  enviarEmailEncaminhamento: (dados: {
+    idCaso: number;
+    idRedeDestino: number;
+    assunto?: string;
+    mensagem: string;
+    anexosIds?: number[];
+  }) => Promise<{
+    success: boolean;
+    dados?: {
+      destinatario?: string;
+      orgaoDestino?: string;
+      anexosEnviados?: number;
+    };
+    error?: string;
+  }>;
+
   getEnderecosAssistidasFiltrado: (dataInicio?: string, dataFim?: string) => Promise<{
     success: boolean;
     enderecos?: any[];
