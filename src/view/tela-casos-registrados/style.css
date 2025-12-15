@@ -229,18 +229,37 @@ body {
 } */
 
 .btn-assistida {
-  width: 100%;
-  padding: 50px 0;
-  background-color: #F2B872;
-  border: 1px solid #865D2B;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 25px;
-  color: white;
-  font-size: 35px;
-  font-family: 'Poppins', sans-serif;
-  letter-spacing: 0.2em;
-  font-weight: 800;
-  text-align: center;
+    background-color: #F2B872;
+    border: 0.5px solid #E0AC6E;
+    border-radius: 25px;
+    color: #FFFFFF;
+    font-size: 24px;
+    font-weight: 600;
+    padding: 2%;
+    letter-spacing: 0.05em;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 100px;
+    width: 500px;
+
+    cursor: pointer;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    margin: 0 auto;
+}
+
+.btn-assistida:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.btn-assistida:active {
+    transform: translateY(1px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
 
 .barra-busca-full {
