@@ -513,6 +513,24 @@ ipcMain.handle('caso:obterInformacoesGerais', async(_event, idCaso: number) => {
   }
 });
 
+ipcMain.handle('caso:getCasoCompletoVisualizacao', async(_event, idCaso: number) => {
+  try {
+    Logger.info('🔍 [IPC] Requisição para obter caso completo para visualização:', idCaso);
+    const casoCompleto = await casoController.getCasoCompletoParaVisualizacao(idCaso);
+    Logger.info('✅ [IPC] Caso completo obtido:', JSON.stringify(casoCompleto, null, 2));
+    return {
+      success: true,
+      caso: casoCompleto
+    };
+  } catch (error) {
+    Logger.error('❌ [IPC] Erro ao obter caso completo para visualização:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erro desconhecido ao obter caso'
+    };
+  }
+});
+
 ipcMain.handle('caso:deletarAnexo', async(_event, dados: any) => {
   try {
     const { idAnexo, nomeArquivo } = dados;

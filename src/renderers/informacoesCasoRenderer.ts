@@ -703,12 +703,143 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Botão Acessar Formulário
     const btnAcessarForm = document.getElementById('acessar-form');
     if (btnAcessarForm) {
-        btnAcessarForm.addEventListener('click', () => {
-             console.log('Acessar formulário de visualização clicado');
-        if (idCaso) {
-            sessionStorage.setItem('idCasoVisualizacao', idCaso.toString());
-        }
-        window.api.openWindow("telaVisualizacao1");
+        btnAcessarForm.addEventListener('click', async () => {
+            console.log('[informacoesCasoRenderer] 🔄 Iniciando carregamento de dados para visualização...');
+            
+            if (idCaso) {
+                try {
+                    // 1️⃣ Chamar API para buscar dados completos
+                    console.log('[informacoesCasoRenderer] 📡 Chamando API para caso:', idCaso);
+                    const resposta = await window.api.getCasoCompletoVisualizacao(Number(idCaso));
+                    
+                    console.log('[informacoesCasoRenderer] 📦 Resposta da API:', resposta);
+                    
+                    if (resposta.success && resposta.caso) {
+                        const casoData = resposta.caso;
+                        console.log('[informacoesCasoRenderer] 📋 Estrutura casoData:', {
+                            assistida: casoData.assistida,
+                            caso: casoData.caso,
+                            agressor: casoData.agressor,
+                            questoes: casoData.questoes
+                        });
+                        
+                        // 🔍 DEBUG: Log específico para q10-q13
+                        console.log('[informacoesCasoRenderer] 🔍 Valores de Q10-Q13:');
+                        console.log('  q9_doenca (agressor):', casoData.agressor?.q9_doenca);
+                        console.log('  q10_medida_protetiva (agressor):', casoData.agressor?.q10_medida_protetiva);
+                        console.log('  q11_suicidio (agressor):', casoData.agressor?.q11_suicidio);
+                        console.log('  q12_financeiro (agressor):', casoData.agressor?.q12_financeiro);
+                        console.log('  q13_arma_de_fogo (agressor):', casoData.agressor?.q13_arma_de_fogo);
+                        
+                        
+                        // 2️⃣ Transformar dados para tela 2 (Agressor/Risco)
+                        const dadosCaso = {
+                            nomeAgressor: casoData.agressor?.nome || '',
+                            idadeAgresssor: casoData.agressor?.idade || '',
+                            vinculoAssistida: casoData.agressor?.vinculo || '',
+                            dataOcorrencia: casoData.caso?.data ?? '',
+                            _ameacas: casoData.questoes?.q1_ameacas_violencia || [],
+                            _agressoesGraves: casoData.questoes?.q2_agressoes_violencia || [],
+                            _outrasAgressoes: casoData.questoes?.q3_tipos_violencia || [],
+                            _estupro: casoData.questoes?.q4_estupro ?? '',
+                            _comportamentos: casoData.questoes?.q5_comportamentos || [],
+                            _boMedida: casoData.questoes?.q6_medida ?? '',
+                            _frequenciaAumento: casoData.questoes?.q7_frequencia ?? '',
+                            _usoDrogas: casoData.questoes?.q8_substancias ?? [],
+                            _doencaMental: casoData.agressor?.q9_doenca ?? '',
+                            _descumpriuMedida: casoData.agressor?.q10_medida_protetiva ?? '',
+                            _tentativaSuicidio: casoData.agressor?.q11_suicidio ?? '',
+                            _desempregadoDificuldades: casoData.agressor?.q12_financeiro ?? '',
+                            _acessoArmas: casoData.agressor?.q13_arma_de_fogo ?? '',
+                            _ameacouAgrediu: casoData.questoes?.q14_ameacas_agressor ?? [],
+                            separacaoRecente: casoData.caso?.q15_separacao ?? '',
+                            _temFilhosIds: (() => {
+                                const ids = [];
+                                // Marcar "Sim, com o agressor" se tiver quantidade
+                                if (casoData.questoes?.q16_filhos?.q16a_com_agressor && casoData.questoes.q16_filhos.q16a_com_agressor > 0) {
+                                    ids.push('q16-tem-filhos-sim-agressor');
+                                }
+                                // Marcar "Sim, de outro relacionamento" se tiver quantidade
+                                if (casoData.questoes?.q16_filhos?.q16o_outro_relacionamento && casoData.questoes.q16_filhos.q16o_outro_relacionamento > 0) {
+                                    ids.push('q16-tem-filhos-sim-outro');
+                                }
+                                return ids;
+                            })(),
+                            _q16QuantosAgressor: casoData.questoes?.q16_filhos?.q16a_com_agressor || '',
+                            _q16QuantosOutro: casoData.questoes?.q16_filhos?.q16o_outro_relacionamento || '',
+                            _q16FaixaEtariaIds: casoData.questoes?.q16_filhos?.q16p1_faixa_etaria || [],
+                            _q16Deficiencia: casoData.questoes?.q16_filhos?.q16p2_com_deficiencia || '',
+                            _q16ConflitosIds: casoData.questoes?.q16_filhos?.q16p3_conflitos || [],
+                            _q16Presenciaram: casoData.questoes?.q16_filhos?.q16p4_viu_violencia || '',
+                            _q16ViolenciaGravidez: casoData.questoes?.q16_filhos?.q16p5_violencia_gravidez || '',
+                            novoRelacionamentoAumentouAgressao: casoData.caso?.q17_novo_relac ?? false,
+                            possuiDeficienciaDoenca: casoData.assistida?.deficiencia || '',
+                            corRaca: casoData.assistida?.cor_raca || '',
+                            _moraEmAreaRisco: casoData.caso?.q20_mora_risco ?? '',
+                            _dependenteFinanceira: casoData.caso?.q21_depen_finc ?? '',
+                            _abrigamentoTemporario: casoData.caso?.q22_abrigo ?? ''
+                        };
+                        
+                        // 3️⃣ Transformar dados para tela 1 (Assistida)
+                        const dadosAssistida = {
+                            nomeCompleto: casoData.assistida?.nome || '',
+                            idade: casoData.assistida?.idade || '',
+                            endereco: casoData.assistida?.endereco || '',
+                            identidadeGenero: casoData.assistida?.identidadegenero || '',
+                            nomeSocial: casoData.assistida?.n_social || '',
+                            escolaridade: casoData.assistida?.escolaridade || '',
+                            religiao: casoData.assistida?.religiao || '',
+                            nacionalidade: casoData.assistida?.nacionalidade || '',
+                            profissao: casoData.assistida?.ocupacao || '',
+                            limitacao: casoData.assistida?.limitacao || '',
+                            numeroCadastro: casoData.assistida?.cad_social || '',
+                            dependentes: casoData.assistida?.dependentes || '',
+                            zona: casoData.assistida?.zona || 'urbana',
+                            cpf: '',
+                            renda: ''
+                        };
+                        
+                        // 4️⃣ Transformar dados para tela 3 (Encaminhamento)
+                        const dadosEncaminhamento = {
+                            anotacoesLivres: casoData.caso?.outras_informacoes || ''
+                        };
+                        
+                        // 5️⃣ Armazenar no sessionStorage
+                        sessionStorage.setItem('dadosCaso', JSON.stringify(dadosCaso));
+                        sessionStorage.setItem('dadosAssistida', JSON.stringify(dadosAssistida));
+                        sessionStorage.setItem('dadosEncaminhamento', JSON.stringify(dadosEncaminhamento));
+                        sessionStorage.setItem('idCasoVisualizacao', idCaso.toString());
+                        
+                        console.log('[informacoesCasoRenderer] ✅ Dados carregados no sessionStorage:');
+                        console.log('  - dadosCaso:', dadosCaso);
+                        console.log('  - dadosAssistida:', dadosAssistida);
+                        console.log('[informacoesCasoRenderer] 👶 Q16 - Filhos:');
+                        console.log('  _temFilhosIds:', dadosCaso._temFilhosIds);
+                        console.log('  _q16QuantosAgressor:', dadosCaso._q16QuantosAgressor);
+                        console.log('  _q16QuantosOutro:', dadosCaso._q16QuantosOutro);
+                        console.log('  - dadosEncaminhamento:', dadosEncaminhamento);
+                        console.log('[informacoesCasoRenderer] 🗓️  Data no dadosCaso:', {
+                            data: dadosCaso.dataOcorrencia,
+                            tipo: typeof dadosCaso.dataOcorrencia,
+                            original: casoData.caso?.data
+                        });
+                        
+                        // 6️⃣ Abrir tela de visualização
+                        console.log('[informacoesCasoRenderer] 🪟 Abrindo tela de visualização 1...');
+                        await window.api.openWindow("telaVisualizacao1");
+                        
+                    } else {
+                        console.error('[informacoesCasoRenderer] ❌ Erro ao carregar dados:', resposta.error);
+                        uiManager.mostrarPopup('Erro ao carregar dados do caso. Tente novamente.');
+                    }
+                } catch (erro) {
+                    console.error('[informacoesCasoRenderer] ❌ Exceção ao carregar dados:', erro);
+                    uiManager.mostrarPopup('Erro ao carregar dados. Tente novamente.');
+                }
+            } else {
+                console.error('[informacoesCasoRenderer] ❌ ID do caso não disponível');
+                uiManager.mostrarPopup('ID do caso não disponível.');
+            }
         });
     }
 

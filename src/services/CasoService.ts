@@ -517,4 +517,16 @@ export class CasoService {
             throw error;
         }
     }
+
+    async getCasoCompletoParaVisualizacao(idCaso: number): Promise<any> {
+        try {
+            console.log('🔍 [Service] Buscando caso completo para visualização:', idCaso);
+            const casoCompleto = await this.casoRepository.getCaso(idCaso);
+            console.log('✅ [Service] Caso completo obtido:', JSON.stringify(casoCompleto, null, 2));
+            return casoCompleto;
+        } catch (error) {
+            console.error('❌ [Service] Erro ao obter caso completo para visualização:', error);
+            throw error;
+        }
+    }
 }

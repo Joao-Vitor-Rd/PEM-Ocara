@@ -811,155 +811,169 @@ export class CasoRepositoryPostgres implements ICasoRepository {
     async getCaso(idCaso: number): Promise<any> {
         const query = `
             SELECT
-                c.id_caso, c.data, c.separacao, c.novo_relac, c.abrigo, c.depen_finc, 
-                c.mora_risco, c.medida, c.frequencia, c.id_assistida,
+                a.id, a.nome, a.idade, a.identidadegenero,
+                a.n_social, a.religiao, a.nacionalidade,
+                a.escolaridade,
+                a.zona, a.ocupacao, a.cad_social, a.dependentes,
+                a.endereco,
+                a.limitacao,
 
-                a.id as assistida_id, a.nome as assistida_nome, a.idade as assistida_idade, 
-                a.identidadegenero as assistida_identidadegenero, a.n_social as assistida_n_social, 
-                a.escolaridade as assistida_escolaridade, a.religiao as assistida_religiao, 
-                a.nacionalidade as assistida_nacionalidade, a.zona as assistida_zona, 
-                a.ocupacao as assistida_ocupacao, a.cad_social as assistida_cad_social, 
-                a.dependentes as assistida_dependentes, a.cor_raca as assistida_cor_raca, 
-                a.endereco as assistida_endereco,
-
-                ag.id_agressor, ag.nome as agressor_nome, ag.idade as agressor_idade, 
-                ag.vinculo as agressor_vinculo, ag.doenca as agressor_doenca, 
-                ag.medida_protetiva as agressor_medida_protetiva, ag.suicidio as agressor_suicidio, 
-                ag.financeiro as agressor_financeiro, ag.arma_de_fogo as agressor_arma_de_fogo,
-
-                f.seq_filho, f.qtd_filhos_deficiencia, f.viu_violencia, f.violencia_gravidez,
-                f.qtd_filho_agressor, f.qtd_filho_outro_relacionamento,
-                ff.faixa_etaria,
-
-                v.id_violencia, v.estupro, v.data_ocorrencia,
+                c.id_caso,
                 
-                tv.tipo_violencia,
-                av.tipo_ameaca,
-                agv.tipo_agressao,
-                cv.descricao_comportamento,
-                sa.tipo_substancia,
-                aa.alvo_ameaca,
+                c.outras_informacoes,
 
-                an.id_anexo, an.nome as anexo_nome, an.tipo as anexo_tipo, an.dados,
+                ag.nome as agressor_nome,
+                c.data,
+                ag.vinculo as viculo_agressor, 
+                ag.idade as agressor_idade,
+                array_agg(DISTINCT av.tipo_ameaca) as q1,
+                array_agg(DISTINCT agv.tipo_agressao) as q2,
+                array_agg(DISTINCT tv.tipo_violencia) as q3,
+                v.estupro as q4,
+                array_agg(DISTINCT cv.descricao_comportamento) as q5,
+                c.medida as q6,
+                c.frequencia as q7,
+                array_agg(DISTINCT sa.tipo_substancia) as q8,
+                ag.doenca as q9,
+                ag.medida_protetiva as q10,
+                ag.suicidio as q11,
+                ag.financeiro as q12, 
+                ag.arma_de_fogo as q13,
+                array_agg(DISTINCT aa.alvo_ameaca) as q14,
 
-                fac.email_funcionario
+                c.separacao as q15,
+                f.qtd_filho_agressor as q16a,
+                f.qtd_filho_outro_relacionamento as q16o,
+                array_agg(DISTINCT ff.faixa_etaria) as q16p1,
+                f.qtd_filhos_deficiencia as q16p2,
+                array_agg(DISTINCT cf.tipo_conflito) as q16p3,
+                f.viu_violencia as q16p4,
+                f.violencia_gravidez as q16p5,
+
+                c.novo_relac as q17,
+                a.deficiencia as q18,
+                a.cor_raca as q19,
+                c.mora_risco as q20,
+                c.depen_finc as q21,
+                c.abrigo as q22
 
             FROM CASO c
-
-            LEFT JOIN ASSISTIDA a ON a.id = c.id_assistida
+            LEFT JOIN ASSISTIDA a ON c.id_assistida = a.id
             LEFT JOIN AGRESSOR ag ON ag.id_caso = c.id_caso
-            LEFT JOIN FILHO f ON f.id_assistida = c.id_assistida
-            LEFT JOIN FAIXA_FILHO ff ON ff.id_assistida = f.id_assistida AND ff.id_filhos = f.seq_filho
-            LEFT JOIN VIOLENCIA v ON v.id_caso = c.id_caso
-            LEFT JOIN TIPO_VIOLENCIA tv ON tv.id_caso = c.id_caso
+            LEFT JOIN AMEACA_AGRESSOR aa ON c.id_caso = aa.id_caso
+            LEFT JOIN SUBSTANCIAS_AGRESSOR sa ON ag.id_agressor = sa.id_agressor
             LEFT JOIN AMEACAS_VIOLENCIA av ON av.id_caso = c.id_caso
-            LEFT JOIN AGRESSAO_VIOLENCIA agv ON agv.id_caso = c.id_caso
+            LEFT JOIN FILHO f ON f.id_assistida = c.id_assistida
+            LEFT JOIN FAIXA_FILHO ff ON ff.id_assistida = c.id_assistida
+            LEFT JOIN TIPO_VIOLENCIA tv ON tv.id_caso = c.id_caso
+            LEFT JOIN VIOLENCIA v ON v.id_caso = c.id_caso
+            LEFT JOIN CONFLITO_FILHO cf ON f.seq_filho = cf.seq_filho
             LEFT JOIN COMPORTAMENTO_VIOLENCIA cv ON cv.id_caso = c.id_caso
-            LEFT JOIN SUBSTANCIAS_AGRESSOR sa ON sa.id_caso = c.id_caso
-            LEFT JOIN AMEACA_AGRESSOR aa ON aa.id_caso = c.id_caso
-            LEFT JOIN ANEXO an ON an.id_caso = c.id_caso
-            LEFT JOIN FUNCIONARIO_ACOMPANHA_CASO fac ON fac.id_caso = c.id_caso
+            LEFT JOIN AGRESSAO_VIOLENCIA agv ON agv.id_caso = c.id_caso
 
             WHERE c.id_caso = $1
+            GROUP BY 
+                a.id, a.nome, a.idade, a.identidadegenero,
+                a.n_social, a.religiao, a.nacionalidade,
+                a.escolaridade,
+                a.zona, a.ocupacao, a.cad_social, a.dependentes,
+                a.endereco, a.limitacao, a.deficiencia, a.cor_raca,
+                c.id_caso, c.outras_informacoes, c.separacao, c.novo_relac,
+                c.mora_risco, c.depen_finc, c.abrigo, c.medida, c.frequencia,
+                c.data,
+                ag.id_agressor, ag.nome, ag.idade, ag.vinculo, ag.doenca,
+                ag.medida_protetiva, ag.suicidio, ag.financeiro, ag.arma_de_fogo,
+                v.id_caso, v.estupro,
+                f.seq_filho, f.id_assistida, f.qtd_filho_agressor, 
+                f.qtd_filho_outro_relacionamento, f.qtd_filhos_deficiencia,
+                f.viu_violencia, f.violencia_gravidez
         `;
 
         try {
+            console.log('🔍 [Repository] Executando query para caso:', idCaso);
             const result = await this.pool.query(query, [idCaso]);
             
+            console.log('📊 [Repository] Resultado da query - Linhas retornadas:', result.rows.length);
+            
             if (result.rows.length === 0) {
+                console.warn('⚠️  [Repository] Nenhum resultado encontrado para id_caso:', idCaso);
                 return null;
             }
 
-            const primeiraLinha = result.rows[0];
+            const row = result.rows[0];
+            
+            // 🔍 DEBUG: Log dos valores de q10-q13
+            console.log('📋 [Repository] DEBUG - Questões do Agressor:');
+            console.log('  q9_doenca:', row.q9, '(tipo:', typeof row.q9, ')');
+            console.log('  q10_medida_protetiva:', row.q10, '(tipo:', typeof row.q10, ')');
+            console.log('  q11_suicidio:', row.q11, '(tipo:', typeof row.q11, ')');
+            console.log('  q12_financeiro:', row.q12, '(tipo:', typeof row.q12, ')');
+            console.log('  q13_arma_de_fogo:', row.q13, '(tipo:', typeof row.q13, ')');
             
             return {
+                assistida: row.id ? {
+                    id: row.id,
+                    nome: row.nome,
+                    idade: row.idade,
+                    identidadegenero: row.identidadegenero,
+                    n_social: row.n_social,
+                    religiao: row.religiao,
+                    nacionalidade: row.nacionalidade,
+                    escolaridade: row.escolaridade,
+                    zona: row.zona,
+                    ocupacao: row.ocupacao,
+                    cad_social: row.cad_social,
+                    dependentes: row.dependentes,
+                    endereco: row.endereco,
+                    limitacao: row.limitacao,
+                    deficiencia: row.q18,
+                    cor_raca: row.q19
+                } : null,
                 caso: {
-                    id_caso: primeiraLinha.id_caso,
-                    data: primeiraLinha.data,
-                    separacao: primeiraLinha.separacao,
-                    novo_relac: primeiraLinha.novo_relac,
-                    abrigo: primeiraLinha.abrigo,
-                    depen_finc: primeiraLinha.depen_finc,
-                    mora_risco: primeiraLinha.mora_risco,
-                    medida: primeiraLinha.medida,
-                    frequencia: primeiraLinha.frequencia,
-                    id_assistida: primeiraLinha.id_assistida
+                    id_caso: row.id_caso,
+                    data: row.data,
+                    outras_informacoes: row.outras_informacoes,
+                    q15_separacao: row.q15,
+                    q17_novo_relac: row.q17,
+                    q20_mora_risco: row.q20,
+                    q21_depen_finc: row.q21,
+                    q22_abrigo: row.q22
                 },
-                assistida: primeiraLinha.assistida_id ? {
-                    id: primeiraLinha.assistida_id,
-                    nome: primeiraLinha.assistida_nome,
-                    idade: primeiraLinha.assistida_idade,
-                    identidadegenero: primeiraLinha.assistida_identidadegenero,
-                    n_social: primeiraLinha.assistida_n_social,
-                    escolaridade: primeiraLinha.assistida_escolaridade,
-                    religiao: primeiraLinha.assistida_religiao,
-                    nacionalidade: primeiraLinha.assistida_nacionalidade,
-                    zona: primeiraLinha.assistida_zona,
-                    ocupacao: primeiraLinha.assistida_ocupacao,
-                    cad_social: primeiraLinha.assistida_cad_social,
-                    dependentes: primeiraLinha.assistida_dependentes,
-                    cor_raca: primeiraLinha.assistida_cor_raca,
-                    endereco: primeiraLinha.assistida_endereco
+                agressor: row.agressor_nome ? {
+                    nome: row.agressor_nome,
+                    idade: row.agressor_idade,
+                    vinculo: row.viculo_agressor,
+                    q9_doenca: row.q9,
+                    q10_medida_protetiva: row.q10,
+                    q11_suicidio: row.q11,
+                    q12_financeiro: row.q12,
+                    q13_arma_de_fogo: row.q13
                 } : null,
-                agressor: primeiraLinha.id_agressor ? {
-                    id_agressor: primeiraLinha.id_agressor,
-                    nome: primeiraLinha.agressor_nome,
-                    idade: primeiraLinha.agressor_idade,
-                    vinculo: primeiraLinha.agressor_vinculo,
-                    doenca: primeiraLinha.agressor_doenca,
-                    medida_protetiva: primeiraLinha.agressor_medida_protetiva,
-                    suicidio: primeiraLinha.agressor_suicidio,
-                    financeiro: primeiraLinha.agressor_financeiro,
-                    arma_de_fogo: primeiraLinha.agressor_arma_de_fogo
-                } : null,
-                filhos: [...new Set(result.rows
-                    .filter((r: any) => r.seq_filho)
-                    .map((r: any) => JSON.stringify({
-                        seq_filho: r.seq_filho,
-                        qtd_filhos_deficiencia: r.qtd_filhos_deficiencia,
-                        viu_violencia: r.viu_violencia,
-                        violencia_gravidez: r.violencia_gravidez,
-                        qtd_filho_agressor: r.qtd_filho_agressor,
-                        qtd_filho_outro_relacionamento: r.qtd_filho_outro_relacionamento,
-                        faixa_etaria: r.faixa_etaria
-                    })))
-                ].map((str: string) => JSON.parse(str)),
-                violencia: primeiraLinha.id_violencia ? {
-                    id_violencia: primeiraLinha.id_violencia,
-                    estupro: primeiraLinha.estupro,
-                    data_ocorrencia: primeiraLinha.data_ocorrencia
-                } : null,
-                tiposViolencia: [...new Set(result.rows
-                    .filter((r: any) => r.tipo_violencia)
-                    .map((r: any) => r.tipo_violencia))],
-                ameacasViolencia: [...new Set(result.rows
-                    .filter((r: any) => r.tipo_ameaca)
-                    .map((r: any) => r.tipo_ameaca))],
-                agressoesViolencia: [...new Set(result.rows
-                    .filter((r: any) => r.tipo_agressao)
-                    .map((r: any) => r.tipo_agressao))],
-                comportamentosViolencia: [...new Set(result.rows
-                    .filter((r: any) => r.descricao_comportamento)
-                    .map((r: any) => r.descricao_comportamento))],
-                substanciasAgressor: [...new Set(result.rows
-                    .filter((r: any) => r.tipo_substancia)
-                    .map((r: any) => r.tipo_substancia))],
-                ameacasAgressor: [...new Set(result.rows
-                    .filter((r: any) => r.alvo_ameaca)
-                    .map((r: any) => r.alvo_ameaca))],
-                anexos: [...new Set(result.rows
-                    .filter((r: any) => r.id_anexo)
-                    .map((r: any) => JSON.stringify({
-                        id_anexo: r.id_anexo,
-                        nome: r.anexo_nome,
-                        tipo: r.anexo_tipo,
-                        dados: r.dados
-                    })))
-                ].map((str: string) => JSON.parse(str)),
-                funcionario: primeiraLinha.email_funcionario || null
+                questoes: {
+                    q1_ameacas_violencia: row.q1 && row.q1[0] ? row.q1.filter((v: any) => v !== null) : [],
+                    q2_agressoes_violencia: row.q2 && row.q2[0] ? row.q2.filter((v: any) => v !== null) : [],
+                    q3_tipos_violencia: row.q3 && row.q3[0] ? row.q3.filter((v: any) => v !== null) : [],
+                    q4_estupro: row.q4,
+                    q5_comportamentos: row.q5 && row.q5[0] ? row.q5.filter((v: any) => v !== null) : [],
+                    q6_medida: row.q6,
+                    q7_frequencia: row.q7,
+                    q8_substancias: row.q8 && row.q8[0] ? row.q8.filter((v: any) => v !== null) : [],
+                    q14_ameacas_agressor: row.q14 && row.q14[0] ? row.q14.filter((v: any) => v !== null) : [],
+                    q16_filhos: {
+                        q16a_com_agressor: row.q16a,
+                        q16o_outro_relacionamento: row.q16o,
+                        q16p1_faixa_etaria: row.q16p1 && row.q16p1[0] ? row.q16p1.filter((v: any) => v !== null) : [],
+                        q16p2_com_deficiencia: row.q16p2,
+                        q16p3_conflitos: row.q16p3 && row.q16p3[0] ? row.q16p3.filter((v: any) => v !== null) : [],
+                        q16p4_viu_violencia: row.q16p4,
+                        q16p5_violencia_gravidez: row.q16p5
+                    }
+                }
             };
+            
+            console.log('✅ [Repository] Dados transformados e retornados com sucesso');
         } catch (error) {
-            console.error('Erro ao recuperar caso:', error);
+            console.error('❌ [Repository] Erro ao recuperar caso:', error);
             return null;
         }
     }

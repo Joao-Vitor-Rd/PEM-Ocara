@@ -84,6 +84,9 @@ contextBridge.exposeInMainWorld('api', {
   getInformacoesGeraisDoCaso: (idCaso: number) =>
     ipcRenderer.invoke('caso:obterInformacoesGerais', idCaso),
 
+  getCasoCompletoVisualizacao: (idCaso: number) =>
+    ipcRenderer.invoke('caso:getCasoCompletoVisualizacao', idCaso),
+
   criarAssistida: (
     nome: string,
     idade: number,
