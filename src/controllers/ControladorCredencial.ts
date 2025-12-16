@@ -14,28 +14,44 @@ export class ControladorCredencial {
      * O Service vai testar a conexão SMTP antes de permitir salvar.
      */
     public async salvarCredenciais(dados: any): Promise<ResultadoOperacao> {
-        const email = (dados.email ?? "").trim();
-        const senha = (dados.senha ?? "").trim();
-        const servico = (dados.servico ?? "gmail").trim();
-
-        // 1. Validação Básica
-        if (!email) return { success: false, error: "O e-mail é obrigatório." };
-        if (!senha) return { success: false, error: "A senha (ou App Password) é obrigatória." };
+        const emailInput = (dados.email ?? "").trim();
+        const senhaInput = (dados.senha ?? "").trim();
+        const servicoInput = (dados.servico ?? "").trim();
 
         try {
-            // 2. Chama o service (que faz o teste de conexão verify())
-            const credencialSalva = await this.service.atualizarCredenciais(email, senha, servico);
+            const credencialAtual = await this.service.obterCredenciais();
+
+            if (!credencialAtual && !emailInput) {
+                return { success: false, error: "Cadastre o e-mail institucional antes de prosseguir." };
+            }
+
+            if (!credencialAtual && !senhaInput) {
+                return { success: false, error: "Cadastre a senha institucional antes de prosseguir." };
+            }
+
+            const emailFinal = emailInput || credencialAtual?.email || "";
+            const senhaFinal = senhaInput || credencialAtual?.senha || "";
+            const servicoFinal = servicoInput || credencialAtual?.servico || "gmail";
+
+            if (!emailFinal) {
+                return { success: false, error: "O e-mail é obrigatório." };
+            }
+
+            if (!senhaFinal) {
+                return { success: false, error: "A senha (ou App Password) é obrigatória." };
+            }
+
+            const credencialSalva = await this.service.atualizarCredenciais(emailFinal, senhaFinal, servicoFinal);
             
             return { 
                 success: true, 
                 dados: {
                     email: credencialSalva.email,
-                    servico: credencialSalva.servico
-                    // Não retornamos a senha por segurança, apenas confirmamos o sucesso
+                    servico: credencialSalva.servico,
+                    senhaConfigurada: true
                 } 
             };
         } catch (err: any) {
-            // Retorna o erro amigável (ex: "Falha na autenticação SMTP")
             return { success: false, error: err.message || "Erro ao salvar credenciais." };
         }
     }
@@ -62,6 +78,35 @@ export class ControladorCredencial {
             };
         } catch (err: any) {
             return { success: false, error: "Erro ao buscar configurações." };
+        }
+    }
+
+    /**
+     * Envia um e-mail utilizando as credenciais institucionais já configuradas.
+     */
+    public async enviarEmailInstitucional(dados: {
+        destinatario: string;
+        assunto?: string;
+        corpoHtml: string;
+        anexos?: any[];
+    }): Promise<ResultadoOperacao> {
+        const destinatario = (dados.destinatario ?? '').trim();
+        const corpo = (dados.corpoHtml ?? '').trim();
+        const assunto = (dados.assunto ?? '').trim() || 'Encaminhamento - Procuradoria da Mulher';
+
+        if (!destinatario) {
+            return { success: false, error: 'Destinatário é obrigatório.' };
+        }
+
+        if (!corpo) {
+            return { success: false, error: 'Corpo do e-mail é obrigatório.' };
+        }
+
+        try {
+            await this.service.enviarEmail(destinatario, assunto, corpo, dados.anexos || []);
+            return { success: true };
+        } catch (err: any) {
+            return { success: false, error: err.message || 'Erro ao enviar o e-mail institucional.' };
         }
     }
 }

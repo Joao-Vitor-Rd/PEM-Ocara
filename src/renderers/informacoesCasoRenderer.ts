@@ -431,6 +431,42 @@ document.addEventListener('DOMContentLoaded', async () => {
     let idAssistida: number = 0;
 
     const redesCadastradas: any[] = [];
+    const redesContatadasElement = document.getElementById('redes-contatadas') as HTMLParagraphElement | null;
+
+    const atualizarRedesContatadas = async () => {
+        if (!redesContatadasElement) {
+            return;
+        }
+
+        try {
+            const resposta = await window.api.listarRedesContatadas(Number(idCaso));
+
+            if (resposta?.success && Array.isArray(resposta.redes) && resposta.redes.length > 0) {
+                redesContatadasElement.textContent = resposta.redes.join(', ');
+            } else {
+                redesContatadasElement.textContent = 'Nenhuma rede de apoio foi contatada até o momento';
+            }
+        } catch (erro) {
+            console.error('Erro ao carregar redes contatadas:', erro);
+            redesContatadasElement.textContent = 'Não foi possível carregar as redes contatadas.';
+        }
+    };
+
+    const carregarRedesApoio = async () => {
+        try {
+            const resposta = await window.api.listarOrgaosRedeApoio();
+            redesCadastradas.length = 0;
+
+            if (resposta?.success && Array.isArray(resposta.orgaos)) {
+                resposta.orgaos.forEach((orgao: any) => redesCadastradas.push(orgao));
+            } else {
+                console.warn('Não foi possível carregar as redes de apoio:', resposta?.error);
+            }
+        } catch (erro) {
+            console.error('Erro ao carregar redes de apoio:', erro);
+            uiManager.mostrarPopup('Não foi possível carregar as redes de apoio. Tente novamente mais tarde.');
+        }
+    };
 
     // Carrega e exibe dados do caso
     if (informacoesGerais.success && informacoesGerais.informacoes) {   
@@ -667,9 +703,143 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Botão Acessar Formulário
     const btnAcessarForm = document.getElementById('acessar-form');
     if (btnAcessarForm) {
-        btnAcessarForm.addEventListener('click', () => {
-            console.log('Acessar formulário clicado');
-            window.api.openWindow("telaInformacoesCaso");
+        btnAcessarForm.addEventListener('click', async () => {
+            console.log('[informacoesCasoRenderer] 🔄 Iniciando carregamento de dados para visualização...');
+            
+            if (idCaso) {
+                try {
+                    // 1️⃣ Chamar API para buscar dados completos
+                    console.log('[informacoesCasoRenderer] 📡 Chamando API para caso:', idCaso);
+                    const resposta = await window.api.getCasoCompletoVisualizacao(Number(idCaso));
+                    
+                    console.log('[informacoesCasoRenderer] 📦 Resposta da API:', resposta);
+                    
+                    if (resposta.success && resposta.caso) {
+                        const casoData = resposta.caso;
+                        console.log('[informacoesCasoRenderer] 📋 Estrutura casoData:', {
+                            assistida: casoData.assistida,
+                            caso: casoData.caso,
+                            agressor: casoData.agressor,
+                            questoes: casoData.questoes
+                        });
+                        
+                        // 🔍 DEBUG: Log específico para q10-q13
+                        console.log('[informacoesCasoRenderer] 🔍 Valores de Q10-Q13:');
+                        console.log('  q9_doenca (agressor):', casoData.agressor?.q9_doenca);
+                        console.log('  q10_medida_protetiva (agressor):', casoData.agressor?.q10_medida_protetiva);
+                        console.log('  q11_suicidio (agressor):', casoData.agressor?.q11_suicidio);
+                        console.log('  q12_financeiro (agressor):', casoData.agressor?.q12_financeiro);
+                        console.log('  q13_arma_de_fogo (agressor):', casoData.agressor?.q13_arma_de_fogo);
+                        
+                        
+                        // 2️⃣ Transformar dados para tela 2 (Agressor/Risco)
+                        const dadosCaso = {
+                            nomeAgressor: casoData.agressor?.nome || '',
+                            idadeAgresssor: casoData.agressor?.idade || '',
+                            vinculoAssistida: casoData.agressor?.vinculo || '',
+                            dataOcorrencia: casoData.caso?.data ?? '',
+                            _ameacas: casoData.questoes?.q1_ameacas_violencia || [],
+                            _agressoesGraves: casoData.questoes?.q2_agressoes_violencia || [],
+                            _outrasAgressoes: casoData.questoes?.q3_tipos_violencia || [],
+                            _estupro: casoData.questoes?.q4_estupro ?? '',
+                            _comportamentos: casoData.questoes?.q5_comportamentos || [],
+                            _boMedida: casoData.questoes?.q6_medida ?? '',
+                            _frequenciaAumento: casoData.questoes?.q7_frequencia ?? '',
+                            _usoDrogas: casoData.questoes?.q8_substancias ?? [],
+                            _doencaMental: casoData.agressor?.q9_doenca ?? '',
+                            _descumpriuMedida: casoData.agressor?.q10_medida_protetiva ?? '',
+                            _tentativaSuicidio: casoData.agressor?.q11_suicidio ?? '',
+                            _desempregadoDificuldades: casoData.agressor?.q12_financeiro ?? '',
+                            _acessoArmas: casoData.agressor?.q13_arma_de_fogo ?? '',
+                            _ameacouAgrediu: casoData.questoes?.q14_ameacas_agressor ?? [],
+                            separacaoRecente: casoData.caso?.q15_separacao ?? '',
+                            _temFilhosIds: (() => {
+                                const ids = [];
+                                // Marcar "Sim, com o agressor" se tiver quantidade
+                                if (casoData.questoes?.q16_filhos?.q16a_com_agressor && casoData.questoes.q16_filhos.q16a_com_agressor > 0) {
+                                    ids.push('q16-tem-filhos-sim-agressor');
+                                }
+                                // Marcar "Sim, de outro relacionamento" se tiver quantidade
+                                if (casoData.questoes?.q16_filhos?.q16o_outro_relacionamento && casoData.questoes.q16_filhos.q16o_outro_relacionamento > 0) {
+                                    ids.push('q16-tem-filhos-sim-outro');
+                                }
+                                return ids;
+                            })(),
+                            _q16QuantosAgressor: casoData.questoes?.q16_filhos?.q16a_com_agressor || '',
+                            _q16QuantosOutro: casoData.questoes?.q16_filhos?.q16o_outro_relacionamento || '',
+                            _q16FaixaEtariaIds: casoData.questoes?.q16_filhos?.q16p1_faixa_etaria || [],
+                            _q16Deficiencia: casoData.questoes?.q16_filhos?.q16p2_com_deficiencia || '',
+                            _q16ConflitosIds: casoData.questoes?.q16_filhos?.q16p3_conflitos || [],
+                            _q16Presenciaram: casoData.questoes?.q16_filhos?.q16p4_viu_violencia || '',
+                            _q16ViolenciaGravidez: casoData.questoes?.q16_filhos?.q16p5_violencia_gravidez || '',
+                            novoRelacionamentoAumentouAgressao: casoData.caso?.q17_novo_relac ?? false,
+                            possuiDeficienciaDoenca: casoData.assistida?.deficiencia || '',
+                            corRaca: casoData.assistida?.cor_raca || '',
+                            _moraEmAreaRisco: casoData.caso?.q20_mora_risco ?? '',
+                            _dependenteFinanceira: casoData.caso?.q21_depen_finc ?? '',
+                            _abrigamentoTemporario: casoData.caso?.q22_abrigo ?? ''
+                        };
+                        
+                        // 3️⃣ Transformar dados para tela 1 (Assistida)
+                        const dadosAssistida = {
+                            nomeCompleto: casoData.assistida?.nome || '',
+                            idade: casoData.assistida?.idade || '',
+                            endereco: casoData.assistida?.endereco || '',
+                            identidadeGenero: casoData.assistida?.identidadegenero || '',
+                            nomeSocial: casoData.assistida?.n_social || '',
+                            escolaridade: casoData.assistida?.escolaridade || '',
+                            religiao: casoData.assistida?.religiao || '',
+                            nacionalidade: casoData.assistida?.nacionalidade || '',
+                            profissao: casoData.assistida?.ocupacao || '',
+                            limitacao: casoData.assistida?.limitacao || '',
+                            numeroCadastro: casoData.assistida?.cad_social || '',
+                            dependentes: casoData.assistida?.dependentes || '',
+                            zona: casoData.assistida?.zona || 'urbana',
+                            cpf: '',
+                            renda: ''
+                        };
+                        
+                        // 4️⃣ Transformar dados para tela 3 (Encaminhamento)
+                        const dadosEncaminhamento = {
+                            anotacoesLivres: casoData.caso?.outras_informacoes || ''
+                        };
+                        
+                        // 5️⃣ Armazenar no sessionStorage
+                        sessionStorage.setItem('dadosCaso', JSON.stringify(dadosCaso));
+                        sessionStorage.setItem('dadosAssistida', JSON.stringify(dadosAssistida));
+                        sessionStorage.setItem('dadosEncaminhamento', JSON.stringify(dadosEncaminhamento));
+                        sessionStorage.setItem('idCasoVisualizacao', idCaso.toString());
+                        
+                        console.log('[informacoesCasoRenderer] ✅ Dados carregados no sessionStorage:');
+                        console.log('  - dadosCaso:', dadosCaso);
+                        console.log('  - dadosAssistida:', dadosAssistida);
+                        console.log('[informacoesCasoRenderer] 👶 Q16 - Filhos:');
+                        console.log('  _temFilhosIds:', dadosCaso._temFilhosIds);
+                        console.log('  _q16QuantosAgressor:', dadosCaso._q16QuantosAgressor);
+                        console.log('  _q16QuantosOutro:', dadosCaso._q16QuantosOutro);
+                        console.log('  - dadosEncaminhamento:', dadosEncaminhamento);
+                        console.log('[informacoesCasoRenderer] 🗓️  Data no dadosCaso:', {
+                            data: dadosCaso.dataOcorrencia,
+                            tipo: typeof dadosCaso.dataOcorrencia,
+                            original: casoData.caso?.data
+                        });
+                        
+                        // 6️⃣ Abrir tela de visualização
+                        console.log('[informacoesCasoRenderer] 🪟 Abrindo tela de visualização 1...');
+                        await window.api.openWindow("telaVisualizacao1");
+                        
+                    } else {
+                        console.error('[informacoesCasoRenderer] ❌ Erro ao carregar dados:', resposta.error);
+                        uiManager.mostrarPopup('Erro ao carregar dados do caso. Tente novamente.');
+                    }
+                } catch (erro) {
+                    console.error('[informacoesCasoRenderer] ❌ Exceção ao carregar dados:', erro);
+                    uiManager.mostrarPopup('Erro ao carregar dados. Tente novamente.');
+                }
+            } else {
+                console.error('[informacoesCasoRenderer] ❌ ID do caso não disponível');
+                uiManager.mostrarPopup('ID do caso não disponível.');
+            }
         });
     }
 
@@ -805,20 +975,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Modal de encaminhamento
-    const btnAbrirEncaminhamento = document.getElementById('encaminhamento');
-    const selectEmailPara = document.getElementById('email-para');
+    const btnAbrirEncaminhamento = document.getElementById('encaminhamento') as HTMLButtonElement | null;
+    const selectEmailPara = document.getElementById('email-para') as HTMLSelectElement | null;
 
     if (btnAbrirEncaminhamento) {
-        btnAbrirEncaminhamento.onclick = () => {
+        btnAbrirEncaminhamento.onclick = async () => {
+            await carregarRedesApoio();
+
+            if (!redesCadastradas.length) {
+                uiManager.mostrarPopup('Cadastre uma rede de apoio antes de enviar encaminhamentos.');
+                return;
+            }
+
             if (selectEmailPara) {
-                selectEmailPara.innerHTML = '<option value="" disabled selected>Para</option>';
+                selectEmailPara.innerHTML = '<option value="" disabled selected>Selecione o destinatário</option>';
                 redesCadastradas.forEach((rede: any) => {
                     const opt = document.createElement('option');
-                    opt.value = rede.id;
-                    opt.textContent = rede.nome;
+                    opt.value = String(rede.id);
+                    opt.textContent = `${rede.nome} (${rede.email})`;
+                    (opt.dataset as DOMStringMap).email = rede.email;
                     selectEmailPara.appendChild(opt);
                 });
             }
+
             uiManager.toggleModalEncaminhamento(true);
         };
     }
@@ -896,44 +1075,73 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Botão enviar encaminhamento
-    const btnEnviar = document.getElementById('btnEnviarEncaminhamento');
+    const btnEnviar = document.getElementById('btnEnviarEncaminhamento') as HTMLButtonElement | null;
     if (btnEnviar) {
-        btnEnviar.onclick = () => {
-            const emailParaInput = document.getElementById('email-para') as HTMLInputElement | null;
+        const textoOriginalEnviar = btnEnviar.textContent || 'Enviar';
+
+        btnEnviar.onclick = async () => {
+            const emailParaInput = document.getElementById('email-para') as HTMLSelectElement | null;
             const emailAssuntoInput = document.getElementById('email-assunto') as HTMLInputElement | null;
-            const emailCorpoInput = document.getElementById('email-corpo') as HTMLInputElement | null;
-            
-            const emailPara = emailParaInput?.value || '';
-            const emailAssunto = emailAssuntoInput?.value || '';
-            const emailCorpo = emailCorpoInput?.value || '';
-            
-            // Validações
-            if (!emailPara || emailPara === '') {
+            const emailCorpoInput = document.getElementById('email-corpo') as HTMLTextAreaElement | null;
+
+            const idRedeSelecionada = emailParaInput?.value || '';
+            const emailAssunto = (emailAssuntoInput?.value || '').trim();
+            const emailCorpo = (emailCorpoInput?.value || '').trim();
+
+            if (!idRedeSelecionada) {
                 uiManager.mostrarPopup('Por favor, selecione um destinatário.');
                 return;
             }
-            
-            if (!emailCorpo || emailCorpo.trim().length < 5) {
+
+            if (!emailCorpo || emailCorpo.length < 10) {
                 uiManager.mostrarPopup('O campo de mensagem deve conter pelo menos 10 caracteres.');
                 return;
             }
-            
-            console.log('Enviando encaminhamento...');
-            console.log('Para:', emailPara);
-            console.log('Assunto:', emailAssunto);
-            console.log('Corpo:', emailCorpo);
-            console.log('Anexos selecionados:', estadoEncaminhamento.anexosSelecionadosIds);
-            
-            uiManager.toggleModalEncaminhamento(false);
-            
-            uiManager.mostrarPopup('Email enviado com sucesso!');
-            
-            // Limpa campos
-            if (emailParaInput) emailParaInput.value = '';
-            if (emailAssuntoInput) emailAssuntoInput.value = '';
-            if (emailCorpoInput) emailCorpoInput.value = '';
-            estadoEncaminhamento.anexosSelecionadosIds = [];
-            if (menuAnexos) menuAnexos.style.display = 'none';
+
+            const redeDestino = redesCadastradas.find((rede: any) => String(rede.id) === String(idRedeSelecionada));
+            if (!redeDestino) {
+                uiManager.mostrarPopup('Rede de apoio selecionada não encontrada.');
+                return;
+            }
+
+            const anexosSelecionados = (estadoEncaminhamento.anexosSelecionadosIds || [])
+                .map((valor: any) => Number(valor))
+                .filter((valor: number) => Number.isInteger(valor) && valor > 0);
+
+            try {
+                btnEnviar.disabled = true;
+                btnEnviar.textContent = 'Enviando...';
+
+                const resposta = await window.api.enviarEmailEncaminhamento({
+                    idCaso: Number(idCaso),
+                    idRedeDestino: Number(redeDestino.id),
+                    assunto: emailAssunto,
+                    mensagem: emailCorpo,
+                    anexosIds: anexosSelecionados
+                });
+
+                if (!resposta?.success) {
+                    throw new Error(resposta?.error || 'Falha ao enviar o e-mail.');
+                }
+
+                uiManager.toggleModalEncaminhamento(false);
+                uiManager.mostrarPopup('E-mail enviado com sucesso!');
+                await atualizarRedesContatadas();
+
+                if (emailParaInput) {
+                    emailParaInput.selectedIndex = 0;
+                }
+                if (emailAssuntoInput) emailAssuntoInput.value = '';
+                if (emailCorpoInput) emailCorpoInput.value = '';
+                estadoEncaminhamento.anexosSelecionadosIds = [];
+                if (menuAnexos) menuAnexos.style.display = 'none';
+            } catch (erro) {
+                console.error('Erro ao enviar encaminhamento:', erro);
+                uiManager.mostrarPopup(erro instanceof Error ? erro.message : 'Erro desconhecido ao enviar o e-mail.');
+            } finally {
+                btnEnviar.disabled = false;
+                btnEnviar.textContent = textoOriginalEnviar;
+            }
         };
     }
 
@@ -963,6 +1171,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (redesContatadas && !redesContatadas.textContent.trim()) {
         redesContatadas.textContent = 'Nenhuma rede de apoio foi contatada até o momento';
     }
+
+    await atualizarRedesContatadas();
 
     // Controle de Visibilidade Padrão e Etapas Específicas
     const radiosPadrao = document.querySelectorAll('input[name="visibilidade-padrao"]');

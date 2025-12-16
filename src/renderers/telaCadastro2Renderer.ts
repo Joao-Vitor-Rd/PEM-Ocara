@@ -479,21 +479,31 @@ btnProximo.addEventListener('click', async () => {
         dadosCaso.abusoSexual = estupro === 'Sim';
         dadosCaso.comportamentosAgressor = comportamentos;
         dadosCaso.ocorrenciaPolicialMedidaProtetivaAgressor = boMedida === 'Sim';
+        console.log('[Q06 DEBUG] boMedida valor:', boMedida, 'tipo:', typeof boMedida);
+        console.log('[Q06 DEBUG] ocorrenciaPolicialMedidaProtetivaAgressor convertido:', dadosCaso.ocorrenciaPolicialMedidaProtetivaAgressor);
         dadosCaso.agressoesMaisFrequentesUltimamente = frequenciaAumento === 'Sim';
         dadosCaso.usoDrogasAlcool = usoDrogas;
-        dadosCaso.doencaMental = doencaMental;
+        // Q09: Já vem do HTML formatado como SIM_MEDICACAO, SIM_SEM_MEDICACAO, NAO, NAO_SEI - manter como está
+        dadosCaso.doencaMental = doencaMental || '';
         dadosCaso.agressorCumpriuMedidaProtetiva = descumpriuMedida === 'Sim';
         dadosCaso.agressorTentativaSuicidio = tentativaSuicidio === 'Sim';
-        dadosCaso.agressorDesempregado = desempregadoDificuldades;
-        dadosCaso.agressorPossuiArmaFogo = acessoArmas;
-        dadosCaso.agressorAmeacouAlguem = ameacouAgrediu;
-        dadosCaso.separacaoRecente = separacao;
+        // Q12 e Q13: converter para UPPERCASE_WITH_UNDERSCORE
+        dadosCaso.agressorDesempregado = desempregadoDificuldades
+            ? desempregadoDificuldades.replace(/ã/g, 'A').toUpperCase().replace(/\s+/g, '_')
+            : '';
+        dadosCaso.agressorPossuiArmaFogo = acessoArmas
+            ? acessoArmas.replace(/ã/g, 'A').toUpperCase().replace(/\s+/g, '_')
+            : '';
+        dadosCaso.agressorAmeacouAlguem = ameacouAgrediu; // Array de strings - campo especial do agressor
+        dadosCaso.separacaoRecente = separacao; // String "Sim"/"Não" - campo especial
         dadosCaso.novoRelacionamentoAumentouAgressao = novoRelacionamento === 'Sim';
         dadosCaso.possuiDeficienciaDoenca = deficiencia || '';
         dadosCaso.corRaca = corRaca;
-        // Manter como string para suportar "Sim", "Não", "Não sei"
-        dadosCaso._moraEmAreaRisco = moraEmAreaRisco;
+        // Q20: converter para SIM/NAO/NAO_SEI (tem 3 opções)
+        dadosCaso._moraEmAreaRisco = moraEmAreaRisco ? moraEmAreaRisco.replace(/ã/g, 'A').toUpperCase().replace(/\s+/g, '_') : '';
+        dadosCaso.moraEmAreaRisco = moraEmAreaRisco ? moraEmAreaRisco.replace(/ã/g, 'A').toUpperCase().replace(/\s+/g, '_') : '';
         dadosCaso._dependenteFinanceira = dependenteFinanceira;
+        dadosCaso.dependenteFinanceiroAgressor = dependenteFinanceira === 'Sim';
         dadosCaso._abrigamentoTemporario = abrigamento;
         dadosCaso.aceitaAbrigamentoTemporario = abrigamento === 'Sim';
 

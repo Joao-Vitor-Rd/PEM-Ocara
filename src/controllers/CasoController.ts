@@ -158,6 +158,10 @@ export class CasoController {
         }
     }
 
+    async getCasoCompletoParaVisualizacao(idCaso: number): Promise<any> {
+        return await this.casoService.getCasoCompletoParaVisualizacao(idCaso);
+    }
+
     async handlerSalvarAnexo(anexo: any, idCaso: number, idAssistida: number): Promise<boolean> {
         try {
             console.log(`📎 CasoController: Salvando anexo '${anexo.nome}' para caso ${idCaso}`);

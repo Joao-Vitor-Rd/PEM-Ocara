@@ -21,6 +21,28 @@
     />
 
     <link rel="stylesheet" href="style.css" />
+    <script>
+      // Esconder botão de cadastrar novo caso para usuários jurídicos
+      const usuarioLogadoJSON = sessionStorage.getItem('usuarioLogado');
+      if (usuarioLogadoJSON) {
+        try {
+          const usuarioLogado = JSON.parse(usuarioLogadoJSON);
+          const cargo = usuarioLogado.cargo ? usuarioLogado.cargo.toLowerCase() : '';
+          
+          if (cargo.includes('juridico') || cargo.includes('assistente social')) {
+            const style = document.createElement('style');
+            style.textContent = `
+              #btnCadastrarNovoCaso {
+                display: none !important;
+              }
+            `;
+            document.head.appendChild(style);
+          }
+        } catch (error) {
+          console.error('Erro ao verificar cargo na inicialização:', error);
+        }
+      }
+    </script>
   </head>
 
   <body>

@@ -84,6 +84,9 @@ contextBridge.exposeInMainWorld('api', {
   getInformacoesGeraisDoCaso: (idCaso: number) =>
     ipcRenderer.invoke('caso:obterInformacoesGerais', idCaso),
 
+  getCasoCompletoVisualizacao: (idCaso: number) =>
+    ipcRenderer.invoke('caso:getCasoCompletoVisualizacao', idCaso),
+
   criarAssistida: (
     nome: string,
     idade: number,
@@ -139,6 +142,12 @@ contextBridge.exposeInMainWorld('api', {
   downloadAnexo: (idAnexo: string, nomeArquivo: string) =>
     ipcRenderer.invoke('anexo:download', { idAnexo, nomeArquivo }),
 
+  listarRedesContatadas: (idCaso: number) =>
+    ipcRenderer.invoke('caso:listarRedesContatadas', { idCaso }),
+
+  enviarEmailEncaminhamento: (dados: { idCaso: number; idRedeDestino: number; assunto?: string; mensagem: string; anexosIds?: number[] }) =>
+    ipcRenderer.invoke('encaminhamento:enviarEmail', dados),
+
   closeWindow: () => ipcRenderer.send('window:close'),
 
   onCasoCriado: (callback: (caso: any) => void) => {
@@ -171,5 +180,15 @@ contextBridge.exposeInMainWorld('api', {
 
   atualizarPerfil: (dados: { email: string; nome: string; senhaAtual: string; novaSenha?: string; novoEmail?: string }) =>
     ipcRenderer.invoke('user:update-profile', dados),
+
+  salvarCredenciais: (dados: { email?: string; senha?: string; servico?: string }) =>
+    ipcRenderer.invoke('credencial:salvar', dados),
+
+  obterCredenciais: () => ipcRenderer.invoke('credencial:obter'),
+
+  definirOrigemSobreAplicacao: (origem: 'telaConfiguracoesConta' | 'telaContaAdm') =>
+    ipcRenderer.invoke('sobre:setOrigem', origem),
+
+  obterOrigemSobreAplicacao: () => ipcRenderer.invoke('sobre:getOrigem'),
 });
 

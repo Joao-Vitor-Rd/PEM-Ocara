@@ -88,6 +88,10 @@ export class CasoService {
         anexos?: any[];
     
     }) {
+        // DEBUG Q06
+        console.log('[CasoService Q06 DEBUG] ocorrenciaPolicialMedidaProtetivaAgressor recebido:', dados.ocorrenciaPolicialMedidaProtetivaAgressor);
+        console.log('[CasoService Q06 DEBUG] tipo:', typeof dados.ocorrenciaPolicialMedidaProtetivaAgressor);
+        
         // Criar nova assistida sempre
         const assistida = this.assistidaService.criarAssistida(
             dados.nomeAssistida,
@@ -510,6 +514,18 @@ export class CasoService {
             return total;
         } catch (error) {
             console.error('Erro ao obter total de casos filtrado:', error);
+            throw error;
+        }
+    }
+
+    async getCasoCompletoParaVisualizacao(idCaso: number): Promise<any> {
+        try {
+            console.log('🔍 [Service] Buscando caso completo para visualização:', idCaso);
+            const casoCompleto = await this.casoRepository.getCaso(idCaso);
+            console.log('✅ [Service] Caso completo obtido:', JSON.stringify(casoCompleto, null, 2));
+            return casoCompleto;
+        } catch (error) {
+            console.error('❌ [Service] Erro ao obter caso completo para visualização:', error);
             throw error;
         }
     }

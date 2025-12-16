@@ -188,6 +188,28 @@ export interface IElectronAPI {
     error?: string;
   }>;
 
+  listarRedesContatadas: (idCaso: number) => Promise<{
+    success: boolean;
+    redes?: string[];
+    error?: string;
+  }>;
+
+  enviarEmailEncaminhamento: (dados: {
+    idCaso: number;
+    idRedeDestino: number;
+    assunto?: string;
+    mensagem: string;
+    anexosIds?: number[];
+  }) => Promise<{
+    success: boolean;
+    dados?: {
+      destinatario?: string;
+      orgaoDestino?: string;
+      anexosEnviados?: number;
+    };
+    error?: string;
+  }>;
+
   getEnderecosAssistidasFiltrado: (dataInicio?: string, dataFim?: string) => Promise<{
     success: boolean;
     enderecos?: any[];
@@ -203,6 +225,12 @@ export interface IElectronAPI {
   getInformacoesGeraisDoCaso: (idCaso: number) => Promise<{
     success: boolean;
     informacoes?: any;
+    error?: string;
+  }>;
+
+  getCasoCompletoVisualizacao: (idCaso: number) => Promise<{
+    success: boolean;
+    caso?: any;
     error?: string;
   }>;
 
@@ -382,6 +410,39 @@ export interface IElectronAPI {
     success: boolean;
     funcionario?: any;
     error?: string;
+  }>;
+
+  salvarCredenciais: (dados: {
+    email?: string;
+    senha?: string;
+    servico?: string;
+  }) => Promise<{
+    success: boolean;
+    dados?: {
+      email?: string;
+      servico?: string;
+      senhaConfigurada?: boolean;
+    } | null;
+    error?: string;
+  }>;
+
+  obterCredenciais: () => Promise<{
+    success: boolean;
+    dados?: {
+      email?: string | null;
+      servico?: string | null;
+      senhaConfigurada?: boolean;
+    } | null;
+    error?: string;
+  }>;
+
+  definirOrigemSobreAplicacao: (origem: 'telaConfiguracoesConta' | 'telaContaAdm') => Promise<{
+    success: boolean;
+  }>;
+
+  obterOrigemSobreAplicacao: () => Promise<{
+    success: boolean;
+    origem: 'telaConfiguracoesConta' | 'telaContaAdm';
   }>;
 
 }
