@@ -1,3 +1,8 @@
+(() => {
+    if (window && window.api) {
+        return;
+    }
+
 document.addEventListener('DOMContentLoaded', () => {
 
     const botaoAbrirModal = document.getElementById('gerarEncaminhamento');
@@ -91,3 +96,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
+
+})();

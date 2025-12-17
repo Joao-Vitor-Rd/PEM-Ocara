@@ -79,11 +79,195 @@ const pdfContainer = document.querySelector('.pdf-viewer-container') as HTMLElem
 const placeholder = document.querySelector('.pdf-placeholder') as HTMLElement;
 
 let dadosCompletosParaEnvio: any = null;
+let idCasoPersistido: number | null = null;
+let idAssistidaPersistida: number | null = null;
+let redesCadastradas: any[] = [];
+let historicoRegistrado = false;
+let ultimaCapturaFormulario: {
+    dadosAssistida: any;
+    dadosCaso: any;
+    nomeFuncionario: string;
+    emailFuncionario: string;
+} | null = null;
+type ArquivoTemporario = { nome: string; tipo: string; tamanho: number; dados: Uint8Array };
+let arquivosTemporariosSelecionados: ArquivoTemporario[] = [];
+
+const STORAGE_CASO_ID = 'casoFinalizacaoId';
+const STORAGE_ASSISTIDA_ID = 'assistidaFinalizacaoId';
+const STORAGE_DADOS_FORM = 'dadosFormularioPersistidoTela6';
+const MAX_FILE_SIZE_BYTES = 25 * 1024 * 1024; // 25MB
 
 document.addEventListener('DOMContentLoaded', async () => {
+    const idCasoSalvo = sessionStorage.getItem(STORAGE_CASO_ID);
+    const idAssistidaSalva = sessionStorage.getItem(STORAGE_ASSISTIDA_ID);
+    if (idCasoSalvo) {
+        const parsed = Number(idCasoSalvo);
+        idCasoPersistido = Number.isFinite(parsed) ? parsed : null;
+    }
+    if (idAssistidaSalva) {
+        const parsed = Number(idAssistidaSalva);
+        idAssistidaPersistida = Number.isFinite(parsed) ? parsed : null;
+    }
+
+    const dadosFormPersistidos = sessionStorage.getItem(STORAGE_DADOS_FORM);
+    if (dadosFormPersistidos) {
+        try {
+            ultimaCapturaFormulario = JSON.parse(dadosFormPersistidos);
+        } catch (erro) {
+            console.warn('Não foi possível reconstruir os dados persistidos do formulário:', erro);
+        }
+    }
+
     await carregarPreviewPDF();
     setupModalEncaminhamento();
 });
+
+function obterUsuarioLogado() {
+    const STORAGE_KEY = 'usuarioLogado';
+    const usuarioLogadoJSON = sessionStorage.getItem(STORAGE_KEY);
+    const usuarioLogado = usuarioLogadoJSON ? JSON.parse(usuarioLogadoJSON) : null;
+    return {
+        email: usuarioLogado?.email || 'sistema@sistema.com',
+        nome: usuarioLogado?.nome || 'Sistema'
+    };
+}
+
+function capturarDadosFormulario() {
+    const dadosAssistidaJSON = sessionStorage.getItem('dadosAssistida');
+    if (!dadosAssistidaJSON) {
+        throw new Error('Dados da assistida não encontrados. Por favor, preencha o formulário desde o início.');
+    }
+
+    const dadosCasoJSON = sessionStorage.getItem('dadosCaso');
+    if (!dadosCasoJSON) {
+        throw new Error('Dados do caso não encontrados. Por favor, preencha todas as telas anteriores.');
+    }
+
+    const dadosAssistida = JSON.parse(dadosAssistidaJSON);
+    const dadosCaso = JSON.parse(dadosCasoJSON);
+
+    if (!dadosAssistida.nome || !dadosAssistida.endereco || !dadosAssistida.profissao || !dadosAssistida.nacionalidade) {
+        throw new Error('Dados incompletos da assistida. Verifique o preenchimento do formulário inicial.');
+    }
+
+    const camposObrigatorios = [
+        'nomeAgressor', 'idadeAgresssor', 'vinculoAssistida', 'dataOcorrida',
+        'ameacaFamiliar', 'agressaoFisica', 'abusoSexual', 'comportamentosAgressor',
+        'ocorrenciaPolicialMedidaProtetivaAgressor', 'agressoesMaisFrequentesUltimamente',
+        'usoDrogasAlcool', 'doencaMental', 'separacaoRecente', 'corRaca',
+        '_moraEmAreaRisco'
+    ];
+
+    const camposFaltando = camposObrigatorios.filter(campo => !(campo in dadosCaso));
+    if (camposFaltando.length > 0) {
+        throw new Error(`Campos obrigatórios não preenchidos: ${camposFaltando.join(', ')}. Por favor, revise todas as telas anteriores.`);
+    }
+
+    const anexosJSON = sessionStorage.getItem('cadastro_anexos');
+    const anexos = anexosJSON ? JSON.parse(anexosJSON) : [];
+    const modoEdicao = sessionStorage.getItem('modoEdicao');
+    const idAssistidaExistente = dadosAssistida.id ? Number(dadosAssistida.id) : null;
+
+    return {
+        dadosAssistida,
+        dadosCaso,
+        anexos,
+        modoEdicao,
+        idAssistidaExistente
+    };
+}
+
+async function salvarCasoSeNecessario() {
+    if (idCasoPersistido && idAssistidaPersistida) {
+        return { idCaso: idCasoPersistido, idAssistida: idAssistidaPersistida };
+    }
+
+    const formulario = capturarDadosFormulario();
+    const usuario = obterUsuarioLogado();
+
+    const resultado = await window.api.salvarCasoBD({
+        assistida: formulario.dadosAssistida,
+        caso: Object.assign({}, formulario.dadosCaso, { anexos: formulario.anexos }),
+        profissionalResponsavel: usuario.nome,
+        data: new Date(),
+        modoEdicao: formulario.modoEdicao || 'nova',
+        idAssistidaExistente: formulario.idAssistidaExistente || null
+    });
+
+    if (!resultado?.success) {
+        throw new Error(resultado?.error || 'Erro desconhecido ao salvar caso no banco de dados');
+    }
+
+    const idCasoRetornado = resultado?.idCaso || (resultado as any)?.caso?.id || (resultado as any)?.id || 0;
+    const idAssistidaRetornado = resultado?.idAssistida || (resultado as any)?.caso?.idAssistida || (resultado as any)?.idAssistida || 0;
+
+    idCasoPersistido = Number(idCasoRetornado);
+    idAssistidaPersistida = Number(idAssistidaRetornado);
+
+    if (!Number.isFinite(idCasoPersistido) || idCasoPersistido <= 0) {
+        throw new Error('Retorno inválido ao salvar o caso.');
+    }
+
+    sessionStorage.setItem(STORAGE_CASO_ID, String(idCasoPersistido));
+    sessionStorage.setItem(STORAGE_ASSISTIDA_ID, String(idAssistidaPersistida));
+
+    ultimaCapturaFormulario = {
+        dadosAssistida: formulario.dadosAssistida,
+        dadosCaso: formulario.dadosCaso,
+        nomeFuncionario: usuario.nome,
+        emailFuncionario: usuario.email
+    };
+    sessionStorage.setItem(STORAGE_DADOS_FORM, JSON.stringify(ultimaCapturaFormulario));
+    historicoRegistrado = false;
+
+    return { idCaso: idCasoPersistido, idAssistida: idAssistidaPersistida };
+}
+
+async function registrarHistoricoCaso() {
+    if (historicoRegistrado || !ultimaCapturaFormulario || !idCasoPersistido || !idAssistidaPersistida) {
+        return;
+    }
+
+    const casoCriado = {
+        idCaso: Number(idCasoPersistido),
+        idAssistida: Number(idAssistidaPersistida),
+        emailFuncionario: ultimaCapturaFormulario.emailFuncionario,
+        nomeFuncionario: ultimaCapturaFormulario.nomeFuncionario,
+        ...ultimaCapturaFormulario.dadosAssistida,
+        ...ultimaCapturaFormulario.dadosCaso
+    };
+
+    const casoCriadoJSON = JSON.parse(JSON.stringify(casoCriado));
+
+    const resultadoHistorico = await window.api.salvarHistoricoBD({
+        caso: casoCriadoJSON,
+        assistida: ultimaCapturaFormulario.dadosAssistida,
+        profissionalResponsavel: ultimaCapturaFormulario.nomeFuncionario,
+        data: new Date()
+    });
+
+    if (!resultadoHistorico?.success) {
+        console.warn('Aviso ao salvar histórico:', resultadoHistorico?.error || 'Sem erro específico');
+        return;
+    }
+
+    historicoRegistrado = true;
+}
+
+function limparPersistencias() {
+    sessionStorage.removeItem('dadosCaso');
+    sessionStorage.removeItem('dadosAssistida');
+    sessionStorage.removeItem('cadastro_anexos');
+    sessionStorage.removeItem('modoEdicao');
+    sessionStorage.removeItem(STORAGE_CASO_ID);
+    sessionStorage.removeItem(STORAGE_ASSISTIDA_ID);
+    sessionStorage.removeItem(STORAGE_DADOS_FORM);
+    idCasoPersistido = null;
+    idAssistidaPersistida = null;
+    ultimaCapturaFormulario = null;
+    historicoRegistrado = false;
+    arquivosTemporariosSelecionados = [];
+}
 
 async function carregarPreviewPDF() {
     try {
@@ -160,113 +344,10 @@ voltarBtn.addEventListener('click', async () => {
 
 pxmBtn.addEventListener('click', async () => {
     try {
+        await salvarCasoSeNecessario();
+        await registrarHistoricoCaso();
 
-        const dadosAssistidaJSON = sessionStorage.getItem('dadosAssistida');
-        if (!dadosAssistidaJSON) {
-            throw new Error('Dados da assistida não encontrados. Por favor, preencha o formulário desde o início.');
-        }
-
-        const dadosCasoJSON = sessionStorage.getItem('dadosCaso');
-        if (!dadosCasoJSON) {
-            throw new Error('Dados do caso não encontrados. Por favor, preencha todas as telas anteriores.');
-        }
-        
-        const dadosAssistida = JSON.parse(dadosAssistidaJSON);
-        const dadosCaso = JSON.parse(dadosCasoJSON);
-
-        if (!dadosAssistida.nome || !dadosAssistida.endereco || !dadosAssistida.profissao || !dadosAssistida.nacionalidade) {
-            throw new Error('Dados incompletos da assistida. Verifique o preenchimento do formulário inicial.');
-        }
-
-        const camposObrigatorios = [
-            'nomeAgressor', 'idadeAgresssor', 'vinculoAssistida', 'dataOcorrida',
-            'ameacaFamiliar', 'agressaoFisica', 'abusoSexual', 'comportamentosAgressor',
-            'ocorrenciaPolicialMedidaProtetivaAgressor', 'agressoesMaisFrequentesUltimamente',
-            'usoDrogasAlcool', 'doencaMental', 'separacaoRecente', 'corRaca',
-            '_moraEmAreaRisco'
-        ];
-
-        const camposFaltando = camposObrigatorios.filter(campo => !(campo in dadosCaso));
-        if (camposFaltando.length > 0) {
-            throw new Error(`Campos obrigatórios não preenchidos: ${camposFaltando.join(', ')}. Por favor, revise todas as telas anteriores.`);
-        }
-
-        // Verificar se está usando uma assistida existente
-        const modoEdicao = sessionStorage.getItem('modoEdicao');
-        const idAssistidaExistente = dadosAssistida.id; // ID da assistida se for existente
-        
-        console.log('[telaCadastro6] modoEdicao:', modoEdicao);
-        console.log('[telaCadastro6] idAssistidaExistente:', idAssistidaExistente);
-
-        // Chamar a API para salvar no banco de dados
-        const anexosJSON = sessionStorage.getItem('cadastro_anexos');
-        const anexos = anexosJSON ? JSON.parse(anexosJSON) : [];
-
-        const result = await window.api.salvarCasoBD({
-            assistida: dadosAssistida,
-            caso: Object.assign({}, dadosCaso, { anexos }),
-            profissionalResponsavel: 'Assistente Social',
-            data: new Date(),
-            // Indicar se deve usar uma assistida existente
-            modoEdicao: modoEdicao || 'nova',
-            idAssistidaExistente: idAssistidaExistente || null
-        });
-
-        if (!result.success) {
-            throw new Error(result.error || 'Erro desconhecido ao salvar caso no banco de dados');
-        }
-
-        console.log('Resultado salvarCasoBD:', result); // Debug
-        console.log('Propriedades do result:', Object.keys(result)); // Debug
-        console.log('result.success:', result?.success); // Debug
-        console.log('result.idCaso:', result?.idCaso); // Debug
-        console.log('result.idAssistida:', result?.idAssistida); // Debug
-        
-        // Construir objeto Caso com os IDs retornados e dados necessários
-        const idCasoRetornado = result?.idCaso || (result as any).caso?.id || (result as any).id || 0;
-        const idAssistidaRetornado = result?.idAssistida || (result as any).caso?.idAssistida || (result as any).idAssistida || 0;
-        console.log('idCasoRetornado após extração:', idCasoRetornado); // Debug
-        console.log('idAssistidaRetornado após extração:', idAssistidaRetornado); // Debug
-
-        // Recuperar dados do usuário logado
-        const STORAGE_KEY = 'usuarioLogado';
-        const usuarioLogadoJSON = sessionStorage.getItem(STORAGE_KEY);
-        const usuarioLogado = usuarioLogadoJSON ? JSON.parse(usuarioLogadoJSON) : null;
-        const emailFuncionario = usuarioLogado?.email || 'sistema@sistema.com';
-        const nomeFuncionario = usuarioLogado?.nome || 'Sistema';
-
-        // Serializar casoCriado para garantir que o IPC consegue passar os dados
-        // IPC do Electron tem limitações com certos tipos (Date, Symbols, etc)
-        const casoCriado = {
-            idCaso: Number(idCasoRetornado),
-            idAssistida: Number(idAssistidaRetornado),
-            emailFuncionario: emailFuncionario,
-            nomeFuncionario: nomeFuncionario,
-            ...dadosAssistida,  // Adicionar dados da assistida (Tela 1)
-            ...dadosCaso // Dados completos do caso
-        };
-
-        // Garantir que o objeto é JSON-serializable
-        const casoCriadoJSON = JSON.parse(JSON.stringify(casoCriado));
-
-        console.log('casoCriado para histórico:', casoCriadoJSON); // Debug
-        console.log('casoCriadoJSON.idCaso:', casoCriadoJSON.idCaso); // Debug
-        const resultHistorico = await window.api.salvarHistoricoBD({
-            caso: casoCriadoJSON,
-            assistida: dadosAssistida,
-            profissionalResponsavel: nomeFuncionario,
-            data: new Date()
-        });
-
-        if (!resultHistorico || !resultHistorico.success) {
-            console.warn('Aviso ao salvar histórico:', resultHistorico?.error || 'Sem erro específico');
-            // Não lançar erro, apenas avisar - o caso foi salvo com sucesso
-        }
-
-        sessionStorage.removeItem('dadosCaso');
-        sessionStorage.removeItem('dadosAssistida');
-        sessionStorage.removeItem('cadastro_anexos');
-        
+        limparPersistencias();
         alert('Atendimento finalizado com sucesso!');
         window.api.openWindow("telaListarAssistidas");
 
@@ -277,43 +358,214 @@ pxmBtn.addEventListener('click', async () => {
     }
 });
 
+async function carregarRedesApoioSelect(selectElement: HTMLSelectElement) {
+    try {
+        const resposta = await window.api.listarOrgaosRedeApoio();
+        redesCadastradas = Array.isArray(resposta?.orgaos) ? resposta.orgaos : [];
+
+        selectElement.innerHTML = '<option value="" disabled selected>Selecione o destinatário</option>';
+        redesCadastradas.forEach((rede: any) => {
+            if (!rede?.id) return;
+            const opt = document.createElement('option');
+            opt.value = String(rede.id);
+            opt.textContent = `${rede.nome} (${rede.email})`;
+            selectElement.appendChild(opt);
+        });
+
+        if (!redesCadastradas.length) {
+            throw new Error('Cadastre uma rede de apoio antes de enviar encaminhamentos.');
+        }
+    } catch (erro) {
+        console.error('Erro ao carregar redes de apoio:', erro);
+        throw new Error('Não foi possível carregar as redes de apoio. Tente novamente mais tarde.');
+    }
+}
+
 function setupModalEncaminhamento() {
-    const botaoAbrirModal = document.getElementById('gerarEncaminhamento') as HTMLElement;
-    const modal = document.getElementById('modalEncaminhamento') as HTMLElement;
-    const botaoFecharModal = document.getElementById('fecharModal') as HTMLElement;
-    const fileInput = document.getElementById('inputAnexo') as HTMLInputElement;
-    const escolherArquivo = document.getElementById('botaoAnexo') as HTMLElement;
-    const nomeAnexoEl = document.getElementById('nome-anexo') as HTMLElement;
+    const botaoAbrirModal = document.getElementById('gerarEncaminhamento') as HTMLElement | null;
+    const modal = document.getElementById('modalEncaminhamento') as HTMLElement | null;
+    const botaoFecharModal = document.getElementById('fecharModal') as HTMLElement | null;
+    const selectEmailPara = document.getElementById('email-para') as HTMLSelectElement | null;
+    const emailAssuntoInput = document.getElementById('email-assunto') as HTMLInputElement | null;
+    const emailCorpoInput = document.getElementById('email-corpo') as HTMLTextAreaElement | null;
+    const btnEnviar = document.getElementById('btnEnviar') as HTMLButtonElement | null;
+    const fileInput = document.getElementById('inputAnexo') as HTMLInputElement | null;
+    const escolherArquivo = document.getElementById('botaoAnexo') as HTMLElement | null;
+    const nomeAnexoEl = document.getElementById('nome-anexo') as HTMLElement | null;
 
-    if(!botaoAbrirModal || !modal) return;
-
-    function abrirModal() {
-        modal.classList.add('visible');
-        document.body.style.overflow = 'hidden'; 
+    if (!botaoAbrirModal || !modal || !selectEmailPara || !btnEnviar || !fileInput || !nomeAnexoEl) {
+        return;
     }
 
-    function fecharModal() {
+    const atualizarResumoAnexos = () => {
+        if (!nomeAnexoEl) return;
+        if (!arquivosTemporariosSelecionados.length) {
+            nomeAnexoEl.textContent = 'Nenhum arquivo selecionado';
+            return;
+        }
+
+        if (arquivosTemporariosSelecionados.length === 1) {
+            nomeAnexoEl.textContent = arquivosTemporariosSelecionados[0].nome;
+            return;
+        }
+
+        nomeAnexoEl.textContent = `${arquivosTemporariosSelecionados.length} arquivos selecionados`;
+    };
+
+    const fecharModal = () => {
         modal.classList.remove('visible');
-        document.body.style.overflow = ''; 
-    }
+        document.body.style.overflow = '';
+    };
 
-    botaoAbrirModal.addEventListener('click', abrirModal);
-    botaoFecharModal.addEventListener('click', fecharModal);
+    if (botaoFecharModal) {
+        botaoFecharModal.addEventListener('click', fecharModal);
+    }
 
     modal.addEventListener('click', (event) => {
         if (event.target === modal) fecharModal();
     });
 
-    escolherArquivo.addEventListener('click', (e) => {
-        e.preventDefault(); 
-        e.stopPropagation();
-        fileInput.click(); 
+    if (escolherArquivo) {
+        escolherArquivo.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            fileInput.click();
+        });
+    }
+
+    const processarArquivosSelecionados = async (files: FileList | null) => {
+        if (!files || files.length === 0) {
+            if (!arquivosTemporariosSelecionados.length) {
+                atualizarResumoAnexos();
+            }
+            return;
+        }
+
+        const novosArquivos: ArquivoTemporario[] = [];
+        for (const file of Array.from(files)) {
+            if (file.size > MAX_FILE_SIZE_BYTES) {
+                mostrarErro(`O arquivo "${file.name}" excede o limite de 25MB.`);
+                continue;
+            }
+
+            const jaExiste = arquivosTemporariosSelecionados.some(
+                (anexo) => anexo.nome === file.name && anexo.tamanho === file.size
+            );
+            if (jaExiste) {
+                continue;
+            }
+
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                novosArquivos.push({
+                    nome: file.name,
+                    tipo: file.type || 'application/octet-stream',
+                    tamanho: file.size,
+                    dados: new Uint8Array(arrayBuffer)
+                });
+            } catch (erro) {
+                console.error('Erro ao processar arquivo selecionado:', erro);
+                mostrarErro(`Não foi possível processar o arquivo "${file.name}".`);
+            }
+        }
+
+        if (novosArquivos.length) {
+            arquivosTemporariosSelecionados = [...arquivosTemporariosSelecionados, ...novosArquivos];
+            atualizarResumoAnexos();
+        } else if (!arquivosTemporariosSelecionados.length) {
+            atualizarResumoAnexos();
+        }
+
+        fileInput.value = '';
+    };
+
+    fileInput.addEventListener('change', async (e) => {
+        const files = (e.target as HTMLInputElement).files;
+        await processarArquivosSelecionados(files);
     });
 
-    fileInput.addEventListener('change', (e) => {
-        const files = (e.target as HTMLInputElement).files;
-        if (files && files.length > 0) {
-            nomeAnexoEl.textContent = files[0].name;
+    botaoAbrirModal.addEventListener('click', async () => {
+        try {
+            await salvarCasoSeNecessario();
+            await carregarRedesApoioSelect(selectEmailPara);
+            arquivosTemporariosSelecionados = [];
+            fileInput.value = '';
+            atualizarResumoAnexos();
+            emailAssuntoInput && (emailAssuntoInput.value = '');
+            emailCorpoInput && (emailCorpoInput.value = '');
+
+            modal.classList.add('visible');
+            document.body.style.overflow = 'hidden';
+        } catch (erro) {
+            console.error('Erro ao preparar modal de encaminhamento:', erro);
+            mostrarErro(erro instanceof Error ? erro.message : 'Não foi possível preparar o encaminhamento.');
+        }
+    });
+
+    btnEnviar.addEventListener('click', async () => {
+        if (!idCasoPersistido) {
+            mostrarErro('O caso ainda não foi salvo. Tente novamente.');
+            return;
+        }
+
+        const idRedeSelecionada = selectEmailPara.value;
+        const emailAssunto = (emailAssuntoInput?.value || '').trim();
+        const emailCorpo = (emailCorpoInput?.value || '').trim();
+
+        if (!idRedeSelecionada) {
+            mostrarErro('Por favor, selecione um destinatário.');
+            return;
+        }
+
+        if (!emailCorpo || emailCorpo.length < 10) {
+            mostrarErro('O campo de mensagem deve conter pelo menos 10 caracteres.');
+            return;
+        }
+
+        const redeDestino = redesCadastradas.find((rede: any) => String(rede.id) === String(idRedeSelecionada));
+        if (!redeDestino) {
+            mostrarErro('Rede de apoio selecionada não encontrada.');
+            return;
+        }
+
+        const anexosTemporariosPayload = arquivosTemporariosSelecionados.map((arquivo) => ({
+            nome: arquivo.nome,
+            tipo: arquivo.tipo,
+            dados: arquivo.dados
+        }));
+
+        const textoOriginal = btnEnviar.textContent || 'Enviar';
+        try {
+            btnEnviar.disabled = true;
+            btnEnviar.textContent = 'Enviando...';
+
+            const resposta = await window.api.enviarEmailEncaminhamento({
+                idCaso: Number(idCasoPersistido),
+                idRedeDestino: Number(redeDestino.id),
+                assunto: emailAssunto,
+                mensagem: emailCorpo,
+                anexosIds: [],
+                arquivosTemporarios: anexosTemporariosPayload
+            });
+
+            if (!resposta?.success) {
+                throw new Error(resposta?.error || 'Falha ao enviar o e-mail.');
+            }
+
+            alert('E-mail enviado com sucesso!');
+            fecharModal();
+            selectEmailPara.selectedIndex = 0;
+            if (emailAssuntoInput) emailAssuntoInput.value = '';
+            if (emailCorpoInput) emailCorpoInput.value = '';
+            arquivosTemporariosSelecionados = [];
+            fileInput.value = '';
+            atualizarResumoAnexos();
+        } catch (erro) {
+            console.error('Erro ao enviar encaminhamento:', erro);
+            mostrarErro(erro instanceof Error ? erro.message : 'Erro desconhecido ao enviar o e-mail.');
+        } finally {
+            btnEnviar.disabled = false;
+            btnEnviar.textContent = textoOriginal;
         }
     });
 }
