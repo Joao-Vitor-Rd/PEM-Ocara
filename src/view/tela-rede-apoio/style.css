@@ -532,6 +532,145 @@ body {
 .btn-laranja { background: #F2B872; }
 .btn-vermelho { background: #E66953; }
 
+/* --- Responsividade Específica --- */
+
+/* Para tela 1707 x 1067 */
+@media screen and (max-width: 1707px) and (max-height: 1067px) {
+    .main-content {
+        padding: 45px 72px;
+        max-width: 1600px;
+    }
+    
+    .sidebar-header h1 {
+        font-size: 44px;
+    }
+    
+    .sidebar-nav a {
+        font-size: 30px;
+        padding: 14px 36px;
+        gap: 18px;
+    }
+    
+    .sidebar-nav .material-symbols-outlined {
+        font-size: 38px;
+    }
+    
+    .page-header h1 {
+        font-size: 44px;
+    }
+    
+    .title-divider {
+        border-top: 4.5px solid #63468C;
+    }
+    
+    .btn-adicionar {
+        height: 52px;
+        font-size: 22px;
+        padding: 0 36px;
+    }
+    
+    .rede-card {
+        padding: 18px;
+    }
+    
+    .rede-card h3 {
+        font-size: 28px;
+    }
+    
+    .rede-card p {
+        font-size: 18px;
+    }
+    
+    .rede-actions button {
+        height: 46px;
+        font-size: 20px;
+    }
+    
+    .rodape p {
+        font-size: 15px;
+    }
+    
+    .logo-esquerda {
+        width: 100px;
+        height: 72px;
+    }
+    
+    .logo-direita {
+        width: 120px;
+        height: 90px;
+    }
+}
+
+/* Para tela 1440 x 900 */
+@media screen and (max-width: 1440px) and (max-height: 900px) {
+    .main-content {
+        padding: 40px 64px;
+        max-width: 1400px;
+    }
+    
+    .sidebar-header h1 {
+        font-size: 40px;
+    }
+    
+    .sidebar-nav a {
+        font-size: 28px;
+        padding: 12px 32px;
+        gap: 16px;
+    }
+    
+    .sidebar-nav .material-symbols-outlined {
+        font-size: 36px;
+    }
+    
+    .page-header h1 {
+        font-size: 40px;
+    }
+    
+    .title-divider {
+        border-top: 4px solid #63468C;
+    }
+    
+    .btn-adicionar {
+        height: 48px;
+        font-size: 20px;
+        padding: 0 32px;
+        border-radius: 8px;
+    }
+    
+    .rede-card {
+        padding: 16px;
+        border-radius: 12px;
+    }
+    
+    .rede-card h3 {
+        font-size: 26px;
+    }
+    
+    .rede-card p {
+        font-size: 16px;
+    }
+    
+    .rede-actions button {
+        height: 42px;
+        font-size: 18px;
+        border-radius: 8px;
+    }
+    
+    .rodape p {
+        font-size: 14px;
+    }
+    
+    .logo-esquerda {
+        width: 90px;
+        height: 64px;
+    }
+    
+    .logo-direita {
+        width: 108px;
+        height: 80px;
+    }
+}
+
 /* --- Responsividade Específica do Modal Editar --- */
 @media screen and (max-width: 1440px), screen and (max-height: 800px) {
     #modalEditarRede .modal-content {
