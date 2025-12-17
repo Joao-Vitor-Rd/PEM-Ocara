@@ -53,10 +53,10 @@ body {
 }
 
 .etapas::before {
-    content: '';
+ content: '';
     position: absolute;
-    border-radius: 50px;
-    left: 34.2%;
+    border-radius: 50px 15px 0px 50px;
+    right: 0;
     top: 0;
     height: 100%;
     width: calc(5% + 45% * 0.9 / 5 + 30px);
