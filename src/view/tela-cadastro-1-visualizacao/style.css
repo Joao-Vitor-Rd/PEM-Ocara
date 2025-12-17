@@ -41,26 +41,7 @@ body {
 }
 
 .etapas {
-    display: flex;
-    justify-content: center;
-    background-color: #CEB3F2;
-    border-radius: 15px 15px 0px 0px;
-    padding: 20px 0;
-    flex-shrink: 0;
-    position: relative;
-    overflow: hidden;
-}
-
-.etapas::before {
-    content: '';
-    position: absolute;
-    border-radius: 15px 50px 50px 0px;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: calc(5% + 45% * 0.9 / 5 + 30px);
-    background-color: #F2B872;
-    z-index: 0;
+    display: none;
 }
 
 .lista-etapas {
@@ -102,11 +83,11 @@ body {
     padding-top: 20px;
     overflow-y: auto;
     flex: 1;
-    border-radius: 0 0 25px 0;
+    border-radius: 15px;
 }
 
 .form::-webkit-scrollbar-track {
-    border-radius: 0 0 25px 0;
+    border-radius: 15px;
 }
 
 /* Conteúdo do Card (Apagar e Substituir) */
