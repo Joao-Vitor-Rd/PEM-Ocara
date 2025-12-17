@@ -2,7 +2,15 @@ import { CasoService } from "../services/CasoService";
 import { app } from 'electron';
 import { Caso } from "../models/Caso/Caso";
 import { Assistida } from "../models/assistida/Assistida";
-import { PdfUtil, IFormularioCompleto, IAtendimentoData, IAgressorData, IBlocoIData, IBlocoIIData, IBlocoIIIData, IBlocoIVData, IPreenchimentoProfissional } from "../utils/PdfUtil";
+import { 
+  PdfUtil, 
+  IFormularioCompleto, 
+  IBlocoIData, 
+  IBlocoIIData, 
+  IBlocoIIIData, 
+  IBlocoIVData, 
+  IPreenchimentoProfissional 
+} from "../utils/PdfUtil";
 
 export class PdfService {
   
@@ -16,32 +24,25 @@ export class PdfService {
 
   public async gerarPdfPreview(caso: Caso): Promise<string> {
     const assistida = caso.getAssistida();
+    if (!assistida) throw new Error("Caso não possui uma assistida vinculada para o preview.");
     
-    if (!assistida) {
-      throw new Error("Caso não possui uma assistida vinculada para o preview.");
-    }
-
     const dadosFormulario: IFormularioCompleto = this.mapFormularioCompleto(caso, assistida);
-
     return this.pdfUtil.gerarPdfFormulario(assistida, dadosFormulario, app.getPath('temp'));
   }
 
   public async criarPdfDeFormulario(protocoloCaso: number): Promise<string> {
-    
     const caso = this.casoService.getCaso(protocoloCaso);
-    if (!caso) {
-      throw new Error(`Caso com protocolo ${protocoloCaso} não encontrado.`);
-    }
-
+    if (!caso) throw new Error(`Caso com protocolo ${protocoloCaso} não encontrado.`);
+    
     const assistida = caso.getAssistida();
-    if (!assistida) {
-      throw new Error("Caso não possui uma assistida vinculada.");
-    }
-  
-  const dadosFormulario: IFormularioCompleto = this.mapFormularioCompleto(caso, assistida);
-
-  return this.pdfUtil.gerarPdfFormulario(assistida, dadosFormulario);
-};
+    if (!assistida) throw new Error("Caso não possui uma assistida vinculada.");
+    
+    const dadosFormulario: IFormularioCompleto = this.mapFormularioCompleto(caso, assistida);
+    const desktopPath = app.getPath('desktop');
+    console.log('Tentando salvar em:', desktopPath);
+    
+    return this.pdfUtil.gerarPdfFormulario(assistida, dadosFormulario, desktopPath);
+  };
 
   private mapFormularioCompleto(caso: Caso, assistida: Assistida): IFormularioCompleto {
     
@@ -52,204 +53,176 @@ export class PdfService {
     const outrasInformacoes = caso.getOutrasInformacoesImportantes();
     const outrasInformacoesEncaminhamentos = caso.getOutrasInformacoesEncaminhamento();
     const preenchimentoProfissional = caso.getPreenchimentoProfissional();
-
-    const atendimento: IAtendimentoData = {
-      codigo: assistida.getProtocolo(),
-      data: caso.getData().toLocaleDateString('pt-BR'),
-      nucleo: 'PSICOSSOCIAL',
-      responsavel: caso.getProfissionalResponsavel(),
-    };
-
-    const agressorData: IAgressorData = {
-      nome: agressor?.getNome() || '',
-      idade: agressor?.getIdade() || 0,
-      vinculo: agressor?.getVinculoAssistida() || '',
-      dataFato: agressor?.getDataOcorrida()?.toLocaleDateString('pt-BR') || '',
-    };
+    const normalize = (s: string) => s ? s.toUpperCase().trim().replace(/\s+/g, '_') : '';
     
-    const ameacas = (historicoViolencia?.getAmeacaFamiliar() || []).map(a => a.toUpperCase());
-    const agressoesGraves = (historicoViolencia?.getAgressaoFisica() || []).map(a => a.toUpperCase());
-    const outrasAgressoes = (historicoViolencia?.getOutrasFormasViolencia() || []).map(f => f.toUpperCase());
-    const comportamentos = historicoViolencia?.getComportamentosAgressor() || [];
+    const checkIncludes = (arr: string[], val: string) => arr.some(item => normalize(item).includes(val));
+
+    const ameacasRaw = historicoViolencia?.getAmeacaFamiliar() || [];
+    const ameacas = ameacasRaw.map(normalize);
+
+    const agressoesGravesRaw = historicoViolencia?.getAgressaoFisica() || [];
+    const agressoesGraves = agressoesGravesRaw.map(normalize);
+
+    const outrasAgressoesRaw = historicoViolencia?.getOutrasFormasViolencia() || [];
+    const outrasAgressoes = outrasAgressoesRaw.map(normalize);
+    
+    const comportamentosRaw = historicoViolencia?.getComportamentosAgressor() || [];
+    const comportamentos = comportamentosRaw.map(normalize);
 
     const blocoI: IBlocoIData = {
      p_ameaca: ameacas.length === 0
         ? 'NAO'
-        : ameacas.includes('ARMA_FOGO')
+        : checkIncludes(ameacas, 'ARMA')
         ? 'ARMA_FOGO'
-        : ameacas.includes('FACA')
+        : checkIncludes(ameacas, 'FACA')
         ? 'FACA'
         : 'OUTRA',
      p_agressoes: {
-        queimadura: agressoesGraves.includes('QUEIMADURA'),
-        enforcamento: agressoesGraves.includes('ENFORCAMENTO'),
-        sufocamento: agressoesGraves.includes('SUFOCAMENTO'),
-        tiro: agressoesGraves.includes('TIRO'),
-        afogamento: agressoesGraves.includes('AFOGAMENTO'),
-        facada: agressoesGraves.includes('FACADA'),
-        paulada: agressoesGraves.includes('PAULADA'),
+        queimadura: checkIncludes(agressoesGraves, 'QUEIMADURA'),
+        enforcamento: checkIncludes(agressoesGraves, 'ENFORCAMENTO'),
+        sufocamento: checkIncludes(agressoesGraves, 'SUFOCAMENTO'),
+        tiro: checkIncludes(agressoesGraves, 'TIRO'),
+        afogamento: checkIncludes(agressoesGraves, 'AFOGAMENTO'),
+        facada: checkIncludes(agressoesGraves, 'FACA'), 
+        paulada: checkIncludes(agressoesGraves, 'PAULADA'),
         nenhuma: agressoesGraves.length === 0
      },
      p2_agressoes: {
-        socos: outrasAgressoes.includes('SOCOS'),
-        chutes: outrasAgressoes.includes('CHUTES'),
-        tapas: outrasAgressoes.includes('TAPAS'),
-        empurroes: outrasAgressoes.includes('EMPURROES'),
-        puxoesCabelo: outrasAgressoes.includes('PUXOESCABELO'),
+        socos: checkIncludes(outrasAgressoes, 'SOCOS'),
+        chutes: checkIncludes(outrasAgressoes, 'CHUTES'),
+        tapas: checkIncludes(outrasAgressoes, 'TAPAS'),
+        empurroes: checkIncludes(outrasAgressoes, 'EMPURR'),
+        puxoesCabelo: checkIncludes(outrasAgressoes, 'PUX'),
         nenhuma: outrasAgressoes.length === 0
      },
      p_sexoForcado: historicoViolencia?.getAbusoSexual() || false,
      p_comportamentos: {
-      frase_ameaca: comportamentos.includes('FRASE_NINGUEM'),
-      perseguiu_vigiou: comportamentos.includes('PERSEGUIU'),
-      proibiu_visitas: comportamentos.includes('PROIBIU_VISITAS'),
-      proibiu_trabalhar: comportamentos.includes('PROIBIU_TRABALHAR'),
-      telefonemas_insistentes: comportamentos.includes('TELEFONEMAS'),
-      impediu_dinheiro: comportamentos.includes('IMPEDIU_DINHEIRO'),
-      ciume_excessivo: comportamentos.includes('CIUME_EXCESSIVO'),
+      frase_ameaca: checkIncludes(comportamentos, 'FRASE') || checkIncludes(comportamentos, 'NINGUEM'),
+      perseguiu_vigiou: checkIncludes(comportamentos, 'PERSEGUIU') || checkIncludes(comportamentos, 'VIGIOU'),
+      proibiu_visitas: checkIncludes(comportamentos, 'VISITAS'),
+      proibiu_trabalhar: checkIncludes(comportamentos, 'TRABALHAR') || checkIncludes(comportamentos, 'ESTUDAR'),
+      telefonemas_insistentes: checkIncludes(comportamentos, 'TELEFONEMA') || checkIncludes(comportamentos, 'MENSAGEM'),
+      impediu_dinheiro: checkIncludes(comportamentos, 'DINHEIRO') || checkIncludes(comportamentos, 'BENS'),
+      ciume_excessivo: checkIncludes(comportamentos, 'CIUME') || checkIncludes(comportamentos, 'CONTROLE'),
       nenhum: comportamentos.length === 0,
      },
      p_ocorrencia: historicoViolencia?.getOcorrenciaPolicialMedidaProtetivaAgressor() || false,
      p_agressoes_recentes: historicoViolencia?.getAgressoesMaisFrequentesUltimamente() || false,
   };
 
-  const usoDrogas = sobreAgressor?.getUsoDrogasAlcool() || [];
-  const doencaMental = sobreAgressor?.getDoencaMental().toUpperCase() || 'NAO_SEI';
-  const medida_protetiva = sobreAgressor?.getAgressorCumpriuMedidaProtetiva() || false;
-  const desempregado = sobreAgressor?.getAgressorDesempregado() || 'NAO_SEI';
-  const tentativa_suicidio = sobreAgressor?.getAgressorTentativaSuicidio() || false;
-  const arma_fogo = sobreAgressor?.getAgressorPossuiArmaFogo() || 'NAO_SEI';
-  const agrediu_outros = sobreAgressor?.getAgressorAmeacouAlguem() || [];
+  const usoDrogasRaw = sobreAgressor?.getUsoDrogasAlcool() || [];
+  const usoDrogas = usoDrogasRaw.map(normalize);
+  
+  const doencaMental = normalize(sobreAgressor?.getDoencaMental() || 'NAO_SEI');
+  const desempregado = normalize(sobreAgressor?.getAgressorDesempregado() || 'NAO_SEI');
+  const arma_fogo = normalize(sobreAgressor?.getAgressorPossuiArmaFogo() || 'NAO_SEI');
+  
+  const agrediuOutrosRaw = sobreAgressor?.getAgressorAmeacouAlguem() || [];
+  const agrediu_outros = agrediuOutrosRaw.map(normalize);
 
   const blocoII: IBlocoIIData = {
      p_uso_drogas: {
-      alcool: usoDrogas.includes('ALCOOL'),
-      drogas: usoDrogas.includes('DROGAS'),
-      nao: !usoDrogas.includes('ALCOOL') && !usoDrogas.includes('DROGAS'),
-      nao_sei: usoDrogas.includes('NAO_SEI') || false,
+      alcool: checkIncludes(usoDrogas, 'ALCOOL'),
+      drogas: checkIncludes(usoDrogas, 'DROGAS'),
+      nao: !checkIncludes(usoDrogas, 'ALCOOL') && !checkIncludes(usoDrogas, 'DROGAS'),
+      nao_sei: checkIncludes(usoDrogas, 'NAO_SEI'),
      },
 
-     p_doenca_mental: doencaMental.includes('SIM_MEDICACAO')
-     ? 'SIM_MEDICACAO'
-    : doencaMental.includes('SIM_SEM_MEDICACAO')
+     p_doenca_mental: doencaMental.includes('SIM') && doencaMental.includes('SEM')
      ? 'SIM_SEM_MEDICACAO'
-     : doencaMental.includes('NAO')
-     ? 'NAO'
-     : 'NAO_SEI',
+     : doencaMental.includes('SIM')
+     ? 'SIM_MEDICACAO'
+     : doencaMental.includes('NAO_SEI')
+     ? 'NAO_SEI'
+     : 'NAO',
 
-     p_descumpriu_medida: medida_protetiva,
-     p_tentou_suicidio: tentativa_suicidio,
+     p_descumpriu_medida: sobreAgressor?.getAgressorCumpriuMedidaProtetiva() || false,
+     p_tentou_suicidio: sobreAgressor?.getAgressorTentativaSuicidio() || false,
 
-     p_desempregado: desempregado.includes('SIM')
-     ? 'SIM'
-     : desempregado.includes('NAO')
-     ? 'NAO'
-     : 'NAO_SEI',
-
-     p_acesso_arma: arma_fogo.includes('SIM')
-     ? 'SIM'
-     : arma_fogo.includes('NAO')
-     ? 'NAO'
-     : 'NAO_SEI',
+     p_desempregado: desempregado.includes('SIM') ? 'SIM' : desempregado.includes('NAO') && !desempregado.includes('SEI') ? 'NAO' : 'NAO_SEI',
+     p_acesso_arma: arma_fogo.includes('SIM') ? 'SIM' : arma_fogo.includes('NAO') && !arma_fogo.includes('SEI') ? 'NAO' : 'NAO_SEI',
 
      p_agrediu_outros: {
-      sim: agrediu_outros.includes('SIM'),
-      filhos: agrediu_outros.includes('FILHOS'),
-      familiares: agrediu_outros.includes('FAMILIARES'),
-      outras_pessoas: agrediu_outros.includes('OUTRAS_PESSOAS'),
-      animais: agrediu_outros.includes('ANIMAIS'),
-      nao: agrediu_outros.includes('NAO'),
-      nao_sei: agrediu_outros.includes('NAO_SEI')
+      sim: agrediu_outros.some(x => x.includes('SIM')),
+      filhos: checkIncludes(agrediu_outros, 'FILHOS'),
+      familiares: checkIncludes(agrediu_outros, 'FAMILIAR'),
+      outras_pessoas: checkIncludes(agrediu_outros, 'OUTRAS') || checkIncludes(agrediu_outros, 'DESCONHECIDA'),
+      animais: checkIncludes(agrediu_outros, 'ANIMAIS'),
+      nao: checkIncludes(agrediu_outros, 'NAO') && !checkIncludes(agrediu_outros, 'SEI'),
+      nao_sei: checkIncludes(agrediu_outros, 'NAO_SEI')
      }
   };
 
-  const separacao = sobreVoce?.getSeparacaoRecente() || 'NAO';
-  const filhos_agressor = sobreVoce?.getTemFilhosComAgressor() || false;
-  const qnt_filhos_agressor = sobreVoce?.getQntFilhosComAgressor() || 0;
-  const filhos_outro_relacionamento = sobreVoce?.getTemFilhosOutroRelacionamento() || false;
-  const qnt_filhos_outro_relacionamento = sobreVoce?.getQntFilhosOutroRelacionamento() || 0;
-  const faixa_filhos = sobreVoce?.getFaixaFilhos() || [];
-  const qnt_deficiencia = sobreVoce?.getFilhosComDeficiencia() || 0;
-  const conflito_filhos = sobreVoce?.getConflitoAgressor() || 'NAO';
-  const presenciaram = sobreVoce?.getFilhosPresenciaramViolencia() || false;
-  const violencia_gravidez = sobreVoce?.getViolenciaDuranteGravidez() || false;
-  const novo_relacionamento = sobreVoce?.getNovoRelacionamentoAumentouAgressao() || false;
-  const possui_deficiencia = sobreVoce?.getPossuiDeficienciaDoenca() || 'NAO';
-  const cor = sobreVoce?.getCorRaca();
+  const separacao = normalize(sobreVoce?.getSeparacaoRecente() || 'NAO');
 
+  // Lógica Questão 21 (Deficiência)
+  const deficienciaTexto = normalize(sobreVoce?.getPossuiDeficienciaDoenca() || '');
+  const possuiDeficienciaSim = deficienciaTexto.length > 0 && !deficienciaTexto.includes('NAO');
+  const possuiDeficienciaNao = deficienciaTexto.includes('NAO') || deficienciaTexto.length === 0;
+  
   const blocoIII: IBlocoIIIData = {
-    p_separacao_recente: separacao.includes('SIM_SEPAREI')
+    p_separacao_recente: separacao.includes('SIM') && separacao.includes('SEPAREI')
     ? 'SIM_SEPAREI'
-    : separacao.includes('SIM_TENTEI')
+    : separacao.includes('SIM') && separacao.includes('TENTEI')
     ? 'SIM_TENTEI'
     : 'NAO',
 
     p_tem_filhos: {
-      com_agressor: filhos_agressor,
-      qtd_agressor: qnt_filhos_agressor,
-      outro_relacionamen: filhos_outro_relacionamento,
-      qtd_relacionamen: qnt_filhos_outro_relacionamento,
-      nao: !filhos_agressor && !filhos_outro_relacionamento,
+      com_agressor: sobreVoce?.getTemFilhosComAgressor() || false,
+      qtd_agressor: sobreVoce?.getQntFilhosComAgressor() || 0,
+      outro_relacionamen: sobreVoce?.getTemFilhosOutroRelacionamento() || false,
+      qtd_relacionamen: sobreVoce?.getQntFilhosOutroRelacionamento() || 0,
+      nao: !sobreVoce?.getTemFilhosComAgressor() && !sobreVoce?.getTemFilhosOutroRelacionamento(),
     },
-
     p_faixa_etaria: {
-      anos_0_11: faixa_filhos.includes('0 a 11 ANOS'),
-      anos_12_17: faixa_filhos.includes('12 a 17 ANOS'),
-      anos_18_mais: faixa_filhos.includes('A PARTIR DE 18 ANOS'),
+      anos_0_11: (sobreVoce?.getFaixaFilhos() || []).some(f => f.includes('0') || f.includes('11')),
+      anos_12_17: (sobreVoce?.getFaixaFilhos() || []).some(f => f.includes('12') || f.includes('17')),
+      anos_18_mais: (sobreVoce?.getFaixaFilhos() || []).some(f => f.includes('18')),
     },
-
     p_filhos_deficiencia: {
-      sim: qnt_deficiencia > 0,
-      nao: qnt_deficiencia === 0,
-      qtd: qnt_deficiencia,
+      sim: (sobreVoce?.getFilhosComDeficiencia() || 0) > 0,
+      qtd: sobreVoce?.getFilhosComDeficiencia() || 0,
+      nao: (sobreVoce?.getFilhosComDeficiencia() || 0) === 0,
     },
-    
     p_conflito_filhos: {
-      guarda: conflito_filhos.includes('GUARDA'),
-      visitas: conflito_filhos.includes('VISITAS'),
-      pensao: conflito_filhos.includes('PENSAO'),
-      nao: conflito_filhos.includes('NAO'),
-      nao_tem_filhos_com_agressor: !qnt_filhos_agressor,
+      guarda: normalize(sobreVoce?.getConflitoAgressor() || '').includes('GUARDA'),
+      visitas: normalize(sobreVoce?.getConflitoAgressor() || '').includes('VISITA'),
+      pensao: normalize(sobreVoce?.getConflitoAgressor() || '').includes('PENSAO'),
+      nao: normalize(sobreVoce?.getConflitoAgressor() || '').includes('NAO'),
+      nao_tem_filhos_com_agressor: !sobreVoce?.getTemFilhosComAgressor(),
     },
-
-    p_presenciaram: presenciaram,
-    p_violencia_gravidez: violencia_gravidez,
-    p_novo_relacionamento: novo_relacionamento,
-
+    p_presenciaram: sobreVoce?.getFilhosPresenciaramViolencia() || false,
+    p_violencia_gravidez: sobreVoce?.getViolenciaDuranteGravidez() || false,
+    p_novo_relacionamento: sobreVoce?.getNovoRelacionamentoAumentouAgressao() || false,
     p_possui_deficiencia: {
-      sim: possui_deficiencia.includes('SIM'),
-      qual: possui_deficiencia.includes('SIM') ? possui_deficiencia : '',
-      nao: possui_deficiencia.includes('NAO'),
+      sim: possuiDeficienciaSim,
+      qual: sobreVoce?.getPossuiDeficienciaDoenca() || '',
+      nao: possuiDeficienciaNao
     },
-
-    p_cor_raca: cor?.includes('INDIGENA')
-      ? 'INDIGENA'
-      : cor?.includes('PRETA')
-      ? 'PRETA'
-      : cor?.includes('PARDA')
-      ? 'PARDA'
-      : cor?.includes('AMARELA/ORIENTAL')
-      ? 'AMARELA/ORIENTAL'
-      : 'BRANCA'
+    p_cor_raca: normalize(sobreVoce?.getCorRaca() || '').includes('INDIGENA') ? 'INDIGENA' : 
+                normalize(sobreVoce?.getCorRaca() || '').includes('PRETA') ? 'PRETA' :
+                normalize(sobreVoce?.getCorRaca() || '').includes('PARDA') ? 'PARDA' :
+                normalize(sobreVoce?.getCorRaca() || '').includes('AMARELA') ? 'AMARELA/ORIENTAL' : 'BRANCA'
   };
 
-  const mora_risco = String(outrasInformacoes?.getMoraEmAreaRisco() || 'NAO').toUpperCase();
-  const dependente_financeiro = outrasInformacoes?.getDependenteFinanceiroAgressor() || false;
-  const aceita_abrigamento = outrasInformacoes?.getAceitaAbrigamentoTemporario() || false;
-
+  const mora_risco = normalize(String(outrasInformacoes?.getMoraEmAreaRisco() || 'NAO'));
+  
   const blocoIV: IBlocoIVData = {
-     p_mora_risco: mora_risco.includes('SIM') || mora_risco == 'TRUE'
-     ? 'SIM'
-     : 'NAO',
+     p_mora_risco: mora_risco.includes('SIM') || mora_risco == 'TRUE' ? 'SIM' : 'NAO',
+     p_dependente: outrasInformacoes?.getDependenteFinanceiroAgressor() || false,
+     p_aceita_abrigamento: outrasInformacoes?.getAceitaAbrigamentoTemporario() || false,
+  };
 
-     p_dependente: dependente_financeiro,
-     p_aceita_abrigamento: aceita_abrigamento,
-    };
-
- const outrasInformacoesTexto = outrasInformacoesEncaminhamentos?.getAnotacoesLivres() || '';
-
+  const outrasInformacoesTexto = outrasInformacoesEncaminhamentos?.getAnotacoesLivres() || '';
+  
+  // Lógica Tipos de Violência (ignora acentos)
   const tiposViolenciaArray = preenchimentoProfissional?.getTipoViolencia() || [];
-  const tipoViolencia = tiposViolenciaArray.map(t => t.toUpperCase()).join(', ') || '';
+  
+  const hasViolencia = (tipo: string) => {
+      const cleanString = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase();
+      const tipoClean = cleanString(tipo);
+      return tiposViolenciaArray.some(t => cleanString(t).includes(tipoClean));
+  };
 
   const preenchimento: IPreenchimentoProfissional = {
       assistida_respondeu: preenchimentoProfissional?.getAssistidaRespondeuSemAjuda()
@@ -261,24 +234,33 @@ export class PdfService {
           : 'RECUSOU',
       terceiro_comunicante: preenchimentoProfissional?.getTerceiroComunicante() || false,
       tipos_violencia: {
-          fisica: tipoViolencia.includes('FISICA'),
-          psicologica: tipoViolencia.includes('PSICOLOGICA'),
-          moral: tipoViolencia.includes('MORAL'),
-          sexual: tipoViolencia.includes('SEXUAL'),
-          patrimonial: tipoViolencia.includes('PATRIMONIAL'),
+          fisica: hasViolencia('FISICA'),
+          psicologica: hasViolencia('PSICOLOGICA'),
+          moral: hasViolencia('MORAL'),
+          sexual: hasViolencia('SEXUAL'),
+          patrimonial: hasViolencia('PATRIMONIAL'),
       }
     };
 
-    const formularioCompleto: IFormularioCompleto = {
-          atendimento: atendimento,
-          agressor: agressorData,
-          blocoI: blocoI,
-          blocoII: blocoII,
-          blocoIII: blocoIII,
-          blocoIV: blocoIV,
-          outrasInformacoes: outrasInformacoesTexto,
-          preenchimentoProfissional: preenchimento
+    return {
+        atendimento: {
+            codigo: assistida.getProtocolo(),
+            data: caso.getData().toLocaleDateString('pt-BR'),
+            nucleo: 'PSICOSSOCIAL',
+            responsavel: caso.getProfissionalResponsavel(),
+        },
+        agressor: {
+            nome: agressor?.getNome() || '',
+            idade: agressor?.getIdade() || 0,
+            vinculo: agressor?.getVinculoAssistida() || '',
+            dataFato: agressor?.getDataOcorrida()?.toLocaleDateString('pt-BR') || '',
+        },
+        blocoI,
+        blocoII,
+        blocoIII,
+        blocoIV,
+        outrasInformacoes: outrasInformacoesTexto,
+        preenchimentoProfissional: preenchimento
     };
-  return formularioCompleto;
   }
 }
