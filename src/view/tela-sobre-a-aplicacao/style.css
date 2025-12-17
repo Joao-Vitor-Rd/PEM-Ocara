@@ -130,6 +130,106 @@ footer {
     letter-spacing: 0.05em;
 }
 
+/* --- Responsividade Específica --- */
+
+/* Para tela 1707 x 1067 */
+@media screen and (max-width: 1707px) and (max-height: 1067px) {
+    header h1 {
+        font-size: 44px;
+    }
+    
+    header .material-symbols-outlined {
+        font-size: 46px;
+    }
+    
+    #linha {
+        height: 4.5px;
+        margin: 27px auto;
+    }
+    
+    .conteúdo {
+        padding: 22px;
+        gap: 36px;
+        margin-top: 140px;
+    }
+    
+    .title-logo img {
+        width: 237px;
+        height: 223px;
+    }
+    
+    .title-logo h1 {
+        font-size: 86px;
+    }
+    
+    .title-logo #version {
+        font-size: 32px;
+    }
+    
+    .missao h2,
+    .equipe h2 {
+        font-size: 44px;
+    }
+    
+    .missao p,
+    .equipe li {
+        font-size: 32px;
+    }
+    
+    footer {
+        font-size: 22px;
+    }
+}
+
+/* Para tela 1440 x 900 */
+@media screen and (max-width: 1440px) and (max-height: 900px) {
+    header h1 {
+        font-size: 40px;
+    }
+    
+    header .material-symbols-outlined {
+        font-size: 42px;
+    }
+    
+    #linha {
+        height: 4px;
+        margin: 24px auto;
+    }
+    
+    .conteúdo {
+        padding: 20px;
+        gap: 32px;
+        margin-top: 130px;
+    }
+    
+    .title-logo img {
+        width: 210px;
+        height: 197px;
+    }
+    
+    .title-logo h1 {
+        font-size: 76px;
+    }
+    
+    .title-logo #version {
+        font-size: 28px;
+    }
+    
+    .missao h2,
+    .equipe h2 {
+        font-size: 40px;
+    }
+    
+    .missao p,
+    .equipe li {
+        font-size: 28px;
+    }
+    
+    footer {
+        font-size: 20px;
+    }
+}
+
 /* Responsividade para monitores e telas de computador */
 @media (max-width: 1440px) {
     header h1 {
