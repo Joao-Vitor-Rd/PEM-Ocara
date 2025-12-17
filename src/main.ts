@@ -867,6 +867,7 @@ ipcMain.handle('encaminhamento:enviarEmail', async (_event, dados: {
   assunto?: string;
   mensagem: string;
   anexosIds?: number[];
+  arquivosTemporarios?: Array<{ nome?: string; tipo?: string; dados?: any }>;
 }) => {
   try {
     Logger.info('Requisição para enviar e-mail de encaminhamento:', dados?.idCaso);
@@ -920,6 +921,25 @@ ipcMain.handle('encaminhamento:enviarEmail', async (_event, dados: {
         content: buffer,
         contentType: anexo.getTipo?.() || undefined
       });
+    }
+
+    const anexosTemporarios = Array.isArray(dados?.arquivosTemporarios) ? dados.arquivosTemporarios : [];
+    for (const [indexTemporario, arquivoTemporario] of anexosTemporarios.entries()) {
+      try {
+        const bufferTemporario = converterDadosAnexoParaBuffer(arquivoTemporario?.dados);
+        if (!bufferTemporario || bufferTemporario.length === 0) {
+          Logger.warn('Anexo temporário vazio ignorado.');
+          continue;
+        }
+
+        anexosEmail.push({
+          filename: arquivoTemporario?.nome || `anexo-temporario-${indexTemporario + 1}`,
+          content: bufferTemporario,
+          contentType: arquivoTemporario?.tipo || undefined
+        });
+      } catch (erroTemp) {
+        Logger.warn('Falha ao preparar anexo temporário para envio:', erroTemp);
+      }
     }
 
     const assunto = (dados?.assunto ?? '').trim() || `Encaminhamento do Caso #${idCaso}`;

@@ -200,6 +200,11 @@ export interface IElectronAPI {
     assunto?: string;
     mensagem: string;
     anexosIds?: number[];
+    arquivosTemporarios?: Array<{
+      nome: string;
+      tipo?: string;
+      dados: Uint8Array | number[] | string;
+    }>;
   }) => Promise<{
     success: boolean;
     dados?: {
