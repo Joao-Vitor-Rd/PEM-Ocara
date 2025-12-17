@@ -31,10 +31,10 @@ body {
 
 .sidebar-header {
     text-align: center;
-    width: 90%;
-    max-width: 400px;
+    width: 84%;
     margin: 0 auto;
     flex-shrink: 0;
+    padding-top: 8px;
 }
 
 .sidebar-header h1 {
@@ -46,9 +46,12 @@ body {
 }
 
 .sidebar-divider {
-    border: 2px solid #FFFFFF;
+    border: none;
+    height: 4px;
+    background-color: #FFFFFF;
+    opacity: 1;
     width: 100%;
-    margin-top: 15px;
+    margin-top: 20px;
 }
 
 .sidebar-nav {
@@ -84,19 +87,44 @@ body {
     transition: background-color 0.2s ease-in-out;
 }
 
+.sidebar-nav .material-symbols-outlined {
+    font-size: 40px; 
+    font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 40;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
 .sidebar-nav a.active {
     background-color: #FFFFFF;
     color: #63468C;
+}
+
+.sidebar-nav a.active .material-symbols-outlined {
+    font-variation-settings:
+    'FILL' 1,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 40;
 }
 
 .sidebar-nav a:not(.active):hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-.sidebar-nav svg {
-    width: 40px;
-    height: 40px;
-    flex-shrink: 0;
+.main-content {
+    flex-grow: 10;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 50px 80px;
+    box-sizing: border-box;
+    max-width: 1920px;
+    margin: 0 auto;
 }
 
 /* --- MAIN CONTENT --- */
