@@ -30,7 +30,6 @@ body {
     box-sizing: border-box;
     border-top-right-radius: 25px;
     border-bottom-right-radius: 25px;
-
 }
 
 .sidebar-header {
@@ -63,11 +62,8 @@ body {
     width: 100%;
     display: flex;
     align-items: center;
-    /* Centraliza a lista na horizontal */
     justify-content: center;
-    /* Centraliza a lista na vertical */
 }
-
 
 .sidebar-nav ul {
     list-style: none;
@@ -94,45 +90,34 @@ body {
     transition: background-color 0.2s ease-in-out;
 }
 
+.sidebar-nav .material-symbols-outlined {
+    font-size: 40px; 
+    font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 40;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
 .sidebar-nav a.active {
     background-color: #FFFFFF;
     color: #63468C;
+}
+
+.sidebar-nav a.active .material-symbols-outlined {
+    font-variation-settings:
+    'FILL' 1,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 40;
 }
 
 .sidebar-nav a:not(.active):hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-.sidebar-nav svg {
-    width: 40px;
-    height: 40px;
-    flex-shrink: 0;
-}
-
-
-.main-content {
-    flex-grow: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    display: flex;
-    flex-direction: column;
-    padding: 50px 80px;
-    box-sizing: border-box;
-
-    max-width: 1920px;
-
-    margin: 0 auto;
-
-}
-
-
-.icone-rede-apoio {
-    transform: scale(1.4);
-}
-
-
-/* --- Conteúdo Principal --- */
 .main-content {
     flex-grow: 10;
     overflow-y: auto;
@@ -209,18 +194,37 @@ body {
 
 
 .btn-assistida {
-    width: 100%;
-    padding: 50px 0;
     background-color: #F2B872;
-    border: 1px solid #865D2B;
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    border: 0.5px solid #E0AC6E;
     border-radius: 25px;
-    color: white;
-    font-size: 35px;
-    font-family: 'Poppins', sans-serif;
-    letter-spacing: 0.2em;
-    font-weight: 800;
-    text-align: center;
+    color: #FFFFFF;
+    font-size: 24px;
+    font-weight: 600;
+    padding: 2%;
+    letter-spacing: 0.05em;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 100px;
+    width: 500px;
+
+    cursor: pointer;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    margin: 0 auto;
+}
+
+.btn-assistida:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.btn-assistida:active {
+    transform: translateY(1px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
 
 .barra-busca-full {
@@ -260,4 +264,144 @@ body {
 .input-busca-prototipo::placeholder {
     color: #666666;
     opacity: 1;
+}
+
+/* --- Responsividade --- */
+
+/* Para tela 1707 x 1067 */
+@media screen and (max-width: 1707px) and (max-height: 1067px) {
+    .sidebar {
+        width: clamp(300px, 26vw, 420px);
+        padding: 40px 0;
+    }
+    
+    .sidebar-header h1 {
+        font-size: 42px;
+    }
+    
+    .sidebar-nav a {
+        font-size: 28px;
+        padding: 12px 35px;
+        gap: 18px;
+    }
+    
+    .sidebar-nav .material-symbols-outlined {
+        font-size: 36px;
+    }
+    
+    .main-content {
+        padding: 40px 60px;
+    }
+    
+    .card-paciente h3 {
+        font-size: 36px;
+    }
+    
+    .card-paciente p {
+        font-size: 22px;
+    }
+    
+    .btn-assistida {
+        height: 90px;
+        width: 450px;
+        font-size: 22px;
+    }
+    
+    .barra-busca-full {
+        padding-left: 60px;
+        padding-right: 60px;
+    }
+    
+    .input-busca-prototipo {
+        font-size: 18px !important;
+        line-height: 28px;
+    }
+    
+    .barra-busca-full .material-symbols-outlined {
+        font-size: 34px !important;
+    }
+}
+
+/* Para tela 1440 x 900 */
+@media screen and (max-width: 1440px) and (max-height: 900px) {
+    .sidebar {
+        width: clamp(280px, 25vw, 380px);
+        padding: 35px 0;
+    }
+    
+    .sidebar-header h1 {
+        font-size: 38px;
+    }
+    
+    .sidebar-divider {
+        height: 3px;
+        margin-top: 15px;
+    }
+    
+    .sidebar-nav a {
+        font-size: 26px;
+        padding: 10px 30px;
+        gap: 15px;
+    }
+    
+    .sidebar-nav .material-symbols-outlined {
+        font-size: 32px;
+    }
+    
+    .main-content {
+        padding: 35px 50px;
+    }
+    
+    .card-paciente {
+        padding: 18px 25px 8px 25px;
+    }
+    
+    .card-paciente h3 {
+        font-size: 32px;
+    }
+    
+    .card-paciente p {
+        font-size: 20px;
+    }
+    
+    .btn-assistida {
+        height: 80px;
+        width: 400px;
+        font-size: 20px;
+    }
+    
+    .barra-busca-full {
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 0.8rem;
+        padding-bottom: 0.8rem;
+    }
+    
+    .input-busca-prototipo {
+        font-size: 16px !important;
+        line-height: 26px;
+    }
+    
+    .barra-busca-full .material-symbols-outlined {
+        font-size: 32px !important;
+    }
+    
+    .rodape {
+        padding-top: 30px;
+        padding-bottom: 15px;
+    }
+    
+    .rodape p {
+        font-size: 14px;
+    }
+    
+    .logo-esquerda {
+        width: 100px;
+        height: 72px;
+    }
+    
+    .logo-direita {
+        width: 120px;
+        height: 90px;
+    }
 }

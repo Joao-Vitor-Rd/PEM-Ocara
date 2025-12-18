@@ -92,6 +92,172 @@ body {
 
 .caixa-email { margin-bottom: 50px; }
 
+/* --- Responsividade Específica --- */
+
+/* Para tela 1707 x 1067 */
+@media screen and (max-width: 1707px) and (max-height: 1067px) {
+  #logo-pem-ocara {
+    width: 520px;
+    height: 490px;
+    max-height: calc(100vh - 240px);
+  }
+  
+  .title {
+    margin: 45px 45px 90px 27px;
+    gap: 22px;
+  }
+  
+  .title h1 {
+    font-size: 44px;
+  }
+  
+  .title h2 {
+    font-size: 22px;
+  }
+  
+  .caixas {
+    gap: 45px;
+    margin: 135px 27px 0 27px;
+  }
+  
+  .caixas h4,
+  .caixa-email h4,
+  .caixa-senha h4 {
+    font-size: 22px;
+  }
+  
+  .caixa-email,
+  .caixa-senha {
+    height: 62px;
+  }
+  
+  .caixa-email input,
+  .caixa-senha input {
+    font-size: 18px;
+  }
+  
+  .button {
+    bottom: 100px;
+    left: 45px;
+    right: 45px;
+  }
+  
+  .button button {
+    height: 88px;
+    font-size: 30px;
+  }
+  
+  .login-error {
+    font-size: 17px;
+    margin: 11px 27px 0 27px;
+  }
+  
+  .card-2 footer {
+    height: 72px;
+    width: calc(100% - 90px);
+  }
+  
+  .card-2 footer img:first-of-type {
+    width: 88px;
+    height: 63px;
+  }
+  
+  .card-2 footer img:last-of-type {
+    width: 96px;
+    height: 72px;
+  }
+  
+  .card-2 footer p {
+    font-size: 12px;
+  }
+}
+
+/* Para tela 1440 x 900 */
+@media screen and (max-width: 1440px) and (max-height: 900px) {
+  #logo-pem-ocara {
+    width: 460px;
+    height: 430px;
+    max-height: calc(100vh - 220px);
+  }
+  
+  .title {
+    margin: 40px 40px 80px 25px;
+    gap: 20px;
+  }
+  
+  .title h1 {
+    font-size: 40px;
+  }
+  
+  .title h2 {
+    font-size: 20px;
+  }
+  
+  .caixas {
+    gap: 40px;
+    margin: 120px 25px 0 25px;
+  }
+  
+  .caixas h4,
+  .caixa-email h4,
+  .caixa-senha h4 {
+    font-size: 20px;
+  }
+  
+  .caixa-email,
+  .caixa-senha {
+    height: 58px;
+    border-radius: 7px;
+  }
+  
+  .caixa-email input,
+  .caixa-senha input {
+    font-size: 17px;
+  }
+  
+  .password-icon {
+    font-size: 26px;
+    width: 36px;
+    height: 36px;
+  }
+  
+  .button {
+    bottom: 90px;
+    left: 40px;
+    right: 40px;
+  }
+  
+  .button button {
+    height: 80px;
+    font-size: 28px;
+    border-radius: 9px;
+  }
+  
+  .login-error {
+    font-size: 16px;
+    margin: 10px 25px 0 25px;
+  }
+  
+  .card-2 footer {
+    height: 64px;
+    width: calc(100% - 80px);
+  }
+  
+  .card-2 footer img:first-of-type {
+    width: 78px;
+    height: 56px;
+  }
+  
+  .card-2 footer img:last-of-type {
+    width: 86px;
+    height: 64px;
+  }
+  
+  .card-2 footer p {
+    font-size: 11px;
+  }
+}
+
 @media (max-width: 900px) {
   .caixa-email,
   .caixa-senha {
@@ -190,8 +356,14 @@ body {
   transition: opacity 0.2s ease;
 }
 
+.button button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
 .button button:active {
   transform: translateY(1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
 
 .button button.loading {

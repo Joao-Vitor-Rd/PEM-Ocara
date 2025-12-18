@@ -287,6 +287,176 @@ footer {
     }
 }
 
+/* --- Responsividade Específica --- */
+
+/* Para tela 1707 x 1067 */
+@media screen and (max-width: 1707px) and (max-height: 1067px) {
+    .titulo {
+        font-size: 28px;
+        max-width: 1600px;
+    }
+    
+    .card {
+        max-width: 1600px;
+        height: calc(100vh - 100px - 97px - 25px);
+    }
+    
+    .etapas {
+        padding: 18px 0;
+    }
+    
+    .etapa,
+    .etapa-ativa {
+        width: 54px;
+        height: 54px;
+    }
+    
+    .numero {
+        font-size: 28px;
+    }
+    
+    .form {
+        padding-top: 18px;
+    }
+    
+    .titulo-sessao h4 {
+        font-size: 28px;
+    }
+    
+    .checkboxes-container {
+        padding: 27px 70px;
+        gap: 13px;
+    }
+    
+    .checkbox-label {
+        font-size: 28px;
+        gap: 18px;
+    }
+    
+    .checkbox-label input[type="checkbox"],
+    .checkbox-label input[type="radio"] {
+        width: 27px;
+        height: 27px;
+    }
+    
+    .checkbox-label input[type="checkbox"]:checked::after,
+    .checkbox-label input[type="radio"]:checked::after {
+        top: 3px;
+        left: 8px;
+        width: 5px;
+        height: 11px;
+    }
+    
+    .violencias-container {
+        padding: 27px 70px;
+        gap: 45px;
+    }
+    
+    .violencias-coluna {
+        gap: 13px;
+    }
+    
+    footer {
+        bottom: 9px;
+        max-width: 1600px;
+    }
+    
+    #proximo {
+        height: 52px;
+        width: 270px;
+        font-size: 22px;
+    }
+    
+    #voltar {
+        font-size: 22px;
+    }
+}
+
+/* Para tela 1440 x 900 */
+@media screen and (max-width: 1440px) and (max-height: 900px) {
+    .titulo {
+        font-size: 26px;
+        max-width: 1400px;
+    }
+    
+    .card {
+        max-width: 1400px;
+        height: calc(100vh - 100px - 97px - 25px);
+    }
+    
+    .etapas {
+        padding: 16px 0;
+    }
+    
+    .etapa,
+    .etapa-ativa {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .numero {
+        font-size: 26px;
+    }
+    
+    .form {
+        padding-top: 16px;
+    }
+    
+    .titulo-sessao h4 {
+        font-size: 26px;
+    }
+    
+    .checkboxes-container {
+        padding: 24px 60px;
+        gap: 12px;
+    }
+    
+    .checkbox-label {
+        font-size: 26px;
+        gap: 16px;
+    }
+    
+    .checkbox-label input[type="checkbox"],
+    .checkbox-label input[type="radio"] {
+        width: 25px;
+        height: 25px;
+    }
+    
+    .checkbox-label input[type="checkbox"]:checked::after,
+    .checkbox-label input[type="radio"]:checked::after {
+        top: 3px;
+        left: 7px;
+        width: 5px;
+        height: 10px;
+        border-width: 0 2.5px 2.5px 0;
+    }
+    
+    .violencias-container {
+        padding: 24px 60px;
+        gap: 40px;
+    }
+    
+    .violencias-coluna {
+        gap: 12px;
+    }
+    
+    footer {
+        bottom: 8px;
+        max-width: 1400px;
+    }
+    
+    #proximo {
+        height: 48px;
+        width: 250px;
+        font-size: 20px;
+        border-radius: 8px;
+    }
+    
+    #voltar {
+        font-size: 20px;
+    }
+}
+
 @media screen and (max-width: 1366px) {
     .titulo {
         font-size: clamp(24px, 2.5vw, 32px);

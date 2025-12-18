@@ -32,9 +32,10 @@ body {
 
 .sidebar-header {
     text-align: center;
-    width: 400px;
+    width: 84%;
     margin: 0 auto;
     flex-shrink: 0;
+    padding-top: 8px;
 }
 
 .sidebar-header h1 {
@@ -46,9 +47,12 @@ body {
 }
 
 .sidebar-divider {
-    border: 2px solid #FFFFFF;
+    border: none;
+    height: 4px;
+    background-color: #FFFFFF;
+    opacity: 1;
     width: 100%;
-    margin-top: 15px;
+    margin-top: 20px;
 }
 
 .sidebar-nav {
@@ -84,35 +88,44 @@ body {
     transition: background-color 0.2s ease-in-out;
 }
 
+.sidebar-nav .material-symbols-outlined {
+    font-size: 40px; 
+    font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 40;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
 .sidebar-nav a.active {
     background-color: #FFFFFF;
     color: #63468C;
+}
+
+.sidebar-nav a.active .material-symbols-outlined {
+    font-variation-settings:
+    'FILL' 1,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 40;
 }
 
 .sidebar-nav a:not(.active):hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-.sidebar-nav svg {
-    width: 40px;
-    height: 40px;
-    flex-shrink: 0;
-}
-
-.icone-material {
-    transform: scale(1.35);
-}
-
 .main-content {
-    flex-grow: 1;
+    flex-grow: 10;
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
-    padding: 50px 5%; 
+    padding: 50px 80px;
     box-sizing: border-box;
-    max-width: 100%;
-    margin: 0;
+    max-width: 1920px;
+    margin: 0 auto;
 }
 
 .cabecalho {
@@ -208,4 +221,145 @@ body {
     width: 133px;
     height: 100px;
     object-fit: contain;
+}
+
+/* --- Responsividade Específica --- */
+
+/* Para tela 1707 x 1067 */
+@media screen and (max-width: 1707px) and (max-height: 1067px) {
+    .main-content {
+        padding: 45px 72px;
+        max-width: 1600px;
+    }
+    
+    .sidebar-header h1 {
+        font-size: 44px;
+    }
+    
+    .sidebar-nav a {
+        font-size: 30px;
+        padding: 14px 36px;
+        gap: 18px;
+    }
+    
+    .sidebar-nav .material-symbols-outlined {
+        font-size: 38px;
+    }
+    
+    .cabecalho h2 {
+        font-size: 44px;
+    }
+    
+    .botoes {
+        gap: 27px;
+        flex-direction: row;
+    }
+    
+    .btn {
+        height: 90px;
+        width: 400px;
+        font-size: 22px;
+    }
+    
+    .rodape p {
+        font-size: 15px;
+    }
+    
+    .logo-esquerda {
+        width: 100px;
+        height: 72px;
+    }
+    
+    .logo-direita {
+        width: 120px;
+        height: 90px;
+    }
+}
+
+/* Para tela 1440 x 900 */
+@media screen and (max-width: 1440px) and (max-height: 900px) {
+    .main-content {
+        padding: 40px 64px;
+        max-width: 1400px;
+    }
+    
+    .sidebar-header h1 {
+        font-size: 40px;
+    }
+    
+    .sidebar-nav a {
+        font-size: 28px;
+        padding: 12px 32px;
+        gap: 16px;
+    }
+    
+    .sidebar-nav .material-symbols-outlined {
+        font-size: 36px;
+    }
+    
+    .cabecalho h2 {
+        font-size: 40px;
+    }
+    
+    .botoes {
+        gap: 24px;
+        flex-direction: row;
+    }
+    
+    .btn {
+        height: 80px;
+        width: 350px;
+        font-size: 20px;
+        border-radius: 20px;
+    }
+    
+    .rodape p {
+        font-size: 14px;
+    }
+    
+    .logo-esquerda {
+        width: 90px;
+        height: 64px;
+    }
+    
+    .logo-direita {
+        width: 108px;
+        height: 80px;
+    }
+}
+
+/* ======================================================= */
+/* === RESPONSIVIDADE PARA NOTEBOOKS (1366px ou menor) === */
+/* ======================================================= */
+@media (max-width: 1400px) {
+
+    .sidebar {
+        width: 300px;
+        padding: 30px 0;
+
+    }
+
+
+    .sidebar-header h1 {
+        font-size: 32px;
+        margin-top: 30px;
+    }
+
+
+    .sidebar-nav a {
+        font-size: 25px;
+        gap: 15px;
+        padding: 12px 20px;
+        white-space: nowrap;
+    }
+
+    .sidebar-nav svg {
+        width: 28px;
+        height: 28px;
+    }
+
+
+    .sidebar-divider {
+        margin-top: 30px;
+    }
 }

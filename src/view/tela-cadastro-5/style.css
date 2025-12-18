@@ -282,6 +282,157 @@ footer {
     }
 }
 
+/* --- Responsividade Específica --- */
+
+/* Para tela 1707 x 1067 */
+@media screen and (max-width: 1707px) and (max-height: 1067px) {
+    .titulo {
+        font-size: 28px;
+        max-width: 1600px;
+    }
+    
+    .card {
+        max-width: 1600px;
+        height: calc(100vh - 100px - 97px - 25px);
+    }
+    
+    .etapas {
+        padding: 18px 0;
+    }
+    
+    .etapa,
+    .etapa-ativa {
+        width: 54px;
+        height: 54px;
+    }
+    
+    .numero {
+        font-size: 28px;
+    }
+    
+    .titulo-sessao h4 {
+        font-size: 32px;
+    }
+    
+    .upload-container {
+        padding: 36px;
+    }
+    
+    .upload-area {
+        padding: 54px 36px;
+        gap: 18px;
+    }
+    
+    .upload-icon {
+        margin-bottom: 18px;
+    }
+    
+    .upload-area h3 {
+        font-size: 22px;
+    }
+    
+    .upload-area p {
+        font-size: 15px;
+    }
+    
+    .escolher-arquivo {
+        padding: 14px 63px;
+        font-size: 18px;
+        margin-top: 22px;
+    }
+    
+    footer {
+        bottom: 9px;
+        max-width: 1600px;
+    }
+    
+    #proximo {
+        height: 52px;
+        width: 270px;
+        font-size: 22px;
+    }
+    
+    #voltar {
+        font-size: 22px;
+    }
+}
+
+/* Para tela 1440 x 900 */
+@media screen and (max-width: 1440px) and (max-height: 900px) {
+    .titulo {
+        font-size: 26px;
+        max-width: 1400px;
+    }
+    
+    .card {
+        max-width: 1400px;
+        height: calc(100vh - 100px - 97px - 25px);
+    }
+    
+    .etapas {
+        padding: 16px 0;
+    }
+    
+    .etapa,
+    .etapa-ativa {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .numero {
+        font-size: 26px;
+    }
+    
+    .titulo-sessao h4 {
+        font-size: 30px;
+    }
+    
+    .upload-container {
+        padding: 32px;
+    }
+    
+    .upload-area {
+        padding: 50px 32px;
+        gap: 16px;
+        border-radius: 18px;
+    }
+    
+    .upload-icon {
+        margin-bottom: 16px;
+    }
+    
+    .upload-area h3 {
+        font-size: 20px;
+    }
+    
+    .upload-area p {
+        font-size: 14px;
+    }
+    
+    .escolher-arquivo {
+        padding: 13px 56px;
+        font-size: 17px;
+        margin-top: 20px;
+        border-radius: 8px;
+    }
+    
+    footer {
+        bottom: 8px;
+        max-width: 1400px;
+    }
+    
+    #proximo {
+        height: 48px;
+        width: 250px;
+        font-size: 20px;
+        border-radius: 8px;
+    }
+    
+    #voltar {
+        font-size: 20px;
+    }
+}
+
 @media screen and (max-width: 1366px) {
     .titulo {
         font-size: clamp(24px, 2.5vw, 32px);

@@ -137,6 +137,89 @@ footer {
     text-decoration: underline;
 }
 
+/* --- Responsividade Específica --- */
+
+/* Para tela 1707 x 1067 */
+@media screen and (max-width: 1707px) and (max-height: 1067px) {
+    .titulo {
+        font-size: 30px;
+        max-width: 1600px;
+    }
+    
+    .card {
+        max-width: 1600px;
+        height: calc(100vh - 100px - 97px - 25px);
+    }
+    
+    .pdf-viewer-container {
+        padding: 18px 36px 36px 36px;
+    }
+    
+    .titulo-sessao h4 {
+        font-size: 30px;
+    }
+    
+    .pdf-placeholder {
+        font-size: 22px;
+        min-height: 360px;
+    }
+    
+    footer {
+        max-width: 1600px;
+    }
+    
+    .imprimirPDF {
+        height: 52px;
+        font-size: 22px;
+        padding: 0 27px;
+    }
+    
+    #voltar {
+        font-size: 22px;
+    }
+}
+
+/* Para tela 1440 x 900 */
+@media screen and (max-width: 1440px) and (max-height: 900px) {
+    .titulo {
+        font-size: 28px;
+        max-width: 1400px;
+    }
+    
+    .card {
+        max-width: 1400px;
+        height: calc(100vh - 100px - 97px - 25px);
+    }
+    
+    .pdf-viewer-container {
+        padding: 16px 32px 32px 32px;
+    }
+    
+    .titulo-sessao h4 {
+        font-size: 28px;
+    }
+    
+    .pdf-placeholder {
+        font-size: 20px;
+        min-height: 320px;
+    }
+    
+    footer {
+        max-width: 1400px;
+    }
+    
+    .imprimirPDF {
+        height: 48px;
+        font-size: 20px;
+        padding: 0 24px;
+        border-radius: 8px;
+    }
+    
+    #voltar {
+        font-size: 20px;
+    }
+}
+
 /* Estilos Responsivos */
 @media (max-width: 1024px) {
     .titulo {

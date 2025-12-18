@@ -299,3 +299,213 @@ footer {
 #voltar:hover {
     text-decoration: underline;
 }
+
+/* --- Responsividade --- */
+
+/* Para tela 1707 x 1067 */
+@media screen and (max-width: 1707px) and (max-height: 1067px) {
+    .titulo {
+        font-size: 28px;
+        width: 95%;
+        max-width: 1600px;
+    }
+    
+    .card {
+        max-width: 1600px;
+        max-height: calc(100vh - 90px - 87px - 22px);
+    }
+    
+    .etapas {
+        padding: 18px 0;
+    }
+    
+    .etapa,
+    .etapa-ativa {
+        width: 54px;
+        height: 54px;
+    }
+    
+    .numero {
+        font-size: 28px;
+    }
+    
+    .form {
+        padding-top: 18px;
+    }
+    
+    .titulo-sessao h6 {
+        font-size: 22px;
+    }
+    
+    .titulo-sessao h4 {
+        font-size: 28px;
+    }
+    
+    .perguntas {
+        padding: 18px 13px;
+        gap: 17px;
+    }
+    
+    .pergunta label {
+        font-size: 22px;
+        margin-bottom: 7px;
+    }
+    
+    .pergunta input {
+        height: 54px;
+        font-size: 22px;
+        padding: 0 10px;
+    }
+    
+    .pergunta-conjunta {
+        gap: 17px;
+    }
+    
+    #pergunta-marcar > label {
+        font-size: 22px;
+        margin-bottom: 22px;
+    }
+    
+    #pergunta-marcar .opções {
+        font-size: 22px;
+    }
+    
+    #pergunta-marcar .opções .opção {
+        gap: 17px;
+    }
+    
+    #pergunta-marcar .opções input[type="radio"] {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .pergunta span,
+    #pergunta-marcar span {
+        font-size: 22px;
+        margin-left: 9px;
+    }
+    
+    .obs {
+        font-size: 16px;
+    }
+    
+    footer {
+        bottom: 9px;
+        max-width: 1600px;
+    }
+    
+    #proximo {
+        height: 52px;
+        width: 270px;
+        font-size: 22px;
+    }
+    
+    #voltar {
+        font-size: 22px;
+    }
+}
+
+/* Para tela 1440 x 900 */
+@media screen and (max-width: 1440px) and (max-height: 900px) {
+    .titulo {
+        font-size: 26px;
+        width: 95%;
+        max-width: 1400px;
+    }
+    
+    .card {
+        max-width: 1400px;
+        max-height: calc(100vh - 85px - 80px - 20px);
+    }
+    
+    .etapas {
+        padding: 16px 0;
+    }
+    
+    .etapa,
+    .etapa-ativa {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .numero {
+        font-size: 26px;
+    }
+    
+    .form {
+        padding-top: 16px;
+    }
+    
+    .titulo-sessao h6 {
+        font-size: 20px;
+    }
+    
+    .titulo-sessao h4 {
+        font-size: 26px;
+    }
+    
+    .perguntas {
+        padding: 16px 12px;
+        gap: 16px;
+    }
+    
+    .pergunta label {
+        font-size: 20px;
+        margin-bottom: 6px;
+    }
+    
+    .pergunta input {
+        height: 50px;
+        font-size: 20px;
+        padding: 0 10px;
+        border-radius: 8px;
+    }
+    
+    .pergunta-conjunta {
+        gap: 16px;
+    }
+    
+    #pergunta-marcar > label {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+    
+    #pergunta-marcar .opções {
+        font-size: 20px;
+    }
+    
+    #pergunta-marcar .opções .opção {
+        gap: 16px;
+    }
+    
+    #pergunta-marcar .opções input[type="radio"] {
+        width: 17px;
+        height: 17px;
+    }
+    
+    .pergunta span,
+    #pergunta-marcar span {
+        font-size: 20px;
+        margin-left: 8px;
+    }
+    
+    .obs {
+        font-size: 15px;
+    }
+    
+    footer {
+        bottom: 8px;
+        max-width: 1400px;
+    }
+    
+    #proximo {
+        height: 48px;
+        width: 250px;
+        font-size: 20px;
+        border-radius: 8px;
+    }
+    
+    #voltar {
+        font-size: 20px;
+    }
+}

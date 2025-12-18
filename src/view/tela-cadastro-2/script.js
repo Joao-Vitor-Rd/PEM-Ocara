@@ -198,6 +198,63 @@ document.addEventListener('DOMContentLoaded', function() {
         'q16-3-conflito-pensao'
     ]);
 
+// Controle de visibilidade dos campos de texto/número
+    // Pergunta 16 - quantos filhos
+    const q16CheckboxAgressor = document.getElementById('q16-tem-filhos-sim-agressor');
+    const q16InputAgressor = document.getElementById('q16-quantos-agressor');
+    const q16CheckboxOutro = document.getElementById('q16-tem-filhos-sim-outro');
+    const q16InputOutro = document.getElementById('q16-quantos-outro');
+    
+    if (q16CheckboxAgressor && q16InputAgressor) {
+        q16CheckboxAgressor.addEventListener('change', function() {
+            q16InputAgressor.style.display = this.checked ? 'inline-block' : 'none';
+            if (!this.checked) q16InputAgressor.value = '';
+        });
+    }
+    
+    if (q16CheckboxOutro && q16InputOutro) {
+        q16CheckboxOutro.addEventListener('change', function() {
+            q16InputOutro.style.display = this.checked ? 'inline-block' : 'none';
+            if (!this.checked) q16InputOutro.value = '';
+        });
+    }
+    
+    // Pergunta 16.2 - filhos com deficiência
+    const q162RadioSim = document.getElementById('q16-2-deficiencia-sim');
+    const q162Input = document.getElementById('q16-2-quantos-deficiencia');
+    const q162RadioNao = document.getElementById('q16-2-deficiencia-nao');
+    
+    if (q162RadioSim && q162Input && q162RadioNao) {
+        q162RadioSim.addEventListener('change', function() {
+            q162Input.style.display = this.checked ? 'inline-block' : 'none';
+        });
+        
+        q162RadioNao.addEventListener('change', function() {
+            if (this.checked) {
+                q162Input.style.display = 'none';
+                q162Input.value = '';
+            }
+        });
+    }
+    
+    // Pergunta 18 - deficiência da assistida
+    const q18RadioSim = document.getElementById('q18-deficiencia-sim');
+    const q18Input = document.getElementById('q18-qual-deficiencia');
+    const q18RadioNao = document.getElementById('q18-deficiencia-nao');
+    
+    if (q18RadioSim && q18Input && q18RadioNao) {
+        q18RadioSim.addEventListener('change', function() {
+            q18Input.style.display = this.checked ? 'inline-block' : 'none';
+        });
+        
+        q18RadioNao.addEventListener('change', function() {
+            if (this.checked) {
+                q18Input.style.display = 'none';
+                q18Input.value = '';
+            }
+        });
+    }
+
 // Funcionalidade: Enter para próxima pergunta 
     const titulosSessao = document.querySelectorAll('.titulo-sessao');
     let secaoAgressor = null;
