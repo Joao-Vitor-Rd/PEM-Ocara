@@ -16,30 +16,40 @@ const navAssistidas = document.getElementById("navAssistidas");
 
 if (navInicial) {
     navInicial.addEventListener('click', async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         await navigateToTelaInicial();
     });
 }
 
 if (navRede) {
     navRede.addEventListener('click', async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         await navigateToTelaRedeApoio();
     });
 }
 
 if (navEstatisticas) {
     navEstatisticas.addEventListener('click', async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         await navigateToTelaEstatisticas();
     });
 }
 
 if (navFuncionarios) {
     navFuncionarios.addEventListener('click', async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         await window.api.openWindow("telaListarFuncionarios");
     });
 }
 
 if (navAssistidas) {
     navAssistidas.addEventListener('click', async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         await window.api.openWindow("telaListarAssistidas");
     });
 }

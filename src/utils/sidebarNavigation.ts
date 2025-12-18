@@ -23,24 +23,22 @@
 
       element.addEventListener(
         'click',
-        (event) => handleNavigation(event, windowName),
-        { capture: true }
+        (event) => handleNavigation(event, windowName)
       );
       element.dataset[DATA_BOUND] = 'true';
     });
   };
 
-  const handleNavigation = (event: Event, windowName: string): void => {
+  const handleNavigation = async (event: Event, windowName: string): Promise<void> => {
     if (!windowName) {
       return;
     }
 
     event.preventDefault();
     event.stopPropagation();
-    event.stopImmediatePropagation();
 
     try {
-      window.api?.openWindow(windowName);
+      await window.api?.openWindow(windowName);
     } catch (error) {
       console.error('Falha ao abrir janela via sidebar:', error);
     }

@@ -10,18 +10,26 @@ const telaEstatisticasBtn = document.getElementById('telaEstatisticas') as HTMLL
 const telaRedeApoioBtn = document.getElementById('telaRedeApoio') as HTMLLIElement;
 
 telaInicialBtn?.addEventListener('click', async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
     await navigateToTelaInicial();
 })
 
 cadastroAssistidaBtn?.addEventListener('click', async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
     const mudarTela = await window.api.openWindow("telaCadastroAssistida");
 })
 
 telaEstatisticasBtn?.addEventListener('click', async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
     await navigateToTelaEstatisticas();
 })
 
 telaRedeApoioBtn?.addEventListener('click', async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
     const mudarTela = await window.api.openWindow("telaRedeApoio");
 })
 

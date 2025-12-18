@@ -16,30 +16,40 @@ const tipoViolencia = document.getElementById('TipoViolencia') as HTMLSpanElemen
 
 if (telaInicialBtn) {
     telaInicialBtn.addEventListener('click', async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         await navigateToTelaInicial();
     })
 }
 
 if (cadastroAssistidaBtn) {
     cadastroAssistidaBtn.addEventListener('click', async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         const mudarTela = await window.api.openWindow("telaCadastroAssistida");
     })
 }
 
 if (listarAssistidasBtn) {
     listarAssistidasBtn.addEventListener('click', async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         const mudarTela = await window.api.openWindow("telaListarAssistidas");
     })
 }
 
 if (telaRedeApoioBtn) {
     telaRedeApoioBtn.addEventListener('click', async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         const mudarTela = await window.api.openWindow("telaRedeApoio");
     })
 }
 
 if (telaEstatisticasBtn) {
     telaEstatisticasBtn.addEventListener('click', async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         await navigateToTelaEstatisticas();
     })
 }

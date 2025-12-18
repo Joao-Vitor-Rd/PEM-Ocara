@@ -50,6 +50,7 @@ const carregarAssistidas = async () => {
 if (cadastroExistenteBtn) {
     cadastroExistenteBtn.addEventListener('click', async (event) => {
         event.preventDefault();
+        event.stopPropagation();
         await carregarAssistidas();
         if (modalSelectOverlay) {
             modalSelectOverlay.classList.add('visible');
@@ -107,40 +108,4 @@ if (btnAdicionarCaso) {
     });
 }
 
-// 7. Lógica do Botão Estatísticas
-if (estatisticasBtn) {
-    estatisticasBtn.addEventListener('click', async (event) => {
-        await navigateToTelaEstatisticas();
-    });
-}
-
-// 8. Lógica do Botão Rede de Apoio
-if (redeApoioBtn) {
-    redeApoioBtn.addEventListener('click', async (event) => {
-        event.preventDefault();
-        await navigateToTelaRedeApoio();
-    });
-}
-
-// 9. Lógica do Botão Listar Assistidas
-if (assistidasBtn) {
-    assistidasBtn.addEventListener('click', async (event) => {
-        event.preventDefault();
-        await window.api.openWindow('telaListarAssistidas');
-    });
-}
-
-// 10. Lógica do Botão Cadastrar Assistida Nova
-if (cadastroAssistidaBtn) {
-    cadastroAssistidaBtn.addEventListener('click', async (event) => {
-        event.preventDefault(); 
-        await window.api.openWindow('telaCadastroAssistida');
-    });
-}
-
-if (contaBtn) {
-    contaBtn.addEventListener('click', async (event) => {
-        event.preventDefault();
-        await navigateToTelaConta();
-    });
-}
+// A navegação da sidebar é gerenciada pelo sidebarNavigation.ts

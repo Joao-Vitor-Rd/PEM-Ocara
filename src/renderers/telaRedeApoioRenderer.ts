@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (navAssistidas) {
         navAssistidas.addEventListener('click', async (event) => {
             event.preventDefault();
+            event.stopPropagation();
             await window.api.openWindow('telaListarAssistidas');
         });
     }
@@ -27,6 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (navRede) {
         navRede.addEventListener('click', async (event) => {
             event.preventDefault();
+            event.stopPropagation();
             await navigateToTelaRedeApoio();
         });
     }
@@ -35,6 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (navInicial) {
         navInicial.addEventListener('click', async (event) => {
             event.preventDefault();
+            event.stopPropagation();
             await navigateToTelaInicial();
         });
     }
@@ -43,6 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (navEstatisticas) {
         navEstatisticas.addEventListener('click', async (event) => {
             event.preventDefault();
+            event.stopPropagation();
             await navigateToTelaEstatisticas();
         });
     }
@@ -51,6 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (navConta) {
         navConta.addEventListener('click', async (event) => {
             event.preventDefault();
+            event.stopPropagation();
             await navigateToTelaConta();
         });
     }
@@ -59,6 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (navFuncionarios) {
         navFuncionarios.addEventListener('click', async (event) => {
             event.preventDefault();
+            event.stopPropagation();
             await window.api.openWindow('telaListarFuncionarios');
         });
     }

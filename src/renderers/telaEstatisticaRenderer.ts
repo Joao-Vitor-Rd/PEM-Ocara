@@ -56,18 +56,26 @@ function setupFilterModal(): void {
   }
 
   navInicial?.addEventListener('click', async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
     await navigateToTelaInicial();
   });
 
   navAssistidas?.addEventListener('click', async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
     await window.api.openWindow("telaListarAssistidas");
   });
 
   navRede?.addEventListener('click', async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
     await navigateToTelaRedeApoio();
   });
 
   navEstatisticas?.addEventListener('click', async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
     await navigateToTelaEstatisticas();
   });
 
@@ -77,6 +85,8 @@ function setupFilterModal(): void {
   });
 
   navFuncionarios?.addEventListener('click', async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
     await window.api.openWindow("telaListarFuncionarios");
   });
 

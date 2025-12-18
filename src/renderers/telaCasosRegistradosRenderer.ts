@@ -22,24 +22,32 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (assistidasBtn) {
         assistidasBtn.addEventListener('click', async (event) => {
+            event.preventDefault();
+            event.stopPropagation();
             const mudarTela = await window.api.openWindow("telaListarAssistidas");
         });
     }
 
     if (telaInicialBtn) {
         telaInicialBtn.addEventListener('click', async (event) => {
+            event.preventDefault();
+            event.stopPropagation();
             await navigateToTelaInicial();
         });
     }
 
     if (telaRedeApoioBtn) {
         telaRedeApoioBtn.addEventListener('click', async (event) => {
+            event.preventDefault();
+            event.stopPropagation();
             const mudarTela = await window.api.openWindow("telaRedeApoio");
         });
     }
 
     if (telaEstatisticasBtn) {
         telaEstatisticasBtn.addEventListener('click', async (event) => {
+            event.preventDefault();
+            event.stopPropagation();
             await navigateToTelaEstatisticas();
         });
     }
