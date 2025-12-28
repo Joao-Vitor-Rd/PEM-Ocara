@@ -1,11 +1,6 @@
-/**
- * Sistema de Gerenciamento de Filtros com Modal
- *
- * Controla a interface de filtros para aplicação de critérios de região e data
- * com funcionalidades de limpeza, aplicação e estado persistente dos filtros.
- */
-
-import { Graficos } from "../utils/Graficos.js";
+import { IGraficos } from "../utils/interfaces/IGraficos.js";
+import { GraficoLinha } from "../utils/graficosImpl/GraficoLinha.js";
+import { GraficoPizza } from "../utils/graficosImpl/GraficoPizza.js";
 import { navigateToTelaInicial, navigateToTelaConta, navigateToTelaEstatisticas, navigateToTelaRedeApoio } from '../utils/SidebarManager.js';
 
 /**
@@ -393,6 +388,7 @@ function setupFilterModal(): void {
       }
 
       // ===== GRÁFICO DE BARRAS (EVOLUÇÃO) COM FILTRO =====
+      let grafico: IGraficos = new GraficoLinha();
       const queryData = await window.api.getTotalCasosNoAnoFiltrado(regioesArray, dataInicio, dataFim);
       console.log("Dados de barras filtrados:", queryData);
       if (queryData && queryData.success && queryData.totalCasos) {
@@ -402,10 +398,11 @@ function setupFilterModal(): void {
           return `${item.mes} ${anoAtual}`;
         });
         console.log("Renderizando barras com:", { data, mesesLabels });
-        Graficos.createBarChart(data, mesesLabels);
+        grafico.gerarGrafico(data, mesesLabels, "grafico-evolucao");
       }
 
       // ===== GRÁFICO DE PIZZA (DISTRIBUIÇÃO) COM FILTRO =====
+      grafico = new GraficoPizza();
       const enderecos = await window.api.getEnderecosAssistidasFiltrado(dataInicio, dataFim);
       console.log("Dados de endereços filtrados:", enderecos);
       if (enderecos?.enderecos) {
@@ -422,7 +419,7 @@ function setupFilterModal(): void {
           const data: number[] = dadosFiltrados.map((item: any) => item.quantidade);
           const labels: string[] = dadosFiltrados.map((item: any) => item.endereco);
           console.log("Renderizando pizza com:", { data, labels });
-          Graficos.createPieChart(data, labels);
+          grafico.gerarGrafico(data, labels, "grafico-distribuicao");
         }
       }
 
@@ -547,20 +544,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
 
     const queryData = await window.api.getTotalCasosNoAno();
+
+    let grafico: IGraficos = new GraficoLinha();
+
     if (queryData.success && queryData.totalCasos) {
       const data: number[] = queryData.totalCasos.map((item: any) => item.quantidade);
       const mesesLabels: string[] = queryData.totalCasos.map((item: any) => item.mes);
-      Graficos.createBarChart(data, mesesLabels);
+      grafico.gerarGrafico(data, mesesLabels, "grafico-evolucao");
+
     } else {
       console.error("Erro ao buscar dados de casos");
     }
 
-    // ===== GRÁFICO DE PIZZA (DISTRIBUIÇÃO) =====
+    grafico = new GraficoPizza();
+
     const enderecos = await window.api.getEnderecosAssistidas();
     if (enderecos?.enderecos && enderecos.enderecos.length > 0) {
       const data: number[] = enderecos.enderecos.map((item: any) => item.quantidade);
       const labels: string[] = enderecos.enderecos.map((item: any) => item.endereco);
-      Graficos.createPieChart(data, labels);
+      grafico.gerarGrafico(data, labels, "grafico-distribuicao");
     } else {
       console.error("Erro ao buscar dados de endereços");
     }
