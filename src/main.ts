@@ -1,7 +1,4 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
-import * as path from 'path';
-import * as fs from 'fs';
-import { Pool } from 'pg';
 import { WindowManager } from './utils/WindowManeger';
 import { Logger } from './utils/Logger';
 
@@ -24,7 +21,6 @@ import { CredencialRepositoryPostgres } from './repository/CredencialRepositoryP
 import { HistoricoRepositoryPostgres } from './repository/HistoricoRepositoryPostgres';
 import { PostgresOrgaoRepository } from './repository/PostgresOrgaoRepository';
 import { CasoRedeApoioContatoRepository } from './repository/CasoRedeApoioContatoRepository';
-import { ICasoRedeApoioContatoRepository } from './repository/ICasoRedeApoioContatoRepository';
 
 // Imports - Services
 import { FuncionarioService } from './services/FuncionarioService';
@@ -32,7 +28,6 @@ import { CredencialService } from './services/CredencialService';
 
 // Imports - IPC Orchestrator & Mediators
 import { IpcOrchestrator } from './ipc/IpcOrchestrator';
-import { HtmlFormatter } from './utils/HtmlFormatter';
 import { CasoMediator } from './ipc/mediators/CasoMediator';
 import { AssistidaMediator } from './ipc/mediators/AssistidaMediator';
 import { OrgaoMediator } from './ipc/mediators/OrgaoMediator';
@@ -50,40 +45,6 @@ const windowManager = new WindowManager();
 
 // Variáveis globais
 let ipcOrchestrator: IpcOrchestrator;
-let ultimaOrigemTelaSobreAplicacao: 'telaConfiguracoesConta' | 'telaContaAdm' = 'telaConfiguracoesConta';
-
-function converterDadosAnexoParaBuffer(dados: any): Buffer | null {
-  if (!dados) {
-    return null;
-  }
-
-  if (Buffer.isBuffer(dados)) {
-    return dados;
-  }
-
-  if (dados instanceof Uint8Array) {
-    return Buffer.from(dados);
-  }
-
-  if (Array.isArray(dados)) {
-    return Buffer.from(dados);
-  }
-
-  if (typeof dados === 'string') {
-    if (dados.startsWith('\\x')) {
-      return Buffer.from(dados.slice(2), 'hex');
-    }
-    return Buffer.from(dados, 'utf-8');
-  }
-
-  if (typeof dados === 'object') {
-    return Buffer.from(Object.values(dados));
-  }
-
-  return null;
-}
-
-// Repository para salvar casos no BD
 
 // ==========================================
 // INITIALIZATION & BOOTSTRAP
@@ -206,25 +167,6 @@ ipcMain.on('window:close', (event) => {
   window?.close();
 });
 
-// ==========================================
-// UTILITY FUNCTIONS
-// ==========================================
-
-function getTipoMIME(nomeArquivo: string): string {
-  const extensao = path.extname(nomeArquivo).toLowerCase();
-  const tiposMIME: { [key: string]: string } = {
-    '.pdf': 'application/pdf',
-    '.doc': 'application/msword',
-    '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    '.jpg': 'image/jpeg',
-    '.jpeg': 'image/jpeg',
-    '.png': 'image/png',
-    '.txt': 'text/plain',
-    '.xls': 'application/vnd.ms-excel',
-    '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-  };
-  return tiposMIME[extensao] || 'application/octet-stream';
-}
 
 // ==========================================
 // APP LIFECYCLE
