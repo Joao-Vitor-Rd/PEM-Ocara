@@ -3,6 +3,8 @@ import { GraficoLinha } from "../utils/graficosImpl/GraficoLinha.js";
 import { GraficoPizza } from "../utils/graficosImpl/GraficoPizza.js";
 import { navigateToTelaInicial, navigateToTelaConta, navigateToTelaEstatisticas, navigateToTelaRedeApoio } from '../utils/SidebarManager.js';
 
+let grafico: IGraficos;
+
 /**
  * Configura e gerencia o modal de filtros com todas as interações
  * @returns {void}
@@ -388,7 +390,7 @@ function setupFilterModal(): void {
       }
 
       // ===== GRÁFICO DE BARRAS (EVOLUÇÃO) COM FILTRO =====
-      let grafico: IGraficos = new GraficoLinha();
+      grafico = new GraficoLinha();
       const queryData = await window.api.getTotalCasosNoAnoFiltrado(regioesArray, dataInicio, dataFim);
       console.log("Dados de barras filtrados:", queryData);
       if (queryData && queryData.success && queryData.totalCasos) {
@@ -545,7 +547,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const queryData = await window.api.getTotalCasosNoAno();
 
-    let grafico: IGraficos = new GraficoLinha();
+    grafico = new GraficoLinha();
 
     if (queryData.success && queryData.totalCasos) {
       const data: number[] = queryData.totalCasos.map((item: any) => item.quantidade);
