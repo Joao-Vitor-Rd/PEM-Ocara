@@ -43,6 +43,9 @@ import { AnexoMediator } from './ipc/mediators/AnexoMediator';
 import { EncaminhamentoMediator } from './ipc/mediators/EncaminhamentoMediator';
 import { UserMediator } from './ipc/mediators/UserMediator';
 
+// Imports - Window Factory
+import { WindowFactory } from './utils/WindowFactory';
+
 const windowManager = new WindowManager();
 
 // Variáveis globais
@@ -182,101 +185,19 @@ app.whenReady().then(() => {
 // WINDOW MANAGEMENT
 // ==========================================
 ipcMain.on('window:open', (_event, windowName: string) => {
-  switch (windowName) {
-    case 'register':
-      windowManager.createWindow('register', {
-        width: 600,
-        height: 700,
-        htmlFile: 'register.html',
-        preloadFile: 'preload.js'
-      });
-      break;
-    case 'telaListarAssistidas':
-      windowManager.loadContent('main', 'tela-assistidas/index.html');
-      break;
-    case 'telaInicial':
-      windowManager.loadContent('main', 'tela-inicial/index.html');
-      break;
-    case 'telaCadastroAssistida':
-      windowManager.loadContent('main', 'tela-cadastro-1/index.html');
-      break;
-    case 'telaCadastro2':
-      windowManager.loadContent('main', 'tela-cadastro-2/index.html');
-      break;
-    case 'telaCadastro3':
-      windowManager.loadContent('main', 'tela-cadastro-3/index.html');
-      break;
-    case 'telaCadastro4':
-      windowManager.loadContent('main', 'tela-cadastro-4/index.html');
-      break;
-    case 'telaCadastro5':
-      windowManager.loadContent('main', 'tela-cadastro-5/index.html');
-      break;
-    case 'telaCadastro6':
-      windowManager.loadContent('main', 'tela-cadastro-6/index.html');
-      break;
-    case 'telaCasosRegistrados':
-      windowManager.loadContent('main', 'tela-casos-registrados/index.html');
-      break;
-    case 'telaRedeApoio':
-      windowManager.loadContent('main', 'tela-rede-apoio/index.html');
-      break;
-    case 'telaVisualizarCasosBD':
-      windowManager.loadContent('main', 'tela-visualizar-casos-bd/index.html');
-      break;
-    case 'testeForm':
-      windowManager.loadContent('main', 'telaAssistidas.html');
-      break;
-    case 'telaInformacoesCaso':
-      windowManager.loadContent('main', 'tela-informacoes-caso/index.html');
-      break;
-    case 'telaEstatisticas':
-      windowManager.loadContent('main', 'tela-estatisticas/index.html');
-      break;
-    case 'telaConfiguracoesConta':
-      windowManager.loadContent('main', 'tela-configuracoes-conta/index.html');
-      break;
-    case 'telaLogin':
-      windowManager.loadContent('main', 'tela-login/index.html');
-      break;
-    case 'historicoMudancas':
-      windowManager.loadContent('main', 'tela-historico/index.html');
-      break;
-    case 'telaInicialAdm':
-      windowManager.loadContent('main', 'tela-inicial-adm/index.html');
-      break;
-    case 'telaContaAdm':
-      windowManager.loadContent('main', 'tela-configuracoes-conta-funcionario/index.html');
-      break;
-    case 'telaEstatisticasAdm':
-      windowManager.loadContent('main', 'tela-estatisticas-adm/index.html');
-      break;
-    case 'telaRedeApoioAdm':
-      windowManager.loadContent('main', 'tela-rede-apoio-adm/index.html');
-      break;
-    case 'telaListarFuncionarios':
-      windowManager.loadContent('main', 'tela-funcionario-cadastrado/index.html');
-      break;
-    case 'telaCadastrarFuncionario':
-      windowManager.loadContent('main', 'tela-cadastrar-funcionario/index.html');
-      break;
-    case 'telaDadosFuncionario':
-      windowManager.loadContent('main', 'tela-dados-funcionario/index.html');
-      break;
-    case 'telaSobreAplicacao':
-      windowManager.loadContent('main', 'tela-sobre-a-aplicacao/index.html');
-      break;
-    case 'telaVisualizacao1':
-      windowManager.loadContent('main', 'tela-cadastro-1-visualizacao/index.html');
-      break;
-    case 'telaVisualizacao2':
-      windowManager.loadContent('main', 'tela-cadastro-2-visualizacao/index.html');
-      break;
-    case 'telaVisualizacao3':
-      windowManager.loadContent('main', 'tela-cadastro-3-visualizacao/index.html');
-      break;
-    default:
-      console.log('tela desconhecida:', windowName);
+  const htmlPath = WindowFactory.getWindowPath(windowName);
+  
+  if (windowName === 'register') {
+    windowManager.createWindow('register', {
+      width: 600,
+      height: 700,
+      htmlFile: htmlPath || 'register.html',
+      preloadFile: 'preload.js'
+    });
+  } else if (htmlPath) {
+    windowManager.loadContent('main', htmlPath);
+  } else {
+    console.log('tela desconhecida:', windowName);
   }
 });
 
