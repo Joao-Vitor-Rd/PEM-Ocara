@@ -5,10 +5,11 @@ import * as path from 'path';
 
 export class PostgresInitializer implements IDataBase {
     
+    private static instance: PostgresInitializer | null = null;
     private connectionPool: Pool | null = null;
     private config: PoolConfig;
 
-    constructor() {
+    private constructor() {
         // 1. Lógica de Carregamento do .env (Trazida do seu db.ts)
         // Garante que leia o arquivo na raiz do projeto
         const envPath = path.resolve(process.cwd(), '.env');
@@ -40,6 +41,17 @@ export class PostgresInitializer implements IDataBase {
             idleTimeoutMillis: 30000,
             // ssl: { rejectUnauthorized: false } // Descomente se for usar Supabase no futuro
         };
+    }
+
+    /**
+     * Obtém a instância única de PostgresInitializer (Padrão Singleton GOF)
+     * @returns A instância única de PostgresInitializer
+     */
+    public static getInstance(): PostgresInitializer {
+        if (!PostgresInitializer.instance) {
+            PostgresInitializer.instance = new PostgresInitializer();
+        }
+        return PostgresInitializer.instance;
     }
 
     public pool(): Pool {

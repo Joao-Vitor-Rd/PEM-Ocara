@@ -65,12 +65,12 @@ function createMainWindow(): void {
 async function bootstrap(): Promise<void> {
   Logger.info('Iniciando aplicação...');
   
-  // 1. Inicializar banco de dados
-  const dbInitializer: IDataBase = new PostgresInitializer();
+  // 1. Inicializar banco de dados (Padrão Singleton)
+  const dbInitializer: IDataBase = PostgresInitializer.getInstance();
   await dbInitializer.initialize();
   
   // 2. Preparar o Pool de Conexão
-  const postgresInitializer = dbInitializer as PostgresInitializer;
+  const postgresInitializer = PostgresInitializer.getInstance();
   const dbPool = postgresInitializer.pool();
 
   // 3. Inicializar Repositórios
